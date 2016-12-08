@@ -8,11 +8,9 @@ angular.module('starter.controllers', [])
   // listen for the $ionicView.enter event:
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-  
+
 })
 
-.controller('HomeCtrl', function($scope) {
-  
+.controller('SearchCtrl', function($scope) {
+
 })
-
-

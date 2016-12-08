@@ -40,7 +40,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  
+
   .state('app.aboutus', {
     url: '/aboutus',
     views: {
@@ -58,7 +58,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-  
+
   .state('app.ads', {
     url: '/ads',
     views: {
@@ -67,16 +67,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  
-  .state('app.home', {
-    url: '/home',
+
+  .state('app.search', {
+    url: '/search',
     views: {
       'menuContent': {
-        templateUrl: 'templates/home.html',
-        controller: 'HomeCtrl'
+        templateUrl: 'templates/search.html',
+        controller: 'SearchCtrl'
       }
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/home');
+  $urlRouterProvider.otherwise('/app/search');
 });
