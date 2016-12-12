@@ -14,22 +14,40 @@
 
   <ion-side-menu side="left">
     <ion-header-bar class="bar-stable">
-      <h1 class="title">Left</h1>
+     <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
     </ion-header-bar>
     <ion-content>
       <ion-list>
         <ion-item menu-close href="#/app/aboutus">
-          About Us
+        My Courses
         </ion-item>
         <ion-item menu-close href="#/app/tou">
-          Terms Of Use
+        Settings
         </ion-item>
         <ion-item menu-close href="#/app/support">
-          Support
+        Sign In
         </ion-item>
-          <ion-item menu-close href="#/app/ads">
-          Ads
+        <ion-item menu-close href="#/app/ads">
+        Missing Course
         </ion-item>
+        <ion-item menu-close href="#/app/ads">
+        Share
+        </ion-item>
+        <ion-item menu-close href="#/app/ads">
+        Golf Stats
+        </ion-item>
+        <ion-item menu-close href="#/app/ads">
+        Upgrade to Pro
+        </ion-item>
+        <ion-item menu-close href="#/app/ads">
+        Rate our App
+        </ion-item>
+        <ion-item menu-close href="#/app/ads">
+        Support
+        </ion-item>
+        <ion-item menu-close href="#/app/ads">
+        Suggested Apps
+        </ion-item>  
       </ion-list>
     </ion-content>
   </ion-side-menu>
