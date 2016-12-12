@@ -1,0 +1,10 @@
+<ion-view view-title="News">
+  <ion-content>
+    <ul class="list">
+        <li class="item" ng-repeat="newsArticle in newsArticles" ng-click="selectArticle(newsArticle, $index)">
+          <h3>{{newsArticle.title}}</h3>
+          {{newsArticle.details}}
+        </li>
+    </ul>
+  </ion-content>
+</ion-view>
