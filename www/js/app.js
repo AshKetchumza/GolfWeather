@@ -32,51 +32,94 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     controller: 'AppCtrl'
   })
 
-  .state('app.tou', {
-    url: '/tou',
+  .state('app.my-courses', {
+    url: '/my-courses',
     views: {
       'menuContent': {
-        templateUrl: 'templates/tou.html'
+        templateUrl: 'templates/my-courses.html'
+      }
+    }
+  })
+  
+  .state('app.settings', {
+    url: '/settings',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/settings.html'
       }
     }
   })
 
-  .state('app.aboutus', {
-    url: '/aboutus',
+  .state('app.signin', {
+    url: '/signin',
     views: {
       'menuContent': {
-        templateUrl: 'templates/aboutus.html'
+        templateUrl: 'templates/signin.html'
       }
     }
   })
 
-  .state('app.support', {
-      url: '/support',
+  .state('app.missing-courses', {
+      url: '/missing-courses',
       views: {
         'menuContent': {
-          templateUrl: 'templates/support.html'
+          templateUrl: 'templates/missing-courses.html'
         }
       }
     })
 
-  .state('app.ads', {
-    url: '/ads',
+  .state('app.share', {
+    url: '/share',
     views: {
       'menuContent': {
-        templateUrl: 'templates/ads.html'
+        templateUrl: 'templates/share.html'
       }
     }
   })
 
-  .state('app.search', {
-    url: '/search',
+  .state('app.golf-stats', {
+    url: '/golf-stats',
     views: {
       'menuContent': {
-        templateUrl: 'templates/search.html',
-        controller: 'SearchCtrl'
+        templateUrl: 'templates/golf-stats.html'
+      }
+    }
+  })
+  .state('app.upgrade', {
+    url: '/upgrade',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/upgrade.html'
+      }
+    }
+  })
+  
+  .state('app.rate', {
+    url: '/rate',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/rate.html'
+      }
+    }
+  })
+  
+  .state('app.support', {
+    url: '/support',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/support.html'
+      }
+    }
+  })
+  
+  .state('app.suggested-apps', {
+    url: '/suggested-apps',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/suggested-apps.html'
       }
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/search');
+  $urlRouterProvider.otherwise('/app/my-courses');
 });
