@@ -1,5 +1,9 @@
 <ion-view view-title="My Courses">
   <ion-content>
-    
+    <ul class="list">
+        <li class="item" ng-repeat="myCourse in myCourses" ng-click="selectCourse(myCourse, $index)">
+          {{myCourse}}
+        </li>
+    </ul>
   </ion-content>
 </ion-view>

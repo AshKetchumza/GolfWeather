@@ -11,6 +11,19 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('SearchCtrl', function($scope) {
+.controller('MyCoursesCtrl', function($scope) {
 
+    $scope.myCourses = [
+        "Milnerton",
+        "Atlantic Beach",
+        "Clovelly",
+        "Metropiton",
+        "Pearl Valley",
+        "River Club",
+        "Steenberg",
+        "Sun City",
+        "Augusta National",
+        "Happy Land"
+    ]
+    
 })
