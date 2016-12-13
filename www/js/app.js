@@ -42,6 +42,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   })
   
+  .state('app.forecast', {
+    url: '/forecast',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/forecast.html',
+          controller: "MyCoursesCtrl"
+      }
+    }
+  })
+  
   .state('app.settings', {
     url: '/settings',
     views: {
@@ -123,4 +133,26 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/my-courses');
+})
+
+//Course Service
+.service('CourseService', function(){
+    var service = {
+        viewCourse : {}
+    };
+    service.ApplyViewCourse = function(data){
+    service.viewCourse = data;
+    localStorage.setItem('viewCourse', JSON.stringify(data)); 
+    };
+    service.LocalCheck = function() {
+        if (localStorage.getItem("viewCourse"))
+        {
+          //storage exists
+          this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewCourse")));
+        }
+      };
+    	
+  	service.LocalCheck();
+         
+      return service;
 });
