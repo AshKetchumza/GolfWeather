@@ -339,7 +339,7 @@ angular.module('starter.controllers', [])
     ];
     
     $scope.selectCourse = function(myCourse, index) {
-        CourseService.ApplyViewCourse(myCourse);
+        $scope.selectedCourse = CourseService.ApplyViewCourse(myCourse);
         $state.go('app.forecast');
     };
     
