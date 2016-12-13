@@ -141,8 +141,9 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         viewCourse : {}
     };
     service.ApplyViewCourse = function(data){
-    service.viewCourse = data;
-    localStorage.setItem('viewCourse', JSON.stringify(data)); 
+      service.viewCourse = data;
+      localStorage.setItem('viewCourse', JSON.stringify(data)); 
+      return service.viewCourse;
     };
     service.LocalCheck = function() {
         if (localStorage.getItem("viewCourse"))
