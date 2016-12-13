@@ -1,8 +1,8 @@
 <ion-view view-title="My Courses">
   <ion-content>
     <ul class="list">
-        <li class="item" ng-repeat="myCourse in myCourses" ng-click="selectCourse(myCourse, $index)">
-          {{myCourse}}
+        <li class="item item-icon-right" ng-repeat="myCourse in myCourses" ng-click="selectCourse(myCourse, $index)">
+          {{myCourse.name}} <i class="icon ion-cloud"> {{myCourse.temp}}</i>
         </li>
     </ul>
   </ion-content>
