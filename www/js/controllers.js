@@ -14,7 +14,7 @@ angular.module('starter.controllers', [])
 .controller('MyCoursesCtrl', function($scope, $state, CourseService) {
 
     $scope.selectedCourse = CourseService.viewCourse;
-    
+
     $scope.myCourses = [
         {
             name: "Milnerton",
@@ -46,7 +46,7 @@ angular.module('starter.controllers', [])
             rain5: "0",
             mm5: "0",
             wind5: "12",
-            dir5: "NNW"            
+            dir5: "NNW"
         },
          {
             name: "Atlantic Beach",
@@ -78,13 +78,13 @@ angular.module('starter.controllers', [])
             rain5: "0",
             mm5: "0",
             wind5: "12",
-            dir5: "NNW"  
+            dir5: "NNW"
         },
          {
             name: "Clovelly",
             temp: "17",
             currentCond: "Mostly Cloudy. Cool",
-            sunrise: "5:53am", 
+            sunrise: "5:53am",
             sunset: "6.27pm",
             temp1: "11",
             rain1: "90",
@@ -110,7 +110,7 @@ angular.module('starter.controllers', [])
             rain5: "0",
             mm5: "0",
             wind5: "12",
-            dir5: "NNW"  
+            dir5: "NNW"
         },
          {
             name: "Metropiton",
@@ -142,7 +142,7 @@ angular.module('starter.controllers', [])
             rain5: "0",
             mm5: "0",
             wind5: "12",
-            dir5: "NNW"  
+            dir5: "NNW"
         },
          {
             name: "Pearl Valley",
@@ -174,7 +174,7 @@ angular.module('starter.controllers', [])
             rain5: "0",
             mm5: "0",
             wind5: "12",
-            dir5: "NNW"  
+            dir5: "NNW"
         },
          {
             name: "River Club",
@@ -206,7 +206,7 @@ angular.module('starter.controllers', [])
             rain5: "0",
             mm5: "0",
             wind5: "12",
-            dir5: "NNW"  
+            dir5: "NNW"
         },
          {
             name: "Steenberg",
@@ -238,7 +238,7 @@ angular.module('starter.controllers', [])
             rain5: "0",
             mm5: "0",
             wind5: "12",
-            dir5: "NNW"  
+            dir5: "NNW"
         },
          {
             name: "Sun City",
@@ -270,7 +270,7 @@ angular.module('starter.controllers', [])
             rain5: "0",
             mm5: "0",
             wind5: "12",
-            dir5: "NNW"  
+            dir5: "NNW"
         },
          {
             name: "Augusta National",
@@ -302,7 +302,7 @@ angular.module('starter.controllers', [])
             rain5: "0",
             mm5: "0",
             wind5: "12",
-            dir5: "NNW"  
+            dir5: "NNW"
         },
         {
             name: "Happy Land",
@@ -334,13 +334,51 @@ angular.module('starter.controllers', [])
             rain5: "0",
             mm5: "0",
             wind5: "12",
-            dir5: "NNW"  
+            dir5: "NNW"
         }
     ];
-    
+
     $scope.selectCourse = function(myCourse, index) {
         CourseService.ApplyViewCourse(myCourse);
         $state.go('app.forecast');
     };
-    
+
+})
+
+
+.controller('NewsController', function($scope, $state, NewsService) {
+
+  $scope.selectedArticle = NewsService.viewArticle;
+  $scope.articles = [
+    {
+      'title' : 'Fowler through the years',
+      'details' : 'Images from throughout the career of PGA Tour fan favorite Rickie Fowler.'
+    },
+    {
+      'title' : 'Fowler celebrates b-day drinking from Ryder Cup ',
+      'details' : 'Rickie Fowler\'s 28th birthday is on Tuesday, and he started his celebration surrounded by good company ... cupcakes, Matt Kuchar and the Ryder Cup.'
+    },
+    {
+      'title' : 'Newsmaker of the Year: No. 5, DJ ',
+      'details' : 'A major title, three PGA Tour wins and a bevy of annual awards. It was a career year for Dustin Johnson, one many have been expecting.'
+    },
+    {
+      'title' : 'Social Snapshots: December 2016',
+      'details' : 'The best social snapshots from around the golf world from the month of December.'
+    },
+    {
+      'title' : 'Woods officially commits to \'17 Genesis Open',
+      'details' : 'Tiger Woods officially committed to the 2017 Genesis Open, held at Riviera where Woods made his first PGA Tour start at age 16.'
+    },
+    {
+      'title' : 'First Senior LPGA Championship coming in \'17 ',
+      'details' : 'The Senior LPGA Championship for women 45 and over will be staged for the first time next year, the LPGA announced Tuesday.'
+    }
+  ];
+
+  $scope.selectArticle = function(article, index) {
+    NewsService.ApplyViewArticle(article);
+    $state.go('app.news-article');
+  }
+
 })

@@ -41,7 +41,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  
+
   .state('app.forecast', {
     url: '/forecast',
     views: {
@@ -51,7 +51,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  
+
   .state('app.settings', {
     url: '/settings',
     views: {
@@ -104,7 +104,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  
+
   .state('app.rate', {
     url: '/rate',
     views: {
@@ -113,7 +113,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  
+
   .state('app.support', {
     url: '/support',
     views: {
@@ -122,12 +122,32 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  
+
   .state('app.suggested-apps', {
     url: '/suggested-apps',
     views: {
       'menuContent': {
         templateUrl: 'templates/suggested-apps.html'
+      }
+    }
+  })
+
+  .state('app.news', {
+    url: '/news',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/news.html',
+        controller: 'NewsController'
+      }
+    }
+  })
+
+  .state('app.news-article', {
+    url: '/news-article',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/article.html',
+        controller: 'NewsController'
       }
     }
   });
@@ -142,7 +162,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     };
     service.ApplyViewCourse = function(data){
     service.viewCourse = data;
-    localStorage.setItem('viewCourse', JSON.stringify(data)); 
+    localStorage.setItem('viewCourse', JSON.stringify(data));
     };
     service.LocalCheck = function() {
         if (localStorage.getItem("viewCourse"))
@@ -151,8 +171,30 @@ angular.module('starter', ['ionic', 'starter.controllers'])
           this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewCourse")));
         }
       };
-    	
+
   	service.LocalCheck();
-         
+
+      return service;
+})
+
+//News Service
+.service('NewsService', function(){
+    var service = {
+        viewArticle : {}
+    };
+    service.ApplyViewArticle = function(data){
+    service.viewArticle = data;
+    localStorage.setItem('viewArticle', JSON.stringify(data));
+    };
+    service.LocalCheck = function() {
+        if (localStorage.getItem("viewArticle"))
+        {
+          //storage exists
+          this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewArticle")));
+        }
+      };
+
+  	service.LocalCheck();
+
       return service;
 });
