@@ -217,4 +217,27 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   	service.LocalCheck();
 
       return service;
+})
+
+//Tips Service
+.service('TipsService', function(){
+    var service = {
+        viewTip : {}
+    };
+    service.ApplyViewTip = function(data){
+      service.viewTip = data;
+      localStorage.setItem('viewTip', JSON.stringify(data));
+    };
+    service.LocalCheck = function() {
+        if (localStorage.getItem("viewTip"))
+        {
+          //storage exists
+          this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewTip")));
+        }
+      };
+
+  	service.LocalCheck();
+
+      return service;
 });
+
