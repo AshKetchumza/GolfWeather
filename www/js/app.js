@@ -150,6 +150,26 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         controller: 'NewsController'
       }
     }
+  })
+  
+  .state('app.tips', {
+    url: '/tips',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/viewtips.html',
+        controller: 'TipsController'
+      }
+    }
+  })
+  
+  .state('app.tip', {
+    url: '/tip',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/tip.html',
+        controller: 'TipsController'
+      }
+    }
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/my-courses');
