@@ -1,10 +1,9 @@
 <ion-view view-title="Video Tips">
   <ion-content>
     <ul class="list">
-        <li class="item" ng-repeat="vidTip in videoTips" ng-click="selectTip(vidTip, $index)">
-          <h3>{{vidTip.title}}</h3>
-          <!-- display video here -->
-          {{vidTip.details}}
+        <li class="item" ng-repeat="tip in tips" ng-click="selectTip(tip, $index)">
+          <h3>{{tip.title}}</h3>          
+          {{tip.description}}
         </li>
     </ul>
   </ion-content>
