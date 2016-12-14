@@ -345,7 +345,6 @@ angular.module('starter.controllers', [])
 
 })
 
-
 .controller('NewsController', function($scope, $state, NewsService) {
 
   $scope.selectedArticle = NewsService.viewArticle;
@@ -368,7 +367,7 @@ angular.module('starter.controllers', [])
     },
     {
       'title' : 'Woods officially commits to \'17 Genesis Open',
-      'details' : 'Tiger Woods officially committed to the 2017 Genesis Open, held at Riviera where Woods made his first PGA Tour start at age 16.'
+      'details' : 'Tiger Woods officially committed to the 2017 Genesis Open, held at Riviera where Woods made his first PGA Tour start at age 
     },
     {
       'title' : 'First Senior LPGA Championship coming in \'17 ',
@@ -381,4 +380,19 @@ angular.module('starter.controllers', [])
     $state.go('app.news-article');
   }
 
+})
+
+.controller('TipsController', function($scope, $state, TipsService) {
+  $scope.selectedTip = TipsService.viewTip;
+  $scope.tips = [
+    {
+      title: 'Sample Tip',
+      videoUrl: '',
+      description: 'This is a sample tip'
+    }
+    ];
+  $scope.selectTip = function(tip, index) {
+    TipsService.ApplyViewTip(tip);
+    $state.go('app.tip');
+  }
 })
