@@ -151,7 +151,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  
+
   .state('app.tips', {
     url: '/tips',
     views : {
@@ -161,13 +161,33 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  
+
   .state('app.tip', {
     url: '/tip',
     views : {
       'menuContent' : {
         templateUrl: 'templates/tip.html',
         controller: 'TipsController'
+      }
+    }
+  })
+
+  .state('app.compass', {
+    url: '/compass',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/compass.html',
+        controller: 'CompassController'
+      }
+    }
+  })
+
+  .state('app.slope-reader', {
+    url: '/slope-reader',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/slope-reader.html',
+        controller: 'SlopeReaderController'
       }
     }
   });
@@ -240,4 +260,3 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 
       return service;
 });
-

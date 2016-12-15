@@ -367,7 +367,7 @@ angular.module('starter.controllers', [])
     },
     {
       'title' : 'Woods officially commits to \'17 Genesis Open',
-      'details' : 'Tiger Woods officially committed to the 2017 Genesis Open, held at Riviera where Woods made his first PGA Tour start at age 
+      'details' : 'Tiger Woods officially committed to the 2017 Genesis Open, held at Riviera where Woods made his first PGA Tour start at age
     },
     {
       'title' : 'First Senior LPGA Championship coming in \'17 ',
@@ -395,4 +395,18 @@ angular.module('starter.controllers', [])
     TipsService.ApplyViewTip(tip);
     $state.go('app.tip');
   }
+})
+
+//use the following plugin: cordova-plugin-device-orientation
+//cordova plugin add cordova-plugin-device-orientation
+.controller('CompassController', function($scope) {
+  //get the initial heading usign navigator.compass.getCurrentHeading(success, error);
+  //sample usage documented on https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device-orientation/index.html
+
+  //watch the heading and update the ui at the required interval
+})
+
+.controller('SlopeReaderController', function($scope) {
+  //use the following plugin for the information required for this controller
+  //https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device-motion/index.html
 })
