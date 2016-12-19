@@ -410,3 +410,7 @@ angular.module('starter.controllers', [])
   //use the following plugin for the information required for this controller
   //https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device-motion/index.html
 })
+
+.controller('RadarController', function($scope) {
+  //controll map overlays for the radar page
+})
