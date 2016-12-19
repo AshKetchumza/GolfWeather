@@ -182,12 +182,32 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   })
 
+  .state('app.radar', {
+    url: '/radar',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/radar.html',
+        controller: 'RadarController'
+      }
+    }
+  })
+
   .state('app.slope-reader', {
     url: '/slope-reader',
     views : {
       'menuContent' : {
         templateUrl: 'templates/slope-reader.html',
         controller: 'SlopeReaderController'
+      }
+    }
+  })
+
+  .state('app.prizedraw', {
+    url: '/prizedraw',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/prizedraw.html',
+        controller: 'PrizeDrawController'
       }
     }
   });
