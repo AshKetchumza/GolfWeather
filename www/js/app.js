@@ -200,6 +200,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         controller: 'SlopeReaderController'
       }
     }
+  })
+
+  .state('app.prizedraw', {
+    url: '/prizedraw',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/prizedraw.html',
+        controller: 'PrizeDrawController'
+      }
+    }
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/my-courses');
