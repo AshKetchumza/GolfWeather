@@ -1,5 +1,37 @@
 <ion-view view-title="Prize Draw">
   <ion-content>
+    <h1>GolfWeather Prize Draw</h1>
+    {{draw.description}}
+    <form>
+      <div class="list">
+         <label class="item item-input item-floating-label">
+          <span class="input-label">Title</span>
+          <input type="text" placeholder="Title">
+         </label>
 
+         <label class="item item-input item-floating-label">
+          <span class="input-label">Name</span>
+          <input type="text" placeholder="Name" ng-model="entry.name">
+         </label>
+
+         <label class="item item-input item-floating-label">
+          <span class="input-label">Surname</span>
+          <input type="text" placeholder="Surname" ng-model="entry.surname">
+         </label>
+
+         <label class="item item-input item-floating-label">
+          <span class="input-label">Email</span>
+          <input type="email" placeholder="Email" ng-model="entry.email">
+         </label>
+
+         <label class="item item-input item-floating-label">
+          <span class="input-label">Country</span>
+          <input type="text" placeholder="Country" ng-model="entry.country">
+         </label>
+      </div>
+      <button class="button button-full button-positive" type="submit">
+        Enter
+      </button>
+    </form>
   </ion-content>
 </ion-view>
