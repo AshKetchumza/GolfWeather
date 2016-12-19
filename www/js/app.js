@@ -182,6 +182,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   })
 
+  .state('app.radar', {
+    url: '/radar',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/radar.html',
+        controller: 'RadarController'
+      }
+    }
+  })
+
   .state('app.slope-reader', {
     url: '/slope-reader',
     views : {
