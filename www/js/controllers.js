@@ -367,7 +367,7 @@ angular.module('starter.controllers', [])
     },
     {
       'title' : 'Woods officially commits to \'17 Genesis Open',
-      'details' : 'Tiger Woods officially committed to the 2017 Genesis Open, held at Riviera where Woods made his first PGA Tour start at age
+      'details' : 'Tiger Woods officially committed to the 2017 Genesis Open, held at Riviera where Woods made his first PGA Tour start at age'
     },
     {
       'title' : 'First Senior LPGA Championship coming in \'17 ',
@@ -428,7 +428,7 @@ angular.module('starter.controllers', [])
       'additional entry if you "like" the GolfWeather facebook' +
       'page. http://www.facebook.com/GolfWeather</p>'
   };
-  
+
   $scope.entry = {
     title: '',
     name: '',
@@ -436,7 +436,7 @@ angular.module('starter.controllers', [])
     email: '',
     country: ''
   };
-  
+
   $scope.enter = function(form) {
     //submit entry data
   };
