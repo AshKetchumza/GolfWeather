@@ -417,8 +417,8 @@ angular.module('starter.controllers', [])
 
 .controller('PrizeDrawController', function($scope) {
   $scope.draw = {
-    description: 'Enter and Win!' +
-      '<p>1 Lucky GolfWeather user will win 6 DOZEN Srixon Golf' +
+    title: 'Enter and Win!',
+    description: '1 Lucky GolfWeather user will win 6 DOZEN Srixon Golf' +
       'Balls, including a ball fitting!' +
       'Visit Srixon.com for more info on their range of balls,' +
       'there are many choices to fit your game.' +
@@ -426,7 +426,7 @@ angular.module('starter.controllers', [])
       '2016 and the winner will be notified via email.' +
       'To increase your chance of winning you will receive an' +
       'additional entry if you "like" the GolfWeather facebook' +
-      'page. http://www.facebook.com/GolfWeather</p>'
+      'page. http://www.facebook.com/GolfWeather'
   };
 
   $scope.entry = {
