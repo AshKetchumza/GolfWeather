@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -56,7 +56,8 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     url: '/settings',
     views: {
       'menuContent': {
-        templateUrl: 'templates/settings.html'
+        templateUrl: 'templates/settings.html',
+        controller: 'AppCtrl'
       }
     }
   })
@@ -78,6 +79,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
+
+    .state('app.map', {
+        url: '/map',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/map.html',
+            controller: 'MyCoursesCtrl'
+          }
+        }
+      })
 
   .state('app.share', {
     url: '/share',
@@ -215,10 +226,29 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   $urlRouterProvider.otherwise('/app/my-courses');
 })
 
+.service('AppService', function() {
+  var service = {};
+
+  service.GetUrl = function(url, params) {
+    var res = 'http://www.golfweather.com/app/' + url;
+    for(var prop in params) {
+      res = res.replace('{' + prop + '}', params[prop]);
+    }
+    return res;
+  };
+
+  return service;
+})
+
 //Course Service
-.service('CourseService', function(){
+.service('CourseService', function($q, $http, AppService){
     var service = {
-        viewCourse : {}
+        viewCourse : {},
+        currentPosition : { coords : {
+            latitude: 0,
+            longitude: 0
+          }
+        }
     };
     service.ApplyViewCourse = function(data){
     service.viewCourse = data;
@@ -231,6 +261,40 @@ angular.module('starter', ['ionic', 'starter.controllers'])
           this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewCourse")));
         }
       };
+
+    service.Nearby = function() {
+      var deferred = $q.defer();
+	    var promise = deferred.promise;
+      var pos = {coordinates : {
+        latitude: -33.8723569,
+        longitude: 18.4886431
+      }};
+      //navigator.geolocation.getCurrentPosition(function(pos) {
+        service.currentPosition.latitude =  pos.coordinates.latitude;//Math.round(1E4 * pos.coords.latitude) / 1E4;
+        service.currentPosition.longitude =  pos.coordinates.longitude;//Math.round(1E4 * pos.coords.longitude) / 1E4};
+        console.log('current coordinates: ', pos);
+        $http({
+          url: AppService.GetUrl('get-close-by/latitude/{latitude}/longitude/{longitude}', service.currentPosition),
+          method: "GET"
+        }).success(function (data, status, headers, config) {
+          console.log('Nearby->success: ', data);
+          deferred.resolve(data);
+        }).error(function (data, status, headers, config) {
+          console.log('Nearby->error: ', data);
+          deferred.reject(data);
+        });
+      //});
+
+      promise.success = function (fn) {
+        promise.then(fn);
+        return promise;
+      }
+      promise.error = function (fn) {
+        promise.then(null, fn);
+        return promise;
+      }
+      return promise;
+    };
 
   	service.LocalCheck();
 

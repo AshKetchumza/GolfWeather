@@ -9,11 +9,28 @@ angular.module('starter.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
+  $scope.units = {
+    temp: 'metric',
+    clock: '24'
+  };
+  $scope.homeView = 'MC';
+
 })
 
 .controller('MyCoursesCtrl', function($scope, $state, CourseService) {
 
     $scope.selectedCourse = CourseService.viewCourse;
+    console.log($state.current.name);
+
+     if ($state.current.name === 'app.map') {
+       initialize();
+    //   var mapOptions = {
+    //     zoom: 16,
+    //     mapTypeId: google.maps.MapTypeId.ROADMAP
+    //   };
+    //   var map = new google.maps.Map(document.getElementById("map"),
+    //         mapOptions);
+     }
 
     $scope.myCourses = [
         {
@@ -342,6 +359,79 @@ angular.module('starter.controllers', [])
         CourseService.ApplyViewCourse(myCourse);
         $state.go('app.forecast');
     };
+
+    $scope.coursesNearMe = [];
+
+    function initialize() {
+      CourseService.Nearby().success(function (data) {
+        // var myLatlng = new google.maps.LatLng(CourseService.currentPosition.latitude, CourseService.currentPosition.longitude);
+        //
+        // var mapOptions = {
+        //   center: myLatlng,
+        //   zoom: 12,
+        //   disableDefaultUI: true,
+        //   mapTypeId: google.maps.MapTypeId.ROADMAP
+        // };
+        // var map = new google.maps.Map(document.getElementById("map"),
+        //     mapOptions);
+
+        //Marker + infowindow + angularjs compiled ng-click
+        //var contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>";
+        //var compiled = $compile(contentString)($scope);
+
+        // var infowindow = new google.maps.InfoWindow({
+        //   content: compiled[0]
+        // });
+
+        // var marker = new google.maps.Marker({
+        //   position: myLatlng,
+        //   map: map,
+        //   title: 'Uluru (Ayers Rock)'
+        // });
+
+        $scope.coursesNearMe = [];
+        for (var i = 0; i < data.length; i++) {
+          $scope.coursesNearMe.push(data[i]);
+          // new google.maps.Marker({
+          //   position: new google.maps.LatLng(data[i].lat, data[i].long),
+          //   map: map,
+          //   title: data[i].name
+          // });
+        }
+
+        console.log('Courses near me: ', $scope.coursesNearMe);
+
+        // google.maps.event.addListener(marker, 'click', function() {
+        //   //infowindow.open(map,marker);
+        // });
+
+        // $scope.map = map;
+      });
+    }
+      //google.maps.event.addDomListener(window, 'load', initialize);
+
+      $scope.centerOnMe = function() {
+        if(!$scope.map) {
+          return;
+        }
+
+        // $scope.loading = $ionicLoading.show({
+        //   content: 'Getting current location...',
+        //   showBackdrop: false
+        // });
+
+        // navigator.geolocation.getCurrentPosition(function(pos) {
+        //   $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+        //   $scope.loading.hide();
+        // }, function(error) {
+        //   alert('Unable to get location: ' + error.message);
+        // });
+      };
+
+      $scope.clickTest = function() {
+        alert('Example of infowindow with ng-click')
+      };
+
 
 })
 

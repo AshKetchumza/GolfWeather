@@ -1,5 +1,56 @@
 <ion-view view-title="Settings">
   <ion-content>
-    
+    <div class="list">
+      <div class="item item-divider">
+        Units
+      </div>
+      <!-- <ion-toggle  toggle-class="toggle-calm" ion-toggle-text="Metric;Imperial" ng-model="units.temp">
+        Temperature
+      </ion-toggle>
+      <ion-toggle  toggle-class="toggle-calm" ion-toggle-text="24 hour;12 hour" ng-model="units.clock">
+        Clock
+      </ion-toggle> -->
+      <label class="item item-input item-select">
+        <div class="input-label">
+          Temperature
+        </div>
+        <select ng-model='units.temp'>
+          <option value='metric' >Metric</option>
+          <option value='imperial' >Imperial</option>
+        </select>
+      </label>
+      <label class="item item-input item-select">
+        <div class="input-label">
+          Clock
+        </div>
+        <select ng-model='units.clock'>
+          <option value='24'>24 Hour</option>
+          <option value='12'>12 Hour</option>
+        </select>
+      </label>
+      <button class="button button-block button-calm">Rate GoldWeather</button>
+      <button class="button button-block button-balanced">Share GolfWeather</button>
+      <div class="item item-divider">
+        Home View
+      </div>
+      <ion-list>
+        <ion-radio ng-model="homeView" ng-value="'MC'">My Courses</ion-radio>
+        <ion-radio ng-model="homeView" ng-value="'LVC'">Last Visited Course</ion-radio>
+        <ion-radio ng-model="homeView" ng-value="'FC'">Favourite Course</ion-radio>
+      </ion-list>
+      <button class="button button-block button-energized">Customize Alerts</button>
+      <button class="button button-block button-outline button-positive">Help</button>
+      <button class="button button-block button-outline button-positive">Visit GolfWeather Website</button>
+      <div class="button-bar">
+        <a class="button button-calm">Twitter</a>
+        <a class="button button-positive">Facebook</a>
+        <a class="button button-assertive">Youtube</a>
+      </div>
+      <br/>
+      <div class="button-bar">
+        <a class="button button-outline button-calm">Contact Us</a>
+        <a class="button button-outline button-calm">Support</a>
+      </div>
+    </div>
   </ion-content>
 </ion-view>
