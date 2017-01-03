@@ -9,11 +9,18 @@ angular.module('starter.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
+  var data = AppService.GetUSerSettings();
+
   $scope.units = {
-    temp: 'metric',
-    clock: '24'
+    temp: data.temp,
+    clock: data.clock
   };
-  $scope.homeView = 'MC';
+  $scope.homeView = data.homeView;
+  
+  $scope.UserSettingsUpdate = function() {
+    var newSettings = { temp: $scope.units.temp, clock: $scope.units.clock, homeView: $scope.homeView };
+    AppService.ApplyUserSettings(newSettings);
+  };
 
 })
 
