@@ -236,6 +236,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
     }
     return res;
   };
+  
+  service.GetUserSettings = function() {
+    var data = { temp: 'metric', clock: '24', homeView: 'MC' };
+    if (!localStorage.getItem("GWUserSettings"))
+    {
+      localStorage.setItem("GWUserSettings", data);
+    }else {
+      data = JSON.Parse(localStorage.getItem("GWUserSettings"));
+    }
+    
+    return data;
+  };
+  
+  service.ApplyUserSettings = function(data) {
+    localStorage.setItem('GWUserSettings', JSON.stringify(data));
+  };
 
   return service;
 })
