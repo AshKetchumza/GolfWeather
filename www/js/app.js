@@ -236,19 +236,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
     }
     return res;
   };
-  
+
   service.GetUserSettings = function() {
     var data = { temp: 'metric', clock: '24', homeView: 'MC' };
+    //
+    console.log(localStorage.getItem("GWUserSettings"));
+
     if (!localStorage.getItem("GWUserSettings"))
     {
-      localStorage.setItem("GWUserSettings", data);
+      service.ApplyUserSettings(data);
     }else {
-      data = JSON.Parse(localStorage.getItem("GWUserSettings"));
+      data = JSON.parse(localStorage.getItem("GWUserSettings"));
     }
-    
+
     return data;
   };
-  
+
   service.ApplyUserSettings = function(data) {
     localStorage.setItem('GWUserSettings', JSON.stringify(data));
   };
