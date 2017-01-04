@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $state) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $state, AppService) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -9,11 +9,24 @@ angular.module('starter.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
-  $scope.units = {
-    temp: 'metric',
-    clock: '24'
+  $scope.settings = AppService.GetUserSettings();
+
+  // $scope.units = {
+  //   temp: data.temp,
+  //   clock: data.clock
+  // };
+
+  $scope.homeViewOptions = [
+    {value: 'MC', text: 'My Courses'},
+    {value: 'LVC', text: 'Last Visited Course'},
+    {value: 'FC', text: 'Favourite Course'}
+  ];
+
+  $scope.UserSettingsUpdate = function() {
+    console.log($scope.settings);
+    //var newSettings = { temp: $scope.units.temp, clock: $scope.units.clock, homeView: $scope.homeView };
+    AppService.ApplyUserSettings($scope.settings);
   };
-  $scope.homeView = 'MC';
 
 })
 

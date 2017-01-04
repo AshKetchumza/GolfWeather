@@ -14,7 +14,7 @@
         <div class="input-label">
           Temperature
         </div>
-        <select ng-model='units.temp'>
+        <select ng-model='settings.temp' ng-change="UserSettingsUpdate()">
           <option value='metric' >Metric</option>
           <option value='imperial' >Imperial</option>
         </select>
@@ -23,7 +23,7 @@
         <div class="input-label">
           Clock
         </div>
-        <select ng-model='units.clock'>
+        <select ng-model='settings.clock' ng-change="UserSettingsUpdate()">
           <option value='24'>24 Hour</option>
           <option value='12'>12 Hour</option>
         </select>
@@ -34,9 +34,12 @@
         Home View
       </div>
       <ion-list>
-        <ion-radio ng-model="homeView" ng-value="'MC'">My Courses</ion-radio>
-        <ion-radio ng-model="homeView" ng-value="'LVC'">Last Visited Course</ion-radio>
-        <ion-radio ng-model="homeView" ng-value="'FC'">Favourite Course</ion-radio>
+        <ion-radio ng-repeat="item in homeViewOptions"
+                   ng-value="item.value"
+                   ng-model="settings.homeView"
+                   ng-change="UserSettingsUpdate()">
+          {{item.text}}
+        </ion-radio>
       </ion-list>
       <button class="button button-block button-energized">Customize Alerts</button>
       <button class="button button-block button-outline button-positive">Help</button>
