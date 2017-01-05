@@ -518,6 +518,10 @@ angular.module('starter.controllers', [])
   //controll map overlays for the radar page
 })
 
+.controller('SearchController', function($scope) {
+  //control search
+})
+
 .controller('PrizeDrawController', function($scope) {
   $scope.draw = {
     title: 'Enter and Win!',

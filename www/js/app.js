@@ -221,9 +221,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         controller: 'PrizeDrawController'
       }
     }
+  })
+  
+  .state('app.search-courses', {
+    url: '/search-courses',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/search-courses.html',
+        controller: 'SearchController'
+      }
+    }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/my-courses');
+  $urlRouterProvider.otherwise('/app/search-courses');
 })
 
 .service('AppService', function() {
