@@ -231,7 +231,27 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         controller: 'SearchController'
       }
     }
-  });
+  })
+  
+  .state('app.course-directory', {
+     url: '/course-directory',
+     views : {
+       'menuContent' : {
+        templateUrl: 'templates/course-directory.html',
+        controller: 'SearchController'
+      }
+    }
+  })
+
+  .state('app.courses-nearby', {
+    url: '/courses-nearby',
+    views : {
+      'menuContent' : {
+        templateUrl: 'templates/nearby.html',
+        controller: 'SearchController'
+      }
+    }
+ });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/search-courses');
 })

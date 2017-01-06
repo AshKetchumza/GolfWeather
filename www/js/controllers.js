@@ -520,6 +520,18 @@ angular.module('starter.controllers', [])
 
 .controller('SearchController', function($scope) {
   //control search
+  $scope.continents = [
+     {name:'Africa', id:'AF'},
+     {name:'Asia', id:'AS'},
+     {name:'Europe', id:'EU'},
+     {name:'North America', id:'NA'},
+     {name:'Oceania', id:'OC'},
+     {name:'South America', id:'SA'}
+   ];
+  
+  $scope.SearchByCountryAndKeyword = function() {
+    //
+  };
 })
 
 .controller('PrizeDrawController', function($scope) {
