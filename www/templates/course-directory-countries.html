@@ -1,0 +1,13 @@
+<ion-view title="Course Directory">
+  <ion-content>
+  <!-- Search Selections -->
+  <!-- Search Inputs -->
+    <div class="list">
+      <h3>{{continent.name}}</h3>
+      <!-- show the different countries -->
+      <li class="item item-icon-right" ng-repeat="country in continentCountries" ui-sref="app.search-country-regions({countryID: country.id})">
+        {{country.name}}
+      </li>
+    </div>
+  </ion-content>
+</ion-view>
