@@ -232,6 +232,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
       }
     }
   })
+
+   .state('app.search-results', {
+     url: '/search-results/:countryID/:keyword',
+     views : {
+       'menuContent' : {
+         templateUrl: 'templates/search-results.html',
+         controller: 'SearchController'
+       }
+     }
+    })
   
   .state('app.course-directory', {
      url: '/course-directory',
@@ -297,7 +307,188 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
             latitude: 0,
             longitude: 0
           }
-        }
+        },
+        continents: [
+          {name:'Africa', id:'AF'},
+          {name:'Asia', id:'AS'},
+          {name:'Europe', id:'EU'},
+          {name:'North America', id:'NA'},
+          {name:'Oceania', id:'OC'},
+          {name:'South America', id:'SA'}
+        ],
+        countries: [
+          {id:'AL', name:'Albania'},
+          {id:'DZ', name:'Algeria'},
+          {id:'AD', name:'Andorra'},
+          {id:'AO', name:'Angola'},
+          {id:'AI', name:'Anguilla'},
+          {id:'AG', name:'Antigua and Barbuda'},
+          {id:'AR', name:'Argentina'},
+          {id:'AW', name:'Aruba'},
+          {id:'AU', name:'Australia'},
+          {id:'AT', name:'Austria'},
+          {id:'BS', name:'Bahamas'},
+          {id:'BH', name:'Bahrain'},
+          {id:'BD', name:'Bangladesh'},
+          {id:'BB', name:'Barbados'},
+          {id:'BE', name:'Belgium'},
+          {id:'BZ', name:'Belize'},
+          {id:'BJ', name:'Benin'},
+          {id:'BM', name:'Bermuda'},
+          {id:'BT', name:'Bhutan'},
+          {id:'BO', name:'Bolivia'},
+          {id:'BW', name:'Botswana'},
+          {id:'BR', name:'Brazil'},
+          {id:'BN', name:'Brunei'},
+          {id:'BG', name:'Bulgaria'},
+          {id:'BF', name:'Burkina Faso'},
+          {id:'BI', name:'Burundi'},
+          {id:'KH', name:'Cambodia'},
+          {id:'CM', name:'Cameroon'},
+          {id:'CA', name:'Canada'},
+          {id:'CV', name:'Cape Verde'},
+          {id:'KY', name:'Cayman Islands'},
+          {id:'CF', name:'Central African Republic'},
+          {id:'TD', name:'Chad'},
+          {id:'CL', name:'Chile'},
+          {id:'CN', name:'China'},
+          {id:'CO', name:'Colombia'},
+          {id:'CK', name:'Cook Islands'},
+          {id:'CR', name:'Costa Rica'},
+          {id:'HR', name:'Croatia'},
+          {id:'CU', name:'Cuba'},
+          {id:'CW', name:'Curacao'},
+          {id:'CY', name:'Cyprus'},
+          {id:'CZ', name:'Czech Republic'},
+          {id:'CD', name:'Democratic Republic of the Congo'},
+          {id:'DK', name:'Denmark'},
+          {id:'DJ', name:'Djibouti'},
+          {id:'DO', name:'Dominican Republic'},
+          {id:'EC', name:'Ecuador'},
+          {id:'EG', name:'Egypt'},
+          {id:'SV', name:'El Salvador'},
+          {id:'GQ', name:'Equatorial Guinea'},
+          {id:'EE', name:'Estonia'},
+          {id:'ET', name:'Ethiopia'},
+          {id:'FJ', name:'Fiji'},
+          {id:'FI', name:'Finland'},
+          {id:'FR', name:'France'},
+          {id:'GF', name:'French Guiana'},
+          {id:'PF', name:'French Polynesia'},
+          {id:'GA', name:'Gabon'},
+          {id:'GM', name:'Gambia'},
+          {id:'DE', name:'Germany'},
+          {id:'GH', name:'Ghana'},
+          {id:'GR', name:'Greece'},
+          {id:'GD', name:'Grenada'},
+          {id:'GP', name:'Guadeloupe'},
+          {id:'GU', name:'Guam'},
+          {id:'GT', name:'Guatemala'},
+          {id:'GY', name:'Guyana'},
+          {id:'HN', name:'Honduras'},
+          {id:'HK', name:'Hong Kong'},
+          {id:'HU', name:'Hungary'},
+          {id:'IS', name:'Iceland'},
+          {id:'IN', name:'India'},
+          {id:'ID', name:'Indonesia'},
+          {id:'IE', name:'Ireland'},
+          {id:'IL', name:'Israel'},
+          {id:'IT', name:'Italy'},
+          {id:'CI', name:'Ivory Coast'},
+          {id:'JM', name:'Jamaica'},
+          {id:'JP', name:'Japan'},
+          {id:'JO', name:'Jordan'},
+          {id:'KZ', name:'Kazakhstan'},
+          {id:'KE', name:'Kenya'},
+          {id:'KW', name:'Kuwait'},
+          {id:'LA', name:'Laos'},
+          {id:'LV', name:'Latvia'},
+          {id:'LB', name:'Lebanon'},
+          {id:'LT', name:'Lithuania'},
+          {id:'LU', name:'Luxembourg'},
+          {id:'MO', name:'Macao'},
+          {id:'MG', name:'Madagascar'},
+          {id:'MW', name:'Malawi'},
+          {id:'MY', name:'Malaysia'},
+          {id:'MT', name:'Malta'},
+          {id:'MH', name:'Marshall Islands'},
+          {id:'MQ', name:'Martinique'},
+          {id:'MU', name:'Mauritius'},
+          {id:'MX', name:'Mexico'},
+          {id:'MA', name:'Morocco'},
+          {id:'MZ', name:'Mozambique'},
+          {id:'MM', name:'Myanmar'},
+          {id:'NA', name:'Namibia'},
+          {id:'NP', name:'Nepal'},
+          {id:'NL', name:'Netherlands'},
+          {id:'AN', name:'Netherlands Antilles'},
+          {id:'NC', name:'New Caledonia'},
+          {id:'NZ', name:'New Zealand'},
+          {id:'NI', name:'Nicaragua'},
+          {id:'NG', name:'Nigeria'},
+          {id:'MP', name:'Northern Mariana Islands'},
+          {id:'NO', name:'Norway'},
+          {id:'OM', name:'Oman'},
+          {id:'PK', name:'Pakistan'},
+          {id:'PA', name:'Panama'},
+          {id:'PG', name:'Papua New Guinea'},
+          {id:'PY', name:'Paraguay'},
+          {id:'PE', name:'Peru'},
+          {id:'PH', name:'Philippines'},
+          {id:'PL', name:'Poland'},
+          {id:'PT', name:'Portugal'},
+          {id:'PR', name:'Puerto Rico'},
+          {id:'QA', name:'Qatar'},
+          {id:'CG', name:'Republic of the Congo'},
+          {id:'RE', name:'Reunion'},
+          {id:'RO', name:'Romania'},
+          {id:'RU', name:'Russia'},
+          {id:'RW', name:'Rwanda'},
+          {id:'KN', name:'Saint Kitts and Nevis'},
+          {id:'LC', name:'Saint Lucia'},
+          {id:'VC', name:'Saint Vincent and the Grenadines'},
+          {id:'WS', name:'Samoa'},
+          {id:'SA', name:'Saudi Arabia'},
+          {id:'SN', name:'Senegal'},
+          {id:'RS', name:'Serbia'},
+          {id:'CS', name:'Serbia and Montenegro'},
+          {id:'SC', name:'Seychelles'},
+          {id:'SL', name:'Sierra Leone'},
+          {id:'SG', name:'Singapore'},
+          {id:'SK', name:'Slovakia'},
+          {id:'SI', name:'Slovenia'},
+          {id:'SB', name:'Solomon Islands'},
+          {id:'ZA', name:'South Africa'},
+          {id:'KR', name:'South Korea'},
+          {id:'ES', name:'Spain'},
+          {id:'LK', name:'Sri Lanka'},
+          {id:'SD', name:'Sudan'},
+          {id:'SR', name:'Suriname'},
+          {id:'SZ', name:'Swaziland'},
+          {id:'SE', name:'Sweden'},
+          {id:'CH', name:'Switzerland'},
+          {id:'TW', name:'Taiwan'},
+          {id:'TZ', name:'Tanzania'},
+          {id:'TH', name:'Thailand'},
+          {id:'TG', name:'Togo'},
+          {id:'TT', name:'Trinidad and Tobago'},
+          {id:'TN', name:'Tunisia'},
+          {id:'TR', name:'Turkey'},
+          {id:'TC', name:'Turks and Caicos Islands'},
+          {id:'VI', name:'U.S. Virgin Islands'},
+          {id:'UG', name:'Uganda'},
+          {id:'UA', name:'Ukraine'},
+          {id:'AE', name:'United Arab Emirates'},
+          {id:'GB', name:'United Kingdom'},
+          {id:'US', name:'United States'},
+          {id:'UY', name:'Uruguay'},
+          {id:'UZ', name:'Uzbekistan'},
+          {id:'VU', name:'Vanuatu'},
+          {id:'VE', name:'Venezuela'},
+          {id:'VN', name:'Vietnam'},
+          {id:'ZM', name:'Zambia'},
+          {id:'ZW', name:'Zimbabwe'}
+        ]
     };
     service.ApplyViewCourse = function(data){
     service.viewCourse = data;
@@ -310,6 +501,31 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
           this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewCourse")));
         }
       };
+
+    service.Search = function(countryID, keyword) {
+      var deferred = $q.defer();
+	    var promise = deferred.promise;
+      $http({
+        url: AppService.GetUrl('search/country/{id}/keywords/{keywords}', {id: countryID, keywords: keyword}),
+        method: "GET"
+      }).success(function (data, status, headers, config) {
+        console.log('Search->success: ', data);
+        deferred.resolve(data);
+      }).error(function (data, status, headers, config) {
+        console.log('Search->error: ', data);
+        deferred.reject(data);
+      });
+
+      promise.success = function (fn) {
+        promise.then(fn);
+        return promise;
+      }
+      promise.error = function (fn) {
+        promise.then(null, fn);
+        return promise;
+      }
+      return promise;
+    }
 
     service.Nearby = function() {
       var deferred = $q.defer();
