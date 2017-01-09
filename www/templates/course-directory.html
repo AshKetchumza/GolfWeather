@@ -10,6 +10,9 @@
   <!-- Search Inputs -->
     <div class="list">
       <!-- show the different countries -->
+      <li class="item item-icon-right" ng-repeat="cont in continents" ui-sref="app.search-continent-regions({continentID: cont.id})">
+        {{cont.name}}
+      </li>
     </div>
   </ion-content>
 </ion-view>
