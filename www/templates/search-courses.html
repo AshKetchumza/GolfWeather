@@ -1,26 +1,32 @@
 <ion-view view-title="Search Courses">
   <ion-content>
   <!-- Search Selections -->
-  <br />
+    <br />
     <div class="button-bar">
       <a class="button button-calm">Search</a>
       <a class="button" ui-sref="app.course-directory">Directory</a>
       <a class="button" ui-sref="app.courses-nearby">Near Me</a>
     </div><br />
   <!-- Search Inputs -->
-    <div class="list">
-      <label class="item item-input item-stacked-label">
-        <span class="input-label">Country</span>
-        <input type="text" placeholder="South Africa">
-      </label>
-      <label class="item item-input item-stacked-label">
-        <span class="input-label">Course</span>
-        <input type="text" placeholder="Course Name">
-      </label>
-    </div>
-  <!-- Submit button -->
-    <button class="button button-block button-positive">
-        Go
-    </button>
+    <form>
+      <div class="list">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Country</span>
+          <select ng-model="search.country">
+            <option ng-repeat="country in countries" value="{{country.id}}">
+              {{country.name}}
+            </option>
+          </select>
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Course</span>
+          <input type="text" placeholder="Course Name" ng-model="search.keyword">
+        </label>
+      <!-- Submit button -->
+        <button class="button button-block button-positive" ui-sref="app.search-results({countryID: search.country, keyword: search.keyword})">
+            Search
+        </button>
+      </div>
+    </form>
   </ion-content>
 </ion-view>
