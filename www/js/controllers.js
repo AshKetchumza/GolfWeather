@@ -518,20 +518,18 @@ angular.module('starter.controllers', [])
   //controll map overlays for the radar page
 })
 
-.controller('SearchController', function($scope) {
-  //control search
-  $scope.continents = [
-     {name:'Africa', id:'AF'},
-     {name:'Asia', id:'AS'},
-     {name:'Europe', id:'EU'},
-     {name:'North America', id:'NA'},
-     {name:'Oceania', id:'OC'},
-     {name:'South America', id:'SA'}
-   ];
-  
-  $scope.SearchByCountryAndKeyword = function() {
-    //
-  };
+.controller('SearchController', function($scope, $stateParams, CourseService) {
+   //control search
+   $scope.search = { country: '', keyword: ''};
+   $scope.countries = CourseService.countries;
+   $scope.searchResults = [];
+
+   if ($stateParams) {
+     CourseService.Search($stateParams.countryID, $stateParams.keyword).success(function(data) {
+       $scope.searchResults = data;
+       console.log(data);
+     })
+   }
 })
 
 .controller('PrizeDrawController', function($scope) {
