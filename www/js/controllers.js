@@ -527,12 +527,13 @@ angular.module('starter.controllers', [])
    $scope.continentCountries = [];
 
    console.log($stateParams);
+   console.log($state.current);
    if ($stateParams) {
-     if ($state.current.name === 'app.search-result') {
+     if ($state.current.name === 'app.search-results') {
        CourseService.Search($stateParams.countryID, $stateParams.keyword).success(function(data) {
          $scope.searchResults = data;
          console.log(data);
-       })
+       });
      }
      else if ($state.current.name === 'app.search-continent-regions') {
        console.log($stateParams.continentID);
