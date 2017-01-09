@@ -1,0 +1,9 @@
+  <ion-view title="Search Results">
+  	<ion-content>
+      <div class="list">
+        <li class="item item-icon-right" ng-repeat="course in searchResults" ng-click="selectCourse(myCourse, $index)">
+          {{course.name}} <i class="icon ion-cloud"> {{course.temp}}</i>
+        </li>
+      </div>
+    </ion-content>
+  </ion-view>
