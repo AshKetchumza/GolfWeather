@@ -222,7 +222,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
       }
     }
   })
-  
+
   .state('app.search-courses', {
     url: '/search-courses',
     views : {
@@ -231,7 +231,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         controller: 'SearchController'
       }
     }
-  })
+   })
 
    .state('app.search-results', {
      url: '/search-results/:countryID/:keyword',
@@ -242,8 +242,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
        }
      }
     })
-  
-  .state('app.course-directory', {
+
+   .state('app.course-directory', {
      url: '/course-directory',
      views : {
        'menuContent' : {
@@ -253,6 +253,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
     }
   })
 
+ .state('app.search-continent-regions', {
+   url: '/search-continent-regions/:continentID',
+   views : {
+     'menuContent' : {
+        templateUrl: 'templates/course-directory-countries.html',
+        controller: 'SearchController'
+      }
+    }
+  })
+
+ // .state('app.search-country-regions', {
+ //   url: '/search-country-regions/:id',
+ //   views : {
+ //     'menuContent' : {
+ //        templateUrl: 'templates/course-directory-regions.html',
+ //        controller: 'SearchController'
+ //      }
+ //    }
+ //  })
+
   .state('app.courses-nearby', {
     url: '/courses-nearby',
     views : {
@@ -261,7 +281,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         controller: 'SearchController'
       }
     }
- });
+ })
+ ;
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/search-courses');
 })
@@ -317,177 +338,230 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
           {name:'South America', id:'SA'}
         ],
         countries: [
-          {id:'AL', name:'Albania'},
-          {id:'DZ', name:'Algeria'},
-          {id:'AD', name:'Andorra'},
-          {id:'AO', name:'Angola'},
-          {id:'AI', name:'Anguilla'},
-          {id:'AG', name:'Antigua and Barbuda'},
-          {id:'AR', name:'Argentina'},
-          {id:'AW', name:'Aruba'},
-          {id:'AU', name:'Australia'},
-          {id:'AT', name:'Austria'},
-          {id:'BS', name:'Bahamas'},
-          {id:'BH', name:'Bahrain'},
-          {id:'BD', name:'Bangladesh'},
-          {id:'BB', name:'Barbados'},
-          {id:'BE', name:'Belgium'},
-          {id:'BZ', name:'Belize'},
-          {id:'BJ', name:'Benin'},
-          {id:'BM', name:'Bermuda'},
-          {id:'BT', name:'Bhutan'},
-          {id:'BO', name:'Bolivia'},
-          {id:'BW', name:'Botswana'},
-          {id:'BR', name:'Brazil'},
-          {id:'BN', name:'Brunei'},
-          {id:'BG', name:'Bulgaria'},
-          {id:'BF', name:'Burkina Faso'},
-          {id:'BI', name:'Burundi'},
-          {id:'KH', name:'Cambodia'},
-          {id:'CM', name:'Cameroon'},
-          {id:'CA', name:'Canada'},
-          {id:'CV', name:'Cape Verde'},
-          {id:'KY', name:'Cayman Islands'},
-          {id:'CF', name:'Central African Republic'},
-          {id:'TD', name:'Chad'},
-          {id:'CL', name:'Chile'},
-          {id:'CN', name:'China'},
-          {id:'CO', name:'Colombia'},
-          {id:'CK', name:'Cook Islands'},
-          {id:'CR', name:'Costa Rica'},
-          {id:'HR', name:'Croatia'},
-          {id:'CU', name:'Cuba'},
-          {id:'CW', name:'Curacao'},
-          {id:'CY', name:'Cyprus'},
-          {id:'CZ', name:'Czech Republic'},
-          {id:'CD', name:'Democratic Republic of the Congo'},
-          {id:'DK', name:'Denmark'},
-          {id:'DJ', name:'Djibouti'},
-          {id:'DO', name:'Dominican Republic'},
-          {id:'EC', name:'Ecuador'},
-          {id:'EG', name:'Egypt'},
-          {id:'SV', name:'El Salvador'},
-          {id:'GQ', name:'Equatorial Guinea'},
-          {id:'EE', name:'Estonia'},
-          {id:'ET', name:'Ethiopia'},
-          {id:'FJ', name:'Fiji'},
-          {id:'FI', name:'Finland'},
-          {id:'FR', name:'France'},
-          {id:'GF', name:'French Guiana'},
-          {id:'PF', name:'French Polynesia'},
-          {id:'GA', name:'Gabon'},
-          {id:'GM', name:'Gambia'},
-          {id:'DE', name:'Germany'},
-          {id:'GH', name:'Ghana'},
-          {id:'GR', name:'Greece'},
-          {id:'GD', name:'Grenada'},
-          {id:'GP', name:'Guadeloupe'},
-          {id:'GU', name:'Guam'},
-          {id:'GT', name:'Guatemala'},
-          {id:'GY', name:'Guyana'},
-          {id:'HN', name:'Honduras'},
-          {id:'HK', name:'Hong Kong'},
-          {id:'HU', name:'Hungary'},
-          {id:'IS', name:'Iceland'},
-          {id:'IN', name:'India'},
-          {id:'ID', name:'Indonesia'},
-          {id:'IE', name:'Ireland'},
-          {id:'IL', name:'Israel'},
-          {id:'IT', name:'Italy'},
-          {id:'CI', name:'Ivory Coast'},
-          {id:'JM', name:'Jamaica'},
-          {id:'JP', name:'Japan'},
-          {id:'JO', name:'Jordan'},
-          {id:'KZ', name:'Kazakhstan'},
-          {id:'KE', name:'Kenya'},
-          {id:'KW', name:'Kuwait'},
-          {id:'LA', name:'Laos'},
-          {id:'LV', name:'Latvia'},
-          {id:'LB', name:'Lebanon'},
-          {id:'LT', name:'Lithuania'},
-          {id:'LU', name:'Luxembourg'},
-          {id:'MO', name:'Macao'},
-          {id:'MG', name:'Madagascar'},
-          {id:'MW', name:'Malawi'},
-          {id:'MY', name:'Malaysia'},
-          {id:'MT', name:'Malta'},
-          {id:'MH', name:'Marshall Islands'},
-          {id:'MQ', name:'Martinique'},
-          {id:'MU', name:'Mauritius'},
-          {id:'MX', name:'Mexico'},
-          {id:'MA', name:'Morocco'},
-          {id:'MZ', name:'Mozambique'},
-          {id:'MM', name:'Myanmar'},
-          {id:'NA', name:'Namibia'},
-          {id:'NP', name:'Nepal'},
-          {id:'NL', name:'Netherlands'},
-          {id:'AN', name:'Netherlands Antilles'},
-          {id:'NC', name:'New Caledonia'},
-          {id:'NZ', name:'New Zealand'},
-          {id:'NI', name:'Nicaragua'},
-          {id:'NG', name:'Nigeria'},
-          {id:'MP', name:'Northern Mariana Islands'},
-          {id:'NO', name:'Norway'},
-          {id:'OM', name:'Oman'},
-          {id:'PK', name:'Pakistan'},
-          {id:'PA', name:'Panama'},
-          {id:'PG', name:'Papua New Guinea'},
-          {id:'PY', name:'Paraguay'},
-          {id:'PE', name:'Peru'},
-          {id:'PH', name:'Philippines'},
-          {id:'PL', name:'Poland'},
-          {id:'PT', name:'Portugal'},
-          {id:'PR', name:'Puerto Rico'},
-          {id:'QA', name:'Qatar'},
-          {id:'CG', name:'Republic of the Congo'},
-          {id:'RE', name:'Reunion'},
-          {id:'RO', name:'Romania'},
-          {id:'RU', name:'Russia'},
-          {id:'RW', name:'Rwanda'},
-          {id:'KN', name:'Saint Kitts and Nevis'},
-          {id:'LC', name:'Saint Lucia'},
-          {id:'VC', name:'Saint Vincent and the Grenadines'},
-          {id:'WS', name:'Samoa'},
-          {id:'SA', name:'Saudi Arabia'},
-          {id:'SN', name:'Senegal'},
-          {id:'RS', name:'Serbia'},
-          {id:'CS', name:'Serbia and Montenegro'},
-          {id:'SC', name:'Seychelles'},
-          {id:'SL', name:'Sierra Leone'},
-          {id:'SG', name:'Singapore'},
-          {id:'SK', name:'Slovakia'},
-          {id:'SI', name:'Slovenia'},
-          {id:'SB', name:'Solomon Islands'},
-          {id:'ZA', name:'South Africa'},
-          {id:'KR', name:'South Korea'},
-          {id:'ES', name:'Spain'},
-          {id:'LK', name:'Sri Lanka'},
-          {id:'SD', name:'Sudan'},
-          {id:'SR', name:'Suriname'},
-          {id:'SZ', name:'Swaziland'},
-          {id:'SE', name:'Sweden'},
-          {id:'CH', name:'Switzerland'},
-          {id:'TW', name:'Taiwan'},
-          {id:'TZ', name:'Tanzania'},
-          {id:'TH', name:'Thailand'},
-          {id:'TG', name:'Togo'},
-          {id:'TT', name:'Trinidad and Tobago'},
-          {id:'TN', name:'Tunisia'},
-          {id:'TR', name:'Turkey'},
-          {id:'TC', name:'Turks and Caicos Islands'},
-          {id:'VI', name:'U.S. Virgin Islands'},
-          {id:'UG', name:'Uganda'},
-          {id:'UA', name:'Ukraine'},
-          {id:'AE', name:'United Arab Emirates'},
-          {id:'GB', name:'United Kingdom'},
-          {id:'US', name:'United States'},
-          {id:'UY', name:'Uruguay'},
-          {id:'UZ', name:'Uzbekistan'},
-          {id:'VU', name:'Vanuatu'},
-          {id:'VE', name:'Venezuela'},
-          {id:'VN', name:'Vietnam'},
-          {id:'ZM', name:'Zambia'},
-          {id:'ZW', name:'Zimbabwe'}
+        	{ id: "AO",name: "Angola",continent: "AF" },
+        	{ id: "BF",name: "Burkina Faso",continent: "AF" },
+        	{ id: "BI",name: "Burundi",continent: "AF" },
+        	{ id: "BJ",name: "Benin",continent: "AF" },
+        	{ id: "BW",name: "Botswana",continent: "AF" },
+        	{ id: "CD",name: "Democratic Republic of the Congo",continent: "AF" },
+        	{ id: "CF",name: "Central African Republic",continent: "AF" },
+        	{ id: "CG",name: "Republic of the Congo",continent: "AF" },
+        	{ id: "CI",name: "Ivory Coast",continent: "AF" },
+        	{ id: "CM",name: "Cameroon",continent: "AF" },
+        	{ id: "CV",name: "Cape Verde",continent: "AF" },
+        	{ id: "DJ",name: "Djibouti",continent: "AF" },
+        	{ id: "DZ",name: "Algeria",continent: "AF" },
+        	{ id: "EG",name: "Egypt",continent: "AF" },
+        	{ id: "EH",name: "Western Sahara",continent: "AF" },
+        	{ id: "ER",name: "Eritrea",continent: "AF" },
+        	{ id: "ET",name: "Ethiopia",continent: "AF" },
+        	{ id: "GA",name: "Gabon",continent: "AF" },
+        	{ id: "GH",name: "Ghana",continent: "AF" },
+        	{ id: "GM",name: "Gambia",continent: "AF" },
+        	{ id: "GN",name: "Guinea",continent: "AF" },
+        	{ id: "GQ",name: "Equatorial Guinea",continent: "AF" },
+        	{ id: "GW",name: "Guinea-Bissau",continent: "AF" },
+        	{ id: "KE",name: "Kenya",continent: "AF" },
+        	{ id: "KM",name: "Comoros",continent: "AF" },
+        	{ id: "LR",name: "Liberia",continent: "AF" },
+        	{ id: "LS",name: "Lesotho",continent: "AF" },
+        	{ id: "MA",name: "Morocco",continent: "AF" },
+        	{ id: "MG",name: "Madagascar",continent: "AF" },
+        	{ id: "ML",name: "Mali",continent: "AF" },
+        	{ id: "MR",name: "Mauritania",continent: "AF" },
+        	{ id: "MU",name: "Mauritius",continent: "AF" },
+        	{ id: "MW",name: "Malawi",continent: "AF" },
+        	{ id: "MZ",name: "Mozambique",continent: "AF" },
+        	{ id: "NA",name: "Namibia",continent: "AF" },
+        	{ id: "NE",name: "Niger",continent: "AF" },
+        	{ id: "NG",name: "Nigeria",continent: "AF" },
+        	{ id: "RE",name: "Reunion",continent: "AF" },
+        	{ id: "RW",name: "Rwanda",continent: "AF" },
+        	{ id: "SC",name: "Seychelles",continent: "AF" },
+        	{ id: "SD",name: "Sudan",continent: "AF" },
+        	{ id: "SH",name: "Saint Helena",continent: "AF" },
+        	{ id: "SL",name: "Sierra Leone",continent: "AF" },
+        	{ id: "SN",name: "Senegal",continent: "AF" },
+        	{ id: "ST",name: "Sao Tome and Principe",continent: "AF" },
+        	{ id: "SZ",name: "Swaziland",continent: "AF" },
+        	{ id: "TD",name: "Chad",continent: "AF" },
+        	{ id: "TG",name: "Togo",continent: "AF" },
+        	{ id: "TN",name: "Tunisia",continent: "AF" },
+        	{ id: "TZ",name: "Tanzania",continent: "AF" },
+        	{ id: "UG",name: "Uganda",continent: "AF" },
+        	{ id: "YT",name: "Mayotte",continent: "AF" },
+        	{ id: "ZA",name: "South Africa",continent: "AF" },
+        	{ id: "ZM",name: "Zambia",continent: "AF" },
+        	{ id: "ZW",name: "Zimbabwe",continent: "AF" },
+        	{ id: "AQ",name: "Antarctica",continent: "AN" },
+        	{ id: "BV",name: "Bouvet Island",continent: "AN" },
+        	{ id: "GS",name: "South Georgia and the South Sandwich Islands",continent: "AN" },
+        	{ id: "HM",name: "Heard Island and McDonald Islands",continent: "AN" },
+        	{ id: "TF",name: "French Southern Territories",continent: "AN" },
+        	{ id: "AE",name: "United Arab Emirates",continent: "AS" },
+        	{ id: "AF",name: "Afghanistan",continent: "AS" },
+        	{ id: "AM",name: "Armenia",continent: "AS" },
+        	{ id: "AZ",name: "Azerbaijan",continent: "AS" },
+        	{ id: "BD",name: "Bangladesh",continent: "AS" },
+        	{ id: "BH",name: "Bahrain",continent: "AS" },
+        	{ id: "BN",name: "Brunei",continent: "AS" },
+        	{ id: "BT",name: "Bhutan",continent: "AS" },
+        	{ id: "CN",name: "China",continent: "AS" },
+        	{ id: "CX",name: "Christmas Island",continent: "AS" },
+        	{ id: "GE",name: "Georgia",continent: "AS" },
+        	{ id: "HK",name: "Hong Kong",continent: "AS" },
+        	{ id: "ID",name: "Indonesia",continent: "AS" },
+        	{ id: "IL",name: "Israel",continent: "AS" },
+        	{ id: "IN",name: "India",continent: "AS" },
+        	{ id: "IQ",name: "Iraq",continent: "AS" },
+        	{ id: "JO",name: "Jordan",continent: "AS" },
+        	{ id: "JP",name: "Japan",continent: "AS" },
+        	{ id: "KG",name: "Kyrgyzstan",continent: "AS" },
+        	{ id: "KH",name: "Cambodia",continent: "AS" },
+        	{ id: "KR",name: "South Korea",continent: "AS" },
+        	{ id: "KW",name: "Kuwait",continent: "AS" },
+        	{ id: "KZ",name: "Kazakhstan",continent: "AS" },
+        	{ id: "LA",name: "Laos",continent: "AS" },
+        	{ id: "LB",name: "Lebanon",continent: "AS" },
+        	{ id: "LK",name: "Sri Lanka",continent: "AS" },
+        	{ id: "MM",name: "Myanmar",continent: "AS" },
+        	{ id: "MN",name: "Mongolia",continent: "AS" },
+        	{ id: "MO",name: "Macao",continent: "AS" },
+        	{ id: "MV",name: "Maldives",continent: "AS" },
+        	{ id: "MY",name: "Malaysia",continent: "AS" },
+        	{ id: "NP",name: "Nepal",continent: "AS" },
+        	{ id: "OM",name: "Oman",continent: "AS" },
+        	{ id: "PH",name: "Philippines",continent: "AS" },
+        	{ id: "PK",name: "Pakistan",continent: "AS" },
+        	{ id: "QA",name: "Qatar",continent: "AS" },
+        	{ id: "SA",name: "Saudi Arabia",continent: "AS" },
+        	{ id: "SG",name: "Singapore",continent: "AS" },
+        	{ id: "TH",name: "Thailand",continent: "AS" },
+        	{ id: "TM",name: "Turkmenistan",continent: "AS" },
+        	{ id: "TR",name: "Turkey",continent: "AS" },
+        	{ id: "TW",name: "Taiwan",continent: "AS" },
+        	{ id: "UZ",name: "Uzbekistan",continent: "AS" },
+        	{ id: "VN",name: "Vietnam",continent: "AS" },
+        	{ id: "YE",name: "Yemen",continent: "AS" },
+        	{ id: "AD",name: "Andorra",continent: "EU" },
+        	{ id: "AL",name: "Albania",continent: "EU" },
+        	{ id: "AT",name: "Austria",continent: "EU" },
+        	{ id: "BE",name: "Belgium",continent: "EU" },
+        	{ id: "BG",name: "Bulgaria",continent: "EU" },
+        	{ id: "BY",name: "Belarus",continent: "EU" },
+        	{ id: "CH",name: "Switzerland",continent: "EU" },
+        	{ id: "CS",name: "Serbia and Montenegro",continent: "EU" },
+        	{ id: "CY",name: "Cyprus",continent: "EU" },
+        	{ id: "CZ",name: "Czech Republic",continent: "EU" },
+        	{ id: "DE",name: "Germany",continent: "EU" },
+        	{ id: "DK",name: "Denmark",continent: "EU" },
+        	{ id: "EE",name: "Estonia",continent: "EU" },
+        	{ id: "ES",name: "Spain",continent: "EU" },
+        	{ id: "FI",name: "Finland",continent: "EU" },
+        	{ id: "FO",name: "Faroe Islands",continent: "EU" },
+        	{ id: "FR",name: "France",continent: "EU" },
+        	{ id: "GB",name: "United Kingdom",continent: "EU" },
+        	{ id: "GI",name: "Gibraltar",continent: "EU" },
+        	{ id: "GR",name: "Greece",continent: "EU" },
+        	{ id: "HR",name: "Croatia",continent: "EU" },
+        	{ id: "HU",name: "Hungary",continent: "EU" },
+        	{ id: "IE",name: "Ireland",continent: "EU" },
+        	{ id: "IM",name: "Isle of Man",continent: "EU" },
+        	{ id: "IS",name: "Iceland",continent: "EU" },
+        	{ id: "IT",name: "Italy",continent: "EU" },
+        	{ id: "JE",name: "Jersey",continent: "EU" },
+        	{ id: "LI",name: "Liechtenstein",continent: "EU" },
+        	{ id: "LT",name: "Lithuania",continent: "EU" },
+        	{ id: "LU",name: "Luxembourg",continent: "EU" },
+        	{ id: "LV",name: "Latvia",continent: "EU" },
+        	{ id: "MC",name: "Monaco",continent: "EU" },
+        	{ id: "MD",name: "Moldova",continent: "EU" },
+        	{ id: "ME",name: "Montenegro",continent: "EU" },
+        	{ id: "MK",name: "Macedonia",continent: "EU" },
+        	{ id: "MT",name: "Malta",continent: "EU" },
+        	{ id: "NL",name: "Netherlands",continent: "EU" },
+        	{ id: "NO",name: "Norway",continent: "EU" },
+        	{ id: "PL",name: "Poland",continent: "EU" },
+        	{ id: "PT",name: "Portugal",continent: "EU" },
+        	{ id: "RO",name: "Romania",continent: "EU" },
+        	{ id: "RS",name: "Serbia",continent: "EU" },
+        	{ id: "RU",name: "Russia",continent: "EU" },
+        	{ id: "SE",name: "Sweden",continent: "EU" },
+        	{ id: "SI",name: "Slovenia",continent: "EU" },
+        	{ id: "SK",name: "Slovakia",continent: "EU" },
+        	{ id: "SM",name: "San Marino",continent: "EU" },
+        	{ id: "UA",name: "Ukraine",continent: "EU" },
+        	{ id: "AG",name: "Antigua and Barbuda",continent: "NA" },
+        	{ id: "AI",name: "Anguilla",continent: "NA" },
+        	{ id: "AN",name: "Netherlands Antilles",continent: "NA" },
+        	{ id: "AW",name: "Aruba",continent: "NA" },
+        	{ id: "BB",name: "Barbados",continent: "NA" },
+        	{ id: "BM",name: "Bermuda",continent: "NA" },
+        	{ id: "BS",name: "Bahamas",continent: "NA" },
+        	{ id: "BZ",name: "Belize",continent: "NA" },
+        	{ id: "CA",name: "Canada",continent: "NA" },
+        	{ id: "CR",name: "Costa Rica",continent: "NA" },
+        	{ id: "CU",name: "Cuba",continent: "NA" },
+        	{ id: "CW",name: "Curacao",continent: "NA" },
+        	{ id: "DO",name: "Dominican Republic",continent: "NA" },
+        	{ id: "GD",name: "Grenada",continent: "NA" },
+        	{ id: "GL",name: "Greenland",continent: "NA" },
+        	{ id: "GP",name: "Guadeloupe",continent: "NA" },
+        	{ id: "GT",name: "Guatemala",continent: "NA" },
+        	{ id: "HN",name: "Honduras",continent: "NA" },
+        	{ id: "HT",name: "Haiti",continent: "NA" },
+        	{ id: "JM",name: "Jamaica",continent: "NA" },
+        	{ id: "KN",name: "Saint Kitts and Nevis",continent: "NA" },
+        	{ id: "KY",name: "Cayman Islands",continent: "NA" },
+        	{ id: "LC",name: "Saint Lucia",continent: "NA" },
+        	{ id: "MQ",name: "Martinique",continent: "NA" },
+        	{ id: "MS",name: "Montserrat",continent: "NA" },
+        	{ id: "MX",name: "Mexico",continent: "NA" },
+        	{ id: "NI",name: "Nicaragua",continent: "NA" },
+        	{ id: "PA",name: "Panama",continent: "NA" },
+        	{ id: "PR",name: "Puerto Rico",continent: "NA" },
+        	{ id: "SV",name: "El Salvador",continent: "NA" },
+        	{ id: "TC",name: "Turks and Caicos Islands",continent: "NA" },
+        	{ id: "TT",name: "Trinidad and Tobago",continent: "NA" },
+        	{ id: "US",name: "United States",continent: "NA" },
+        	{ id: "VC",name: "Saint Vincent and the Grenadines",continent: "NA" },
+        	{ id: "VI",name: "U.S. Virgin Islands",continent: "NA" },
+        	{ id: "AS",name: "American Samoa",continent: "OC" },
+        	{ id: "AU",name: "Australia",continent: "OC" },
+        	{ id: "CK",name: "Cook Islands",continent: "OC" },
+        	{ id: "FJ",name: "Fiji",continent: "OC" },
+        	{ id: "GU",name: "Guam",continent: "OC" },
+        	{ id: "KI",name: "Kiribati",continent: "OC" },
+        	{ id: "MH",name: "Marshall Islands",continent: "OC" },
+        	{ id: "MP",name: "Northern Mariana Islands",continent: "OC" },
+        	{ id: "NC",name: "New Caledonia",continent: "OC" },
+        	{ id: "NF",name: "Norfolk Island",continent: "OC" },
+        	{ id: "NR",name: "Nauru",continent: "OC" },
+        	{ id: "NU",name: "Niue",continent: "OC" },
+        	{ id: "NZ",name: "New Zealand",continent: "OC" },
+        	{ id: "PF",name: "French Polynesia",continent: "OC" },
+        	{ id: "PG",name: "Papua New Guinea",continent: "OC" },
+        	{ id: "PW",name: "Palau",continent: "OC" },
+        	{ id: "SB",name: "Solomon Islands",continent: "OC" },
+        	{ id: "TL",name: "East Timor",continent: "OC" },
+        	{ id: "TO",name: "Tonga",continent: "OC" },
+        	{ id: "TV",name: "Tuvalu",continent: "OC" },
+        	{ id: "VU",name: "Vanuatu",continent: "OC" },
+        	{ id: "WF",name: "Wallis and Futuna",continent: "OC" },
+        	{ id: "WS",name: "Samoa",continent: "OC" },
+        	{ id: "AR",name: "Argentina",continent: "SA" },
+        	{ id: "BO",name: "Bolivia",continent: "SA" },
+        	{ id: "BR",name: "Brazil",continent: "SA" },
+        	{ id: "CL",name: "Chile",continent: "SA" },
+        	{ id: "CO",name: "Colombia",continent: "SA" },
+        	{ id: "EC",name: "Ecuador",continent: "SA" },
+        	{ id: "GF",name: "French Guiana",continent: "SA" },
+        	{ id: "GY",name: "Guyana",continent: "SA" },
+        	{ id: "PE",name: "Peru",continent: "SA" },
+        	{ id: "PY",name: "Paraguay",continent: "SA" },
+        	{ id: "SR",name: "Suriname",continent: "SA" },
+        	{ id: "UY",name: "Uruguay",continent: "SA" },
+        	{ id: "VE",name: "Venezuela",continent: "SA" }
         ]
     };
     service.ApplyViewCourse = function(data){
@@ -501,6 +575,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
           this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewCourse")));
         }
       };
+
+      service.CountriesForContinent = function(id) {
+          var result = [];
+          for (var i = 0; i < service.countries.length; i++) {
+            if (service.countries[i].continent === id) {
+              result.push(service.countries[i]);
+            }
+          }
+          return result;
+      }
 
     service.Search = function(countryID, keyword) {
       var deferred = $q.defer();
@@ -549,6 +633,31 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
           deferred.reject(data);
         });
       //});
+
+      promise.success = function (fn) {
+        promise.then(fn);
+        return promise;
+      }
+      promise.error = function (fn) {
+        promise.then(null, fn);
+        return promise;
+      }
+      return promise;
+    };
+
+    service.GetCurrentConditions = function(courseID) {
+      var deferred = $q.defer();
+	    var promise = deferred.promise;
+      $http({
+        url: AppService.GetUrl('/get-current-json/id/{id}', {id: courseID}),
+        method: "GET"
+      }).success(function (data, status, headers, config) {
+        console.log('GetCurrentConditions->success: ', data);
+        deferred.resolve(data);
+      }).error(function (data, status, headers, config) {
+        console.log('GetCurrentConditions->error: ', data);
+        deferred.reject(data);
+      });
 
       promise.success = function (fn) {
         promise.then(fn);
