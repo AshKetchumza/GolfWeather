@@ -10,7 +10,7 @@
   <!-- Search Inputs -->
     <div class="list">
       <!-- show the different countries -->
-      <li class="item item-icon-right" ng-repeat="cont in continents" ui-sref="app.search-continent-regions({continentID: cont.id})">
+      <li class="item item-icon-right" ng-repeat="cont in continents" ng-click="selectContinent(cont, $index)">
         {{cont.name}}
       </li>
     </div>

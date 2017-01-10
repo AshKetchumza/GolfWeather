@@ -254,7 +254,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
   })
 
  .state('app.search-continent-regions', {
-   url: '/search-continent-regions/:continentID',
+   url: '/search-continent-regions',
    views : {
      'menuContent' : {
         templateUrl: 'templates/course-directory-countries.html',
@@ -263,15 +263,35 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
     }
   })
 
- // .state('app.search-country-regions', {
- //   url: '/search-country-regions/:id',
- //   views : {
- //     'menuContent' : {
- //        templateUrl: 'templates/course-directory-regions.html',
- //        controller: 'SearchController'
- //      }
- //    }
- //  })
+ .state('app.search-country-regions', {
+   url: '/search-country-regions',
+   views : {
+     'menuContent' : {
+        templateUrl: 'templates/course-directory-regions.html',
+        controller: 'SearchController'
+      }
+    }
+  })
+
+ .state('app.search-region-subregions', {
+   url: '/search-region-subregions',
+   views : {
+     'menuContent' : {
+        templateUrl: 'templates/course-directory-subregions.html',
+        controller: 'SearchController'
+      }
+    }
+  })
+
+ .state('app.search-region-courses', {
+   url: '/search-region-courses',
+   views : {
+     'menuContent' : {
+        templateUrl: 'templates/course-directory-courses.html',
+        controller: 'SearchController'
+      }
+    }
+  })
 
   .state('app.courses-nearby', {
     url: '/courses-nearby',
@@ -295,6 +315,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
     for(var prop in params) {
       res = res.replace('{' + prop + '}', params[prop]);
     }
+    console.log('URL: ', res);
     return res;
   };
 
@@ -324,6 +345,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
 .service('CourseService', function($q, $http, AppService){
     var service = {
         viewCourse : {},
+        selectedContinent:{},
+        selectedCountry: {},
+        selectedRegion: {},
+        selectedSubregion: {},
         currentPosition : { coords : {
             latitude: 0,
             longitude: 0
@@ -574,17 +599,42 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
           //storage exists
           this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewCourse")));
         }
-      };
+    };
 
-      service.CountriesForContinent = function(id) {
-          var result = [];
-          for (var i = 0; i < service.countries.length; i++) {
-            if (service.countries[i].continent === id) {
-              result.push(service.countries[i]);
-            }
+    service.CountriesForContinent = function(id) {
+        var result = [];
+        for (var i = 0; i < service.countries.length; i++) {
+          if (service.countries[i].continent === id) {
+            result.push(service.countries[i]);
           }
-          return result;
+        }
+        return result;
+    };
+
+    service.RegionsForCountry = function(countryID) {
+      var deferred = $q.defer();
+	    var promise = deferred.promise;
+      $http({
+        url: AppService.GetUrl('get-regions/country_id/{id}', {id: countryID}),
+        method: "GET"
+      }).success(function (data, status, headers, config) {
+        console.log('RegionsForCountry->success: ', data);
+        deferred.resolve(data);
+      }).error(function (data, status, headers, config) {
+        console.log('RegionsForCountry->error: ', data);
+        deferred.reject(data);
+      });
+
+      promise.success = function (fn) {
+        promise.then(fn);
+        return promise;
       }
+      promise.error = function (fn) {
+        promise.then(null, fn);
+        return promise;
+      }
+      return promise;
+    };
 
     service.Search = function(countryID, keyword) {
       var deferred = $q.defer();
@@ -669,6 +719,57 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
       }
       return promise;
     };
+
+    service.SubRegionsForRegion = function(regionID) {
+      var deferred = $q.defer();
+	    var promise = deferred.promise;
+      $http({
+        url: AppService.GetUrl('get-sub-regions/region_id/{id}', {id: regionID}),
+        method: "GET"
+      }).success(function (data, status, headers, config) {
+        console.log('SubRegionsForRegion->success: ', data);
+        deferred.resolve(data);
+      }).error(function (data, status, headers, config) {
+        console.log('SubRegionsForRegion->error: ', data);
+        deferred.reject(data);
+      });
+
+      promise.success = function (fn) {
+        promise.then(fn);
+        return promise;
+      }
+      promise.error = function (fn) {
+        promise.then(null, fn);
+        return promise;
+      }
+      return promise;
+    }
+
+    service.CoursesForRegion = function(subregionID) {
+      var deferred = $q.defer();
+	    var promise = deferred.promise;
+      $http({
+        url: AppService.GetUrl('get-courses-for-regions/country_id/{countryID}/region_id/{id}}', {countryID: service.selectedCountry.id, id: subregionID}),
+        method: "GET"
+      }).success(function (data, status, headers, config) {
+        console.log('CoursesForRegion->success: ', data);
+        deferred.resolve(data);
+      }).error(function (data, status, headers, config) {
+        console.log('CoursesForRegion->error: ', data);
+        deferred.reject(data);
+      });
+
+      promise.success = function (fn) {
+        promise.then(fn);
+        return promise;
+      }
+      promise.error = function (fn) {
+        promise.then(null, fn);
+        return promise;
+      }
+      return promise;
+    }
+
 
   	service.LocalCheck();
 

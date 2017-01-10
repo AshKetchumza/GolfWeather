@@ -4,8 +4,8 @@
   <!-- Search Inputs -->
     <div class="list">
       <!-- show the different countries -->
-      <li class="item item-icon-right" ng-repeat="country in continentCountries" ng-click="selectCountry(country, $index)">
-        {{country.name}}
+      <li class="item item-icon-right" ng-repeat="region in regionSubregions" ng-click="selectSubregion(region, $index)">
+        {{region.name}}
       </li>
     </div>
   </ion-content>

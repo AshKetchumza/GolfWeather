@@ -524,10 +524,66 @@ angular.module('starter.controllers', [])
    $scope.countries = CourseService.countries;
    $scope.continents = CourseService.continents;
    $scope.searchResults = [];
-   $scope.continentCountries = [];
 
-   console.log($stateParams);
-   console.log($state.current);
+   $scope.continentCountries = [];
+   if (CourseService.selectContinent) {
+     $scope.continentCountries = CourseService.selectContinent.countries;
+   }
+   $scope.countryRegions = [];
+   if (CourseService.selectedCountry.hasOwnProperty('id')) {
+     $scope.countryRegions = CourseService.selectedCountry.regions;
+   }
+   $scope.regionSubregions = [];
+   if (CourseService.selectedRegion.hasOwnProperty('id')) {
+     $scope.regionSubregions = CourseService.selectedRegion.subregions;
+   }
+   $scope.regionCourses = [];
+   if (CourseService.selectedSubregion.hasOwnProperty('id')) {
+     $scope.regionCourses = CourseService.selectedSubregion.courses;
+   }
+   console.log('Courses: ', $scope.regionCourses);
+
+   $scope.selectContinent = function(continent, index) {
+     CourseService.selectContinent = continent;
+     console.log('Selected Continent: ', CourseService.selectContinent);
+     CourseService.selectContinent.countries = CourseService.CountriesForContinent(continent.id);
+     $state.go('app.search-continent-regions');
+   }
+
+   $scope.selectCountry = function(country, index) {
+     CourseService.selectedCountry = country;
+     console.log('Selected Country: ', CourseService.selectedCountry);
+     CourseService.RegionsForCountry(country.id).success(function(data) {
+       CourseService.selectedCountry.regions = data;
+       console.log('Regions: ', data)
+       $state.go('app.search-country-regions');
+     });
+   }
+
+   $scope.selectRegion = function(region, index) {
+     CourseService.selectedRegion = region;
+     console.log('Selected Region: ', region);
+     CourseService.SubRegionsForRegion(region.id).success(function(data) {
+       console.log('Subregions: ', data)
+       if (data.length == 0) {
+         $scope.selectSubregion(region, -1);
+       }else {
+         CourseService.selectedRegion.subregions = data;
+         $state.go('app.search-region-subregions');
+       }
+     });
+   }
+
+   $scope.selectSubregion = function(subregion, index) {
+     CourseService.selectedSubregion = subregion;
+     console.log('Selected SubRegion: ', CourseService.selectedSubregion);
+     CourseService.CoursesForRegion(subregion.id).success(function(data) {
+       CourseService.selectedSubregion.courses = data;
+       $state.go('app.search-region-courses');
+     });
+   }
+  //  console.log($stateParams);
+  //  console.log($state.current);
    if ($stateParams) {
      if ($state.current.name === 'app.search-results') {
        CourseService.Search($stateParams.countryID, $stateParams.keyword).success(function(data) {
@@ -535,14 +591,37 @@ angular.module('starter.controllers', [])
          console.log(data);
        });
      }
-     else if ($state.current.name === 'app.search-continent-regions') {
-       console.log($stateParams.continentID);
-       $scope.continentCountries = CourseService.CountriesForContinent($stateParams.continentID);
-     }
-     else if ($state.current.name === 'app.search-country-regions') {
-       //
-     }
    }
+  //    else if ($state.current.name === 'app.search-continent-regions') {
+  //      console.log($stateParams.continentID);
+  //      $scope.continentCountries = CourseService.CountriesForContinent($stateParams.continentID);
+  //    }
+  //    else if ($state.current.name === 'app.search-country-regions') {
+  //      console.log($stateParams.countryID);
+  //      $scope.countryName = $stateParams.countryName;
+  //      $scope.countryID = $stateParams.countryID
+  //      CourseService.RegionsForCountry($stateParams.countryID).success(function(data) {
+  //        $scope.countryRegions = data;
+  //      })
+  //    }
+  //    else if ($state.current.name === 'app.search-region-subregions') {
+  //      console.log($stateParams.regionID);
+  //      $scope.regionID = $stateParams.regionID;
+  //      CourseService.SubRegionsForRegion($stateParams.regionID).success(function(data) {
+  //        $scope.regionSubregions = data;
+  //        if (data.length == 0) {
+  //          $state.go('app.search-region-courses',{countryID: $scope.countryID, subregionID: $scope.regionID});
+  //        }
+  //      })
+  //    }
+  //    else if ($state.current.name === 'app.search-region-courses') {
+  //      console.log($stateParams.subregionID);
+  //      $scope.subregionID = $stateParams.subregionID;
+  //      CourseService.CoursesForRegion($scope.countryID, $stateParams.subregionID).success(function(data) {
+  //        $scope.regionCourses = data;
+  //      })
+  //    }
+  //  }
 })
 
 .controller('PrizeDrawController', function($scope) {
