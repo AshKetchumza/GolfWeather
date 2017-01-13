@@ -608,7 +608,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
             result.push(service.countries[i]);
           }
         }
-        return result;
+        return result.sortBy('name');
     };
 
     service.RegionsForCountry = function(countryID) {
@@ -619,7 +619,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         method: "GET"
       }).success(function (data, status, headers, config) {
         console.log('RegionsForCountry->success: ', data);
-        deferred.resolve(data);
+        deferred.resolve(data.sortBy('name'));
       }).error(function (data, status, headers, config) {
         console.log('RegionsForCountry->error: ', data);
         deferred.reject(data);
@@ -644,7 +644,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         method: "GET"
       }).success(function (data, status, headers, config) {
         console.log('Search->success: ', data);
-        deferred.resolve(data);
+        deferred.resolve(data.sortBy('name'));
       }).error(function (data, status, headers, config) {
         console.log('Search->error: ', data);
         deferred.reject(data);
@@ -728,7 +728,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         method: "GET"
       }).success(function (data, status, headers, config) {
         console.log('SubRegionsForRegion->success: ', data);
-        deferred.resolve(data);
+        deferred.resolve(data.sortBy('name'));
       }).error(function (data, status, headers, config) {
         console.log('SubRegionsForRegion->error: ', data);
         deferred.reject(data);
@@ -758,7 +758,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         method: "GET"
       }).success(function (data, status, headers, config) {
         console.log('CoursesForRegion->success: ', data);
-        deferred.resolve(data);
+        deferred.resolve(data.sortBy('name'));
       }).error(function (data, status, headers, config) {
         console.log('CoursesForRegion->error: ', data);
         deferred.reject(data);
