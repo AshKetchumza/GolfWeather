@@ -30,7 +30,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('MyCoursesCtrl', function($scope, $state, CourseService) {
+.controller('MyCoursesCtrl', function($scope, $state, $ionicLoading, CourseService) {
 
     $scope.selectedCourse = CourseService.viewCourse;
     console.log($state.current.name);
@@ -376,6 +376,7 @@ angular.module('starter.controllers', [])
     $scope.coursesNearMe = [];
 
     function initialize() {
+      $ionicLoading.show();
       CourseService.Nearby().success(function (data) {
         // var myLatlng = new google.maps.LatLng(CourseService.currentPosition.latitude, CourseService.currentPosition.longitude);
         //
@@ -411,7 +412,7 @@ angular.module('starter.controllers', [])
           //   title: data[i].name
           // });
         }
-
+        $ionicLoading.hide();
         console.log('Courses near me: ', $scope.coursesNearMe);
 
         // google.maps.event.addListener(marker, 'click', function() {
@@ -518,7 +519,7 @@ angular.module('starter.controllers', [])
   //controll map overlays for the radar page
 })
 
-.controller('SearchController', function($scope, $state, $stateParams, CourseService) {
+.controller('SearchController', function($scope, $state, $stateParams, $ionicLoading, CourseService) {
    //control search
    $scope.search = { country: '', keyword: ''};
    $scope.countries = CourseService.countries;
@@ -553,9 +554,11 @@ angular.module('starter.controllers', [])
    $scope.selectCountry = function(country, index) {
      CourseService.selectedCountry = country;
      console.log('Selected Country: ', CourseService.selectedCountry);
+     $ionicLoading.show();
      CourseService.RegionsForCountry(country.id).success(function(data) {
        CourseService.selectedCountry.regions = data;
        console.log('Regions: ', data)
+       $ionicLoading.hide();
        $state.go('app.search-country-regions');
      });
    }
@@ -563,8 +566,10 @@ angular.module('starter.controllers', [])
    $scope.selectRegion = function(region, index) {
      CourseService.selectedRegion = region;
      console.log('Selected Region: ', region);
+     $ionicLoading.show();
      CourseService.SubRegionsForRegion(region.id).success(function(data) {
        console.log('Subregions: ', data)
+       $ionicLoading.hide();
        if (data.length == 0) {
          $scope.selectSubregion(region, -1);
        }else {
@@ -577,8 +582,10 @@ angular.module('starter.controllers', [])
    $scope.selectSubregion = function(subregion, index) {
      CourseService.selectedSubregion = subregion;
      console.log('Selected SubRegion: ', CourseService.selectedSubregion);
+     $ionicLoading.show();
      CourseService.CoursesForRegion(subregion.id).success(function(data) {
        CourseService.selectedSubregion.courses = data;
+       $ionicLoading.hide();
        $state.go('app.search-region-courses');
      });
    }
@@ -586,8 +593,10 @@ angular.module('starter.controllers', [])
   //  console.log($state.current);
    if ($stateParams) {
      if ($state.current.name === 'app.search-results') {
+       $ionicLoading.show();
        CourseService.Search($stateParams.countryID, $stateParams.keyword).success(function(data) {
          $scope.searchResults = data;
+         $ionicLoading.hide();
          console.log(data);
        });
      }
