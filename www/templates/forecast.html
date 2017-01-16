@@ -1,5 +1,10 @@
-<ion-view view-title="{{selectedCourse.name}}">
+<ion-view view-title="{{selectedCourseName}}">
   <ion-content>
-      <h3><i class="icon ion-cloud"> {{selectedCourse.current_json}}</i></h3>
+      <label><b>Current</b></label>
+      <h3>Icon - {{selectedCourse.icon}}<br>
+        Temp - {{selectedCourse.temp_celsius}}<br/>
+        Sunrise - {{selectedCourse.sunrise}}<br/>
+        Sunset - {{selectedCourse.sunset}}<br/>
+        Conditions - {{selectedCourse.conditions}}</h3>
   </ion-content>
 </ion-view>

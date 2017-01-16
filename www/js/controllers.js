@@ -32,7 +32,9 @@ angular.module('starter.controllers', [])
 
 .controller('MyCoursesCtrl', function($scope, $state, $ionicLoading, CourseService) {
 
-    $scope.selectedCourse = CourseService.viewCourse;
+    $scope.selectedCourse = JSON.parse(CourseService.viewCourse.current_json);
+    console.log($scope.selectedCourse);
+    $scope.selectedCourseName = CourseService.viewCourse.name;
     console.log($state.current.name);
 
      if ($state.current.name === 'app.map') {
@@ -600,14 +602,11 @@ angular.module('starter.controllers', [])
          console.log(data);
        });
      }
-   }
-    
-    $scope.selectedCourse = CourseService.viewCourse;
-    
+   }    
+
     $scope.selectCourse = function(course, index) {
         CourseService.ApplyViewCourse(course);
         $state.go('app.forecast');
-        console.log($scope.selectedCourse);
     };
   //    else if ($state.current.name === 'app.search-continent-regions') {
   //      console.log($stateParams.continentID);
