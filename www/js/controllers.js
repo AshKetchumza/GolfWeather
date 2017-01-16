@@ -601,6 +601,14 @@ angular.module('starter.controllers', [])
        });
      }
    }
+    
+    $scope.selectedCourse = CourseService.viewCourse;
+    
+    $scope.selectCourse = function(course, index) {
+        CourseService.ApplyViewCourse(course);
+        $state.go('app.forecast');
+        console.log($scope.selectedCourse);
+    };
   //    else if ($state.current.name === 'app.search-continent-regions') {
   //      console.log($stateParams.continentID);
   //      $scope.continentCountries = CourseService.CountriesForContinent($stateParams.continentID);
