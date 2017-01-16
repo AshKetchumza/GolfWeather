@@ -1,10 +1,18 @@
 <ion-view view-title="{{selectedCourseName}}">
   <ion-content>
       <label><b>Current</b></label>
-      <h3>Icon - {{selectedCourse.icon}}<br>
-        Temp - {{selectedCourse.temp_celsius}}<br/>
+      <h3>
+        Conditions - {{selectedCourse.conditions}}<br/>
+        Temp Celsius - {{selectedCourse.temp_celsius}}&deg;<br/>
+        Temp Fahrenheit- {{selectedCourse.temp_fahrenheit}}&deg;<br/>
         Sunrise - {{selectedCourse.sunrise}}<br/>
         Sunset - {{selectedCourse.sunset}}<br/>
-        Conditions - {{selectedCourse.conditions}}</h3>
+        Wind speed - {{selectedCourse.wind_speed_kmh}} km/h<br/>
+        Wind direction - {{selectedCourse.wind_dir_desc}}<br/>
+        Chance of snow - {{selectedCourse.csnow}}%<br/>
+        Chance of rain - {{selectedCourse.crain}}%<br/>
+        Rain - {{selectedCourse.precip_mm_3hr}} mm<br/>
+        Humidity - {{selectedCourse.relative_humity}}%
+      </h3>
   </ion-content>
 </ion-view>
