@@ -32,7 +32,10 @@ angular.module('starter.controllers', [])
 
 .controller('MyCoursesCtrl', function($scope, $state, $ionicLoading, CourseService) {
 
-    $scope.selectedCourse = JSON.parse(CourseService.viewCourse.current_json);
+    if (CourseService.viewCourse.current_json)
+    {
+      $scope.selectedCourse = JSON.parse(CourseService.viewCourse.current_json);
+    }
     console.log($scope.selectedCourse);
     $scope.selectedCourseName = CourseService.viewCourse.name;
     console.log($state.current.name);
