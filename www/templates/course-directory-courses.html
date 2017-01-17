@@ -4,7 +4,7 @@
   <!-- Search Inputs -->
     <div class="list">
       <!-- show the different countries -->
-      <li class="item item-icon-right" ng-repeat="course in regionCourses" > <!-- navigate to the forecast from here -->
+      <li class="item item-icon-right" ng-repeat="course in regionCourses" ng-click="selectCourse(course, $index)"> <!-- navigate to the forecast from here -->
         {{course.name}}
       </li>
     </div>
