@@ -2,6 +2,7 @@
   <ion-content>
   <!-- Search Selections -->
   <!-- Search Inputs -->
+    <h3 ng-show="!regionCourses.length">No courses found</h3>
     <div class="list">
       <!-- show the different countries -->
       <li class="item item-icon-right" ng-repeat="course in regionCourses" ng-click="selectCourse(course, $index)"> <!-- navigate to the forecast from here -->
