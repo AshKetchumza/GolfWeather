@@ -524,7 +524,7 @@ angular.module('starter.controllers', [])
   //controll map overlays for the radar page
 })
 
-.controller('SearchController', function($scope, $state, $stateParams, $ionicLoading, CourseService) {
+.controller('SearchController', function($scope, $state, $stateParams, $ionicLoading, $ionicPopup, CourseService) {
    //control search
    $scope.search = { country: '', keyword: ''};
    $scope.countries = CourseService.countries;
@@ -547,7 +547,19 @@ angular.module('starter.controllers', [])
    if (CourseService.selectedSubregion.hasOwnProperty('id')) {
      $scope.regionCourses = CourseService.selectedSubregion.courses;
    }
+   $scope.nearbyCourses = [];
    console.log('Courses: ', $scope.regionCourses);
+
+   $scope.showAlert = function(data) {
+     var alertPopup = $ionicPopup.alert({
+       title: data.title,
+       template: data.message
+     });
+
+     alertPopup.then(function(res) {
+       //
+     });
+   };
 
    $scope.selectContinent = function(continent, index) {
      CourseService.selectContinent = continent;
@@ -565,6 +577,11 @@ angular.module('starter.controllers', [])
        console.log('Regions: ', data)
        $ionicLoading.hide();
        $state.go('app.search-country-regions');
+     }).error(function(data) {
+       console.log('Error: ',data)
+       $ionicLoading.hide();
+       //display error message
+       showAlert({title: '', message: ''});
      });
    }
 
@@ -604,8 +621,14 @@ angular.module('starter.controllers', [])
          $ionicLoading.hide();
          console.log(data);
        });
+     }else if ($state.current.name === 'app.courses-nearby') {
+       $ionicLoading.show();
+       CourseService.Nearby().success(function (data) {
+         $scope.nearbyCourses = data;
+         $ionicLoading.hide();
+       });
      }
-   }    
+   }
 
     $scope.selectCourse = function(course, index) {
         CourseService.ApplyViewCourse(course);
