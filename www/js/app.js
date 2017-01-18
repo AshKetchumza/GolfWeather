@@ -621,7 +621,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         console.log('RegionsForCountry->success: ', data);
         deferred.resolve(data.sortBy('name'));
       }).error(function (data, status, headers, config) {
-        console.log('RegionsForCountry->error: ', data);
+        console.log('RegionsForCountry->error-data: ', data);
+        console.log('RegionsForCountry->error-status: ', status);
+        console.log('RegionsForCountry->error-headers: ', headers);
         deferred.reject(data);
       });
 
@@ -647,6 +649,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         deferred.resolve(data.sortBy('name'));
       }).error(function (data, status, headers, config) {
         console.log('Search->error: ', data);
+        console.log('Search->error-status: ', status);
+        console.log('Search->error-headers: ', headers);
         deferred.reject(data);
       });
 
@@ -664,13 +668,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
     service.Nearby = function() {
       var deferred = $q.defer();
 	    var promise = deferred.promise;
-      var pos = {coordinates : {
-        latitude: -33.8723569,
-        longitude: 18.4886431
-      }};
-      //navigator.geolocation.getCurrentPosition(function(pos) {
-        service.currentPosition.latitude =  pos.coordinates.latitude;//Math.round(1E4 * pos.coords.latitude) / 1E4;
-        service.currentPosition.longitude =  pos.coordinates.longitude;//Math.round(1E4 * pos.coords.longitude) / 1E4};
+      // var pos = {coordinates : {
+      //   latitude: -33.8723569,
+      //   longitude: 18.4886431
+      // }};
+      navigator.geolocation.getCurrentPosition(function(pos) {
+        // service.currentPosition.latitude =  pos.coordinates.latitude;
+        // service.currentPosition.longitude =  pos.coordinates.longitude;
+        service.currentPosition.latitude =  Math.round(1E4 * pos.coords.latitude) / 1E4;
+        service.currentPosition.longitude =  Math.round(1E4 * pos.coords.longitude) / 1E4;
         console.log('current coordinates: ', pos);
         $http({
           url: AppService.GetUrl('get-close-by/latitude/{latitude}/longitude/{longitude}', service.currentPosition),
@@ -680,9 +686,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
           deferred.resolve(data);
         }).error(function (data, status, headers, config) {
           console.log('Nearby->error: ', data);
+          console.log('Nearby->error-status: ', status);
+          console.log('Nearby->error-headers: ', headers);
           deferred.reject(data);
         });
-      //});
+      });
 
       promise.success = function (fn) {
         promise.then(fn);
@@ -706,6 +714,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         deferred.resolve(data);
       }).error(function (data, status, headers, config) {
         console.log('GetCurrentConditions->error: ', data);
+        console.log('GetCurrentConditions->error-status: ', status);
+        console.log('GetCurrentConditions->error-headers: ', headers);
         deferred.reject(data);
       });
 
@@ -731,6 +741,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         deferred.resolve(data.sortBy('name'));
       }).error(function (data, status, headers, config) {
         console.log('SubRegionsForRegion->error: ', data);
+        console.log('SubRegionsForRegion->error-status: ', status);
+        console.log('SubRegionsForRegion->error-headers: ', headers);
         deferred.reject(data);
       });
 
@@ -761,6 +773,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
         deferred.resolve(data.sortBy('name'));
       }).error(function (data, status, headers, config) {
         console.log('CoursesForRegion->error: ', data);
+        console.log('CoursesForRegion->error-status: ', status);
+        console.log('CoursesForRegion->error-headers: ', headers);
         deferred.reject(data);
       });
 
