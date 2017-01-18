@@ -7,6 +7,12 @@
       <a class="button" ui-sref="app.course-directory">Directory</a>
       <a class="button button-calm">Near Me</a>
     </div><br />
-    
+    <div class="list">
+      <!-- show the different countries -->
+      <li class="item item-icon-right" ng-repeat="course in nearbyCourses" ng-click="selectCourse(course, $index)">
+        {{course.name}}
+      </li>
+    </div>
   </ion-content>
 </ion-view>
+
