@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives'])
+angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter.directives'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -342,7 +342,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
 })
 
 //Course Service
-.service('CourseService', function($q, $http, AppService){
+.service('CourseService', function($q, $http, AppService, GeoService){
     var service = {
         viewCourse : {},
         selectedContinent:{},
@@ -667,41 +667,76 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
 
     service.Nearby = function() {
       var deferred = $q.defer();
-	    var promise = deferred.promise;
-      // var pos = {coordinates : {
-      //   latitude: -33.8723569,
-      //   longitude: 18.4886431
-      // }};
-      navigator.geolocation.getCurrentPosition(function(pos) {
-        // service.currentPosition.latitude =  pos.coordinates.latitude;
-        // service.currentPosition.longitude =  pos.coordinates.longitude;
-        service.currentPosition.latitude =  Math.round(1E4 * pos.coords.latitude) / 1E4;
-        service.currentPosition.longitude =  Math.round(1E4 * pos.coords.longitude) / 1E4;
-        console.log('current coordinates: ', pos);
-        $http({
-          url: AppService.GetUrl('get-close-by/latitude/{latitude}/longitude/{longitude}', service.currentPosition),
-          method: "GET"
-        }).success(function (data, status, headers, config) {
-          console.log('Nearby->success: ', data);
-          deferred.resolve(data);
-        }).error(function (data, status, headers, config) {
-          console.log('Nearby->error: ', data);
-          console.log('Nearby->error-status: ', status);
-          console.log('Nearby->error-headers: ', headers);
-          deferred.reject(data);
-        });
+      var promise = deferred.promise;
+
+      cordova.plugins.diagnostic.isLocationEnabled(function(enabled) {
+          if (!enabled) {
+            deferred.reject({title: 'Location Service is disabled', message:'Please make sure your Location Service is enabled'});
+          }else {
+            GeoService.getPosition()
+              .then(function(pos) {
+                service.currentPosition.latitude =  Math.round(1E4 * pos.coords.latitude) / 1E4;
+                service.currentPosition.longitude =  Math.round(1E4 * pos.coords.longitude) / 1E4;
+                console.log('current coordinates: ', pos);
+                $http({
+                  url: AppService.GetUrl('get-close-by/latitude/{latitude}/longitude/{longitude}', service.currentPosition),
+                  method: "GET"
+                }).success(function (data, status, headers, config) {
+                  console.log('Nearby->success: ', data);
+                  deferred.resolve(data);
+                }).error(function (data, status, headers, config) {
+                  console.log('Nearby->error: ', data);
+                  console.log('Nearby->error-status: ', status);
+                  console.log('Nearby->error-headers: ', headers);
+                  deferred.reject(data);
+                });
+              });
+          }
+      }, function(error) {
+          console.log('getCurrentPosition error: ' + error);
+          deferred.reject({title: 'Location Service', message: error});
       });
 
-      promise.success = function (fn) {
-        promise.then(fn);
+      // GeoService.getPosition()
+      //   .then(function(pos) {
+      //     service.currentPosition.latitude =  Math.round(1E4 * pos.coords.latitude) / 1E4;
+      //     service.currentPosition.longitude =  Math.round(1E4 * pos.coords.longitude) / 1E4;
+      //     console.log('current coordinates: ', pos);
+      //     $http({
+      //       url: AppService.GetUrl('get-close-by/latitude/{latitude}/longitude/{longitude}', service.currentPosition),
+      //       method: "GET"
+      //     }).success(function (data, status, headers, config) {
+      //       console.log('Nearby->success: ', data);
+      //       deferred.resolve(data);
+      //     }).error(function (data, status, headers, config) {
+      //       console.log('Nearby->error: ', data);
+      //       console.log('Nearby->error-status: ', status);
+      //       console.log('Nearby->error-headers: ', headers);
+      //       deferred.reject(data);
+      //     });
+      //   }, function(err) {
+          // cordova.plugins.diagnostic.isLocationEnabled(function(enabled) {
+          //     if (!enabled) {
+          //       deferred.reject({title: 'Location Service is disabled', 'Please make sure your Location Service is enabled'})
+          //     }
+          // }, function(error) {
+          //     console.log('getCurrentPosition error: ' + error);
+          //     deferred.reject({title: 'Location Service', message: error});
+          // });
+          // //console.log('getCurrentPosition error: ' + err);
+          // //deferred.reject(err);
+        //});
+
+        promise.success = function (fn) {
+          promise.then(fn);
+          return promise;
+        }
+        promise.error = function (fn) {
+          promise.then(null, fn);
+          return promise;
+        }
         return promise;
-      }
-      promise.error = function (fn) {
-        promise.then(null, fn);
-        return promise;
-      }
-      return promise;
-    };
+    }
 
     service.GetCurrentConditions = function(courseID) {
       var deferred = $q.defer();
@@ -837,4 +872,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.directives']
   	service.LocalCheck();
 
       return service;
+})
+
+.factory('GeoService', function($ionicPlatform, $cordovaGeolocation) {
+
+  var positionOptions = {timeout: 10000, enableHighAccuracy: true};
+
+  return {
+    getPosition: function() {
+      return $ionicPlatform.ready()
+        .then(function() {
+          return $cordovaGeolocation.getCurrentPosition(positionOptions);
+        })
+    }
+  };
+
 });

@@ -581,7 +581,7 @@ angular.module('starter.controllers', [])
        console.log('Error: ',data)
        $ionicLoading.hide();
        //display error message
-       showAlert({title: '', message: ''});
+       $scope.showAlert({title: data.title, message: data.message});
      });
    }
 
@@ -598,6 +598,11 @@ angular.module('starter.controllers', [])
          CourseService.selectedRegion.subregions = data;
          $state.go('app.search-region-subregions');
        }
+     }).error(function(data) {
+       console.log('Error: ',data)
+       $ionicLoading.hide();
+       //display error message
+       $scope.showAlert({title: data.title, message: data.message});
      });
    }
 
@@ -609,6 +614,11 @@ angular.module('starter.controllers', [])
        CourseService.selectedSubregion.courses = data;
        $ionicLoading.hide();
        $state.go('app.search-region-courses');
+     }).error(function(data) {
+       console.log('Error: ',data)
+       $ionicLoading.hide();
+       //display error message
+       $scope.showAlert({title: data.title, message: data.message});
      });
    }
   //  console.log($stateParams);
@@ -620,12 +630,22 @@ angular.module('starter.controllers', [])
          $scope.searchResults = data;
          $ionicLoading.hide();
          console.log(data);
+       }).error(function(data) {
+         console.log('Error: ',data)
+         $ionicLoading.hide();
+         //display error message
+         $scope.showAlert({title: data.title, message: data.message});
        });
      }else if ($state.current.name === 'app.courses-nearby') {
        $ionicLoading.show();
        CourseService.Nearby().success(function (data) {
          $scope.nearbyCourses = data;
          $ionicLoading.hide();
+       }).error(function(data) {
+         console.log('Error: ',data)
+         $ionicLoading.hide();
+         //display error message
+         $scope.showAlert({title: data.title, message: data.message});
        });
      }
    }
