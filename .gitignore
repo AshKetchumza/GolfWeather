@@ -5,6 +5,6 @@ node_modules/
 platforms/
 plugins/
 hooks/
-www/lib/
+www/lib/ionic/
 
 config.xml
