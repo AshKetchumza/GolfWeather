@@ -1,18 +1,44 @@
-<ion-view view-title="{{selectedCourseName}}">
+<ion-view view-title="{{selectedCourse.name}}">
   <ion-content>
-      <label><b>Current</b></label>
+      <!-- <label><b>Current</b></label>
       <h3>
-        Conditions - {{selectedCourse.conditions}}<br/>
-        Temp Celsius - {{selectedCourse.temp_celsius}}&deg;<br/>
-        Temp Fahrenheit- {{selectedCourse.temp_fahrenheit}}&deg;<br/>
-        Sunrise - {{selectedCourse.sunrise}}<br/>
-        Sunset - {{selectedCourse.sunset}}<br/>
-        Wind speed - {{selectedCourse.wind_speed_kmh}} km/h<br/>
-        Wind direction - {{selectedCourse.wind_dir_desc}}<br/>
-        Chance of snow - {{selectedCourse.csnow}}%<br/>
-        Chance of rain - {{selectedCourse.crain}}%<br/>
-        Rain - {{selectedCourse.precip_mm_3hr}} mm<br/>
-        Humidity - {{selectedCourse.relative_humity}}%
-      </h3>
+        Conditions - {{selectedCourse.current.conditions}}<br/>
+        Temp Celsius - {{selectedCourse.current.temp_celsius}}&deg;<br/>
+        Temp Fahrenheit- {{selectedCourse.current.temp_fahrenheit}}&deg;<br/>
+        Sunrise - {{selectedCourse.current.sunrise}}<br/>
+        Sunset - {{selectedCourse.current.sunset}}<br/>
+        Wind speed - {{selectedCourse.current.wind_speed_kmh}} km/h<br/>
+        Wind direction - {{selectedCourse.current.wind_dir_desc}}<br/>
+        Chance of snow - {{selectedCourse.current.csnow}}%<br/>
+        Chance of rain - {{selectedCourse.current.crain}}%<br/>
+        Rain - {{selectedCourse.current.precip_mm_3hr}} mm<br/>
+        Humidity - {{selectedCourse.current.relative_humity}}%
+      </h3> -->
+      <div class="list">
+        <div class="item card">
+          <div class="item item-divider">
+            Current
+          </div>
+          <div class="item item-avatar">
+            <img ng-src="img/weathericons/{{selectedCourse.current.icon}}_64.png" >
+            <p>{{selectedCourse.current.conditions}}</p>
+            <h2 ng-show={{settings.temp=='metric'}}>{{selectedCourse.current.temp_celsius}}&deg;</h2>
+            <h2 ng-show={{settings.temp=='imperial'}}>{{selectedCourse.current.temp_fahrenheit}}&deg;</h2>
+          </div>
+          <div class="item item-text-wrap">
+            Sunrise - {{selectedCourse.current.sunrise}}<br/>
+            Sunset - {{selectedCourse.current.sunset}}<br/>
+            Wind speed - {{selectedCourse.current.wind_speed_kmh}} km/h<br/>
+            Wind direction - {{selectedCourse.current.wind_dir_desc}}<br/>
+            Chance of snow - {{selectedCourse.current.csnow}}%<br/>
+            Chance of rain - {{selectedCourse.current.crain}}%<br/>
+            Rain - {{selectedCourse.current.precip_mm_3hr}} mm<br/>
+            Humidity - {{selectedCourse.current.relative_humity}}%
+          </div>
+          <!-- <div class="item item-divider">
+            I'm a Footer in a Card!
+          </div> -->
+        </div>
+    </div>
   </ion-content>
 </ion-view>
