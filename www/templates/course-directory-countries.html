@@ -4,7 +4,8 @@
   <!-- Search Inputs -->
     <div class="list">
       <!-- show the different countries -->
-      <li class="item item-icon-right" ng-repeat="country in continentCountries" ng-click="selectCountry(country, $index)">
+      <li class="item item-avatar" ng-repeat="country in continentCountries" ng-click="selectCountry(country, $index)">
+        <img ng-src="img/countries/{{country.id}}-64.png">
         {{country.name}}
       </li>
     </div>
