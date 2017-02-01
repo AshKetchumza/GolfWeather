@@ -795,10 +795,13 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
     service.CoursesForRegion = function(subregionID) {
       var deferred = $q.defer();
 	    var promise = deferred.promise;
-      var url = AppService.GetUrl('get-courses-for-regions/country_id/{countryID}/region_id/{id}}', {countryID: service.selectedCountry.id, id: subregionID});
-      if (subregionID != service.selectedRegion.id)
-      {
-        url = AppService.GetUrl('get-courses-for-regions/country_id/{countryID}/region_id/{regionID}/sub_region_id/{subregionID}', {countryID: service.selectedCountry.id, regionID: service.selectedRegion.id,  subregionID: subregionID});
+      var url = AppService.GetUrl('get-courses-for-regions/country_id/{countryID}', {countryID: service.selectedCountry.id, id: subregionID});
+      if (subregionID != service.selectedCountry.id) {
+        url = AppService.GetUrl('get-courses-for-regions/country_id/{countryID}/region_id/{id}', {countryID: service.selectedCountry.id, id: subregionID});
+        if (subregionID != service.selectedRegion.id)
+        {
+          url = AppService.GetUrl('get-courses-for-regions/country_id/{countryID}/region_id/{regionID}/sub_region_id/{subregionID}', {countryID: service.selectedCountry.id, regionID: service.selectedRegion.id,  subregionID: subregionID});
+        }
       }
       $http({
         url: url,
