@@ -531,7 +531,7 @@ angular.module('starter.controllers', [])
   //controll map overlays for the radar page
 })
 
-.controller('SearchController', function($scope, $state, $stateParams, $ionicLoading, $ionicPopup, CourseService) {
+.controller('SearchController', function($scope, $state, $stateParams, $ionicLoading, $ionicPopup, CourseService, AppService) {
    //control search
    $scope.search = { country: '', keyword: ''};
    $scope.countries = CourseService.countries;
@@ -553,9 +553,22 @@ angular.module('starter.controllers', [])
    $scope.regionCourses = [];
    if (CourseService.selectedSubregion.hasOwnProperty('id')) {
      $scope.regionCourses = CourseService.selectedSubregion.courses;
+    //  if ($scope.regionCourses.length > 0 && $scope.regionCourses[0].current == undefined)
+    //  {
+    //    convertCurrentWeather($scope.regionCourses);
+    //  }
    }
    $scope.nearbyCourses = [];
    console.log('Courses: ', $scope.regionCourses);
+
+   function convertCurrentWeather(courses) {
+     console.log('convertCurrentWeather: ', courses);
+     courses.forEach(function(course) {
+       course.current = JSON.parse(course.current_json);
+     });
+   }
+
+   $scope.settings = AppService.GetUserSettings();
 
    $scope.showAlert = function(data) {
      var alertPopup = $ionicPopup.alert({
@@ -580,10 +593,14 @@ angular.module('starter.controllers', [])
      console.log('Selected Country: ', CourseService.selectedCountry);
      $ionicLoading.show();
      CourseService.RegionsForCountry(country.id).success(function(data) {
-       CourseService.selectedCountry.regions = data;
        console.log('Regions: ', data)
-       $ionicLoading.hide();
-       $state.go('app.search-country-regions');
+       if (data.length == 0) {
+         $scope.selectRegion(country, -1);
+       }else {
+         CourseService.selectedCountry.regions = data;
+         $ionicLoading.hide();
+         $state.go('app.search-country-regions');
+       }
      }).error(function(data) {
        console.log('Error: ',data)
        $ionicLoading.hide();
@@ -619,6 +636,7 @@ angular.module('starter.controllers', [])
      $ionicLoading.show();
      CourseService.CoursesForRegion(subregion.id).success(function(data) {
        CourseService.selectedSubregion.courses = data;
+       convertCurrentWeather(CourseService.selectedSubregion.courses);
        $ionicLoading.hide();
        $state.go('app.search-region-courses');
      }).error(function(data) {
@@ -628,13 +646,13 @@ angular.module('starter.controllers', [])
        $scope.showAlert({title: data.title, message: data.message});
      });
    }
-  //  console.log($stateParams);
-  //  console.log($state.current);
+
    if ($stateParams) {
      if ($state.current.name === 'app.search-results') {
        $ionicLoading.show();
        CourseService.Search($stateParams.countryID, $stateParams.keyword).success(function(data) {
          $scope.searchResults = data;
+         convertCurrentWeather($scope.searchResults);
          $ionicLoading.hide();
          console.log(data);
        }).error(function(data) {
@@ -647,6 +665,7 @@ angular.module('starter.controllers', [])
        $ionicLoading.show();
        CourseService.Nearby().success(function (data) {
          $scope.nearbyCourses = data;
+         convertCurrentWeather($scope.nearbyCourses);
          $ionicLoading.hide();
        }).error(function(data) {
          console.log('Error: ',data)
