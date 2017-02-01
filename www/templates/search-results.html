@@ -1,9 +1,12 @@
   <ion-view title="Search Results">
   	<ion-content>
       <div class="list">
-        <li class="item item-icon-right" ng-repeat="course in searchResults" ng-click="selectCourse(course, $index)">
-          {{course.name}} <i class="icon ion-cloud"> {{course.temp}}</i>
-        </li>
+        <div class="item item-avatar" ng-repeat="course in searchResults" ng-click="selectCourse(course, $index)">
+          <img ng-src="img/weathericons/{{course.current.icon}}_64.png" >
+          <h3>{{course.name}}</h3>
+          <!-- <h2 ng-show={{settings.temp=='metric'}}>{{course.current.temp_celsius}}&deg;</h2>
+          <h2 ng-show={{settings.temp=='imperial'}}>{{course.current.temp_fahrenheit}}&deg;</h2> -->
+        </div>
       </div>
     </ion-content>
   </ion-view>
