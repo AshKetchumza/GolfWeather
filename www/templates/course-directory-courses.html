@@ -5,9 +5,12 @@
     <h3 ng-show="!regionCourses.length">No courses found</h3>
     <div class="list">
       <!-- show the different countries -->
-      <li class="item item-icon-right" ng-repeat="course in regionCourses" ng-click="selectCourse(course, $index)"> <!-- navigate to the forecast from here -->
-        {{course.name}}
-      </li>
+      <div class="item item-avatar" ng-repeat="course in regionCourses" ng-click="selectCourse(course, $index)">
+        <img ng-src="img/weathericons/{{course.current.icon}}_64.png" >
+        <h3>{{course.name}}</h3>
+        <!-- <h2 ng-show={{settings.temp=='metric'}}>{{course.current.temp_celsius}}&deg;</h2>
+        <h2 ng-show={{settings.temp=='imperial'}}>{{course.current.temp_fahrenheit}}&deg;</h2> -->
+      </div>
     </div>
   </ion-content>
 </ion-view>
