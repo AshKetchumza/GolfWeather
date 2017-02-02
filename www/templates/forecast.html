@@ -39,6 +39,40 @@
             I'm a Footer in a Card!
           </div> -->
         </div>
+        <slick infinate="false" settings="slickSettings" data="selectedCourse.detailedWeather" ng-if="weatherLoaded">
+          <div class="item card" ng-repeat="detail in selectedCourse.detailedWeather">
+            <div class="item item-divider">
+              <h3>DETAILED FORECAST</h3>{{detail.weekday}} {{detail.date}}
+            </div>
+            <!-- <div class="item item-avatar">
+              <img ng-src="img/weathericons/{{detail.icon}}_64.png" >
+              <p>{{detail.conditions}}</p>
+              <h2 ng-show={{settings.temp=='metric'}}>{{detail.temp_celsius}}&deg;</h2>
+              <h2 ng-show={{settings.temp=='imperial'}}>{{detail.temp_fahrenheit}}&deg;</h2>
+            </div> -->
+            <div class="item item-text-wrap">
+              <div class="row">
+                <div class="col">Time</div>
+                <div class="col"><!--icon--></div>
+                <div class="col">Temp</div>
+                <div class="col">Rain</div>
+                <div class="col">Wind</div>
+              </div>
+              <div class="row" ng-repeat="item in detail.timeslots">
+                <div class="col" ng-show={{settings.clock=='12'}}>{{item.timestamp_12hr}}</div>
+                <div class="col" ng-show={{settings.clock=='24'}}>{{item.timestamp_24hr}}</div>
+                <div class="col"><img ng-src="img/weathericons/{{item.icon}}_32.png" ></div>
+                <div class="col" ng-show={{settings.temp=='metric'}}>{{item.temp_celsius}}&deg;</div>
+                <div class="col" ng-show={{settings.temp=='imperial'}}>{{itemt.temp_fahrenheit}}&deg;</div>
+                <div class="col">{{item.crain}}%/{{item.precip_mm_3hr}}mm</div>
+                <div class="col">{{item.wind_speed_kmh}}km/{{item.wind_dir_desc}}</div>
+              </div>
+            </div>
+            <!-- <div class="item item-divider">
+              I'm a Footer in a Card!
+            </div> -->
+          </div>
+        </slick>
     </div>
   </ion-content>
 </ion-view>
