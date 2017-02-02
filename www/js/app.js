@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter.directives'])
+angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.controllers', 'starter.directives'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -589,10 +589,12 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
         	{ id: "VE",name: "Venezuela",continent: "SA" }
         ]
     };
+
     service.ApplyViewCourse = function(data){
-    service.viewCourse = data;
-    localStorage.setItem('viewCourse', JSON.stringify(data));
+      service.viewCourse = data;
+      localStorage.setItem('viewCourse', JSON.stringify(data));
     };
+
     service.LocalCheck = function() {
         if (localStorage.getItem("viewCourse"))
         {
@@ -751,6 +753,33 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
         console.log('GetCurrentConditions->error: ', data);
         console.log('GetCurrentConditions->error-status: ', status);
         console.log('GetCurrentConditions->error-headers: ', headers);
+        deferred.reject(data);
+      });
+
+      promise.success = function (fn) {
+        promise.then(fn);
+        return promise;
+      }
+      promise.error = function (fn) {
+        promise.then(null, fn);
+        return promise;
+      }
+      return promise;
+    };
+
+    service.GetDetailedConditions = function(courseID) {
+      var deferred = $q.defer();
+	    var promise = deferred.promise;
+      $http({
+        url: AppService.GetUrl('view-detailed/id/{id}', {id: courseID}),
+        method: "GET"
+      }).success(function (data, status, headers, config) {
+        console.log('GetDetailedConditions->success: ', data);
+        deferred.resolve(data);
+      }).error(function (data, status, headers, config) {
+        console.log('GetDetailedConditions->error: ', data);
+        console.log('GetDetailedConditions->error-status: ', status);
+        console.log('GetDetailedConditions->error-headers: ', headers);
         deferred.reject(data);
       });
 
