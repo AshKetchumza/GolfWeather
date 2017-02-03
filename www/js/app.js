@@ -322,7 +322,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
   service.GetUserSettings = function() {
     var data = { temp: 'metric', clock: '24', homeView: 'MC' };
     //
-    console.log(localStorage.getItem("GWUserSettings"));
+    //console.log(localStorage.getItem("GWUserSettings"));
 
     if (!localStorage.getItem("GWUserSettings"))
     {

@@ -48,6 +48,7 @@ angular.module('starter.controllers', [])
     };
 
     if ($state.current.name === 'app.forecast') {
+      $scope.settings = AppService.GetUserSettings();
       $scope.selectedCourse.current = JSON.parse(CourseService.viewCourse.current_json);
       $ionicLoading.show();
       $scope.weatherLoaded = false;
@@ -61,14 +62,14 @@ angular.module('starter.controllers', [])
           {
             var day = $scope.selectedCourse.detailedWeather[i];
             if (day.date == detail.local_time) {
-              day.timeslots.push(day);
+              day.timeslots.push(detail);
               added = true;
               break;
             }
           }
           if (!added) {
             var day = { date: detail.local_time, weekday: detail.weekday, timeslots: [] };
-            day.timeslots.push(day);
+            day.timeslots.push(detail);
             $scope.selectedCourse.detailedWeather.push(day);
           }
         });
@@ -83,6 +84,7 @@ angular.module('starter.controllers', [])
         $scope.showAlert({title: data.title, message: data.message});
       });
     }
+
     console.log($scope.selectedCourse);
     //$scope.selectedCourseName = CourseService.viewCourse.name;
     //console.log($state.current.name);
