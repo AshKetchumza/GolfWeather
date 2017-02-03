@@ -36,13 +36,55 @@ angular.module('starter.controllers', [])
 
     $scope.settings = AppService.GetUserSettings();
 
+    $scope.weatherLoaded = true;
+
     console.log($scope.settings);
 
-    if (CourseService.viewCourse.current_json)
-    {
-      //$scope.selectedCourse.current_json = undefined;
+    $scope.slickSettings = {
+      method:{},
+      dots:true,
+      infinate:false,
+      slidesToShow:1
+    };
+
+    if ($state.current.name === 'app.forecast') {
+      $scope.settings = AppService.GetUserSettings();
       $scope.selectedCourse.current = JSON.parse(CourseService.viewCourse.current_json);
+      $ionicLoading.show();
+      $scope.weatherLoaded = false;
+      CourseService.GetDetailedConditions($scope.selectedCourse.id).success(function(data) {
+        console.log('Detailed Weather: ', data.data)
+        $scope.selectedCourse.detailedWeather = [];
+        //console.log('Detailed Weather: ', $scope.selectedCourse.detailedWeather)
+        data.data.forEach(function(detail) {
+          var added = false;
+          for (var i = 0; i < $scope.selectedCourse.detailedWeather.length; i++)
+          {
+            var day = $scope.selectedCourse.detailedWeather[i];
+            if (day.date == detail.local_time) {
+              day.timeslots.push(detail);
+              added = true;
+              break;
+            }
+          }
+          if (!added) {
+            var day = { date: detail.local_time, weekday: detail.weekday, timeslots: [] };
+            day.timeslots.push(detail);
+            $scope.selectedCourse.detailedWeather.push(day);
+          }
+        });
+
+        //$scope.selectedCourse.detailedWeather = data.data;
+        $ionicLoading.hide();
+        $scope.weatherLoaded = true;
+      }).error(function(data) {
+        console.log('Error: ',data)
+        $ionicLoading.hide();
+        //display error message
+        $scope.showAlert({title: data.title, message: data.message});
+      });
     }
+
     console.log($scope.selectedCourse);
     //$scope.selectedCourseName = CourseService.viewCourse.name;
     //console.log($state.current.name);

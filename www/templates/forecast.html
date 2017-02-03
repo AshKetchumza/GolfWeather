@@ -22,13 +22,14 @@
           <div class="item item-avatar">
             <img ng-src="img/weathericons/{{selectedCourse.current.icon}}_64.png" >
             <p>{{selectedCourse.current.conditions}}</p>
-            <h2 ng-show={{settings.temp=='metric'}}>{{selectedCourse.current.temp_celsius}}&deg;</h2>
-            <h2 ng-show={{settings.temp=='imperial'}}>{{selectedCourse.current.temp_fahrenheit}}&deg;</h2>
+            <h2 ng-show={{settings.temp=='metric'}}>{{selectedCourse.current.temp_celsius}}&deg;C</h2>
+            <h2 ng-show={{settings.temp=='imperial'}}>{{selectedCourse.current.temp_fahrenheit}}&deg;F</h2>
           </div>
           <div class="item item-text-wrap">
             Sunrise - {{selectedCourse.current.sunrise}}<br/>
             Sunset - {{selectedCourse.current.sunset}}<br/>
-            Wind speed - {{selectedCourse.current.wind_speed_kmh}} km/h<br/>
+            <span ng-show={{settings.temp=='metric'}}>Wind speed - {{selectedCourse.current.wind_speed_kmh}} km/h</span>
+            <span ng-show={{settings.temp=='imperial'}}>Wind speed - {{selectedCourse.current.wind_speed_kmh}} mp/h</span><br/>
             Wind direction - {{selectedCourse.current.wind_dir_desc}}<br/>
             Chance of snow - {{selectedCourse.current.csnow}}%<br/>
             Chance of rain - {{selectedCourse.current.crain}}%<br/>
@@ -39,6 +40,41 @@
             I'm a Footer in a Card!
           </div> -->
         </div>
+        <slick infinate="false" settings="slickSettings" data="selectedCourse.detailedWeather" ng-if="weatherLoaded">
+          <div class="item card" ng-repeat="detail in selectedCourse.detailedWeather">
+            <div class="item item-divider">
+              <h3>DETAILED FORECAST</h3>{{detail.weekday}} {{detail.date}}
+            </div>
+            <!-- <div class="item item-avatar">
+              <img ng-src="img/weathericons/{{detail.icon}}_64.png" >
+              <p>{{detail.conditions}}</p>
+              <h2 ng-show={{settings.temp=='metric'}}>{{detail.temp_celsius}}&deg;</h2>
+              <h2 ng-show={{settings.temp=='imperial'}}>{{detail.temp_fahrenheit}}&deg;</h2>
+            </div> -->
+            <div class="item item-text-wrap">
+              <div class="row">
+                <div class="col">Time</div>
+                <div class="col"><!--icon--></div>
+                <div class="col">Temp</div>
+                <div class="col">Rain</div>
+                <div class="col">Wind</div>
+              </div>
+              <div class="row" ng-repeat="item in detail.timeslots">
+                <div class="col" ng-show={{settings.clock=='12'}}>{{item.timestamp_12hr}}</div>
+                <div class="col" ng-show={{settings.clock=='24'}}>{{item.timestamp_24hr}}</div>
+                <div class="col"><img ng-src="img/weathericons/{{item.icon}}_24.png" ></div>
+                <div class="col" ng-show={{settings.temp=='metric'}}>{{item.temp_celsius}}&deg;C</div>
+                <div class="col" ng-show={{settings.temp=='imperial'}}>{{item.temp_fahrenheit}}&deg;F</div>
+                <div class="col">{{item.crain}}%/{{item.precip_mm_3hr}}mm</div>
+                <div class="col" ng-show={{settings.temp=='metric'}}>{{item.wind_speed_kmh}}kmh/{{item.wind_dir_desc}}</div>
+                <div class="col" ng-show={{settings.temp=='imperial'}}>{{item.wind_speed_mph}}mph/{{item.wind_dir_desc}}</div>
+              </div>
+            </div>
+            <!-- <div class="item item-divider">
+              I'm a Footer in a Card!
+            </div> -->
+          </div>
+        </slick>
     </div>
   </ion-content>
 </ion-view>

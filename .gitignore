@@ -6,5 +6,9 @@ platforms/
 plugins/
 hooks/
 www/lib/ionic/
+www/lib/angular/
+www/lib/angular*
+www/lib/jquery/
+www/lib/slick-carousel/
 
 config.xml
