@@ -919,4 +919,79 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
     }
   };
 
+})
+
+.service('DeviceService', function($ionicPlatform) {
+  var service = {headingWatchID: '', accelerometerWatchID: ''};
+
+  // service.getCurrentHeading = function() {
+  //   var deferred = $q.defer();
+  //   var promise = deferred.promise;
+  //   navigator.compass.getCurrentHeading(compassSuccess, compassError);
+  //   function onSuccess(heading) {
+  //     console.log('Heading: ' + heading.magneticHeading);
+  //     deferred.resolve(heading.magneticHeading);
+  //   };
+  //
+  //   function onError(error) {
+  //       console.log('CompassError: ' + error.code);
+  //       deferred.reject(error);
+  //   };
+  //   promise.success = function (fn) {
+  //     promise.then(fn);
+  //     return promise;
+  //   }
+  //   promise.error = function (fn) {
+  //     promise.then(null, fn);
+  //     return promise;
+  //   }
+  //   return promise;
+  // };
+  //
+  // service.watchHeading = function(onSuccess, onError) {
+  //   service.headingWatchID = navigator.compass.watchHeading(onSuccess, onError);
+  // };
+  //
+  // service.clearHeadingWatch = function() {
+  //   navigator.compass.clearWatch(service.headingWatchID);
+  // }
+  //
+  // service.getCurrentAcceleration = function() {
+  //   var deferred = $q.defer();
+  //   var promise = deferred.promise;
+  //   function onSuccess(acceleration) {
+  //       console.log('Acceleration X: ' + acceleration.x + '\n' +
+  //             'Acceleration Y: ' + acceleration.y + '\n' +
+  //             'Acceleration Z: ' + acceleration.z + '\n' +
+  //             'Timestamp: '      + acceleration.timestamp + '\n');
+  //         deferred.resolve(acceleration);
+  //   }
+  //
+  //   function onError() {
+  //       console.log('onError!');
+  //       deferred.reject('error reading accelerometer');
+  //   }
+  //
+  //   navigator.accelerometer.getCurrentAcceleration(onSuccess, onError);
+  //   promise.success = function (fn) {
+  //     promise.then(fn);
+  //     return promise;
+  //   }
+  //   promise.error = function (fn) {
+  //     promise.then(null, fn);
+  //     return promise;
+  //   }
+  //   return promise;
+  // };
+  //
+  // service.watchAcceleration = function(onSuccess, onError) {
+  //   service.accelerometerWatchID = navigator.accelerometer.watchAcceleration(onSuccess,
+  //                                                      onError);
+  // }
+  //
+  // service.clearAccelerometerWatch = function() {
+  //   //
+  // };
+
+  return service;
 });
