@@ -22,7 +22,9 @@
     "cordova-plugin-splashscreen",
     "ionic-plugin-keyboard",
     "cordova-plugin-geolocation",
-    "cordova.plugins.diagnostic"
+    "cordova.plugins.diagnostic",
+    "cordova-plugin-device-orientation",
+    "cordova-plugin-device-motion"
   ],
   "cordovaPlatforms": []
 }
