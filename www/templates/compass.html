@@ -1,5 +1,37 @@
 <ion-view view-title="Compass">
   <ion-content>
       <!-- display image or something to show the direction of the heading -->
+      <p>Compass Supported: {{compassSupported}}</p>
+      <p ng-show="{{!compassSupported}}">Your device does not support this option</p>
+      <div ng-show="{{compassSupported}}" class="compass-compass text-center">
+
+        <div class="text-monospace padding-bottom">
+            {{magneticHeading}}
+        </div>
+
+        <div class="compass-compass-figure">
+            <img src="img/compass.png" class="compass-compass-image" alt="">
+
+            <img src="img/compass-arrow.png"
+                 class="compass-compass-arrow"
+                 ng-style="{
+                 '-webkit-transform': 'rotate(' + (magneticHeading || 0) +'deg)',
+                         'transform': 'rotate(' + (magneticHeading || 0) +'deg)',
+                 }"
+                 alt="">
+        </div>
+
+    </div>
+
+    <h1 ng-show="{{compassSupported}}" class="compass-compass-heading">
+        <span class="row row-no-padding">
+            <span class="col col-50 text-right">
+                &nbsp;<span ng-if="orientation">{{magneticHeading | number:0}}</span>
+            </span>
+            <span class="col col-50 text-left">
+                <span ng-if="orientation">˚{{cardinalDirection}}</span>&nbsp;
+            </span>
+        </span>
+    </h1>
   </ion-content>
 </ion-view>

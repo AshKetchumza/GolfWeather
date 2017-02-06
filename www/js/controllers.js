@@ -557,11 +557,117 @@ angular.module('starter.controllers', [])
 
 //use the following plugin: cordova-plugin-device-orientation
 //cordova plugin add cordova-plugin-device-orientation
-.controller('CompassController', function($scope) {
+.controller('CompassController', function($scope, $ionicPlatform, $cordovaDeviceOrientation) {
   //get the initial heading usign navigator.compass.getCurrentHeading(success, error);
   //sample usage documented on https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device-orientation/index.html
 
   //watch the heading and update the ui at the required interval
+  var vm = this;
+  vm.$onDestroy = $onDestroy;
+  $scope.compassSupported = true;
+  console.log(vm);
+
+  // Device Orientation plugin
+
+  $ionicPlatform.ready(function() {
+    startOrientation();
+  });
+
+  function startOrientation() {
+
+    $cordovaDeviceOrientation.getCurrentHeading().then(function(result) {
+      console.log('Compass: ', result);
+      $scope.orientation = true;
+
+      $scope.magneticHeading = result.magneticHeading;
+      $scope.trueHeading = result.trueHeading;
+      $scope.accuracy = result.headingAccuracy;
+      $scope.timeStamp = result.timestamp;
+
+      cardinalDirection();
+    }, function(err) {
+      // An error occurred
+      $scope.orientation = false;
+      $scope.error = err;
+      $scope.compassSupported = false;
+      console.log('Compass Supported: ', $scope.compassSupported);
+      console.log('CompassController.startOrientation.error: ', err);
+    });
+
+    var options = {
+      frequency: 3000,
+      filter: true     // if frequency is set, filter is ignored
+    };
+
+    var watch = $cordovaDeviceOrientation.watchHeading(options).then(
+      null,
+      function(err) {
+        // An error occurred
+        $scope.orientation = false;
+        $scope.error = err;
+        console.log('CompassController.watch.error: ', err);
+        $scope.compassSupported = false;
+        console.log('Compass Supported: ', $scope.compassSupported);
+      },
+      function(result) {   // updates constantly (depending on frequency value)
+
+        $scope.orientation = true;
+
+        $scope.magneticHeading = result.magneticHeading;
+        $scope.trueHeading = result.trueHeading;
+        $scope.accuracy = result.headingAccuracy;
+        $scope.timeStamp = result.timestamp;
+        cardinalDirection();
+      });
+
+  }
+
+  console.log('Compass Supported: ', $scope.compassSupported);
+
+  function cardinalDirection() {
+    var SECTOR = 360 / 8; // = 45
+    var HALF_SECTOR = SECTOR / 2; // = 22.5
+
+    // 337.5 - 360 && 0 - 22.5
+    var isN = ($scope.magneticHeading >= 360 - HALF_SECTOR && $scope.magneticHeading <= 360) ||
+        ($scope.magneticHeading >= 0 && $scope.magneticHeading < HALF_SECTOR);
+    // 22.5 - 67.5
+    var isNE = $scope.magneticHeading >= HALF_SECTOR && $scope.magneticHeading < HALF_SECTOR + SECTOR;
+    // 67.5 - 112.5
+    var isE = $scope.magneticHeading >= HALF_SECTOR + SECTOR && $scope.magneticHeading < HALF_SECTOR + SECTOR * 2;
+    // 112.5 - 157.5
+    var isSE = $scope.magneticHeading >= HALF_SECTOR + SECTOR * 2 && $scope.magneticHeading < HALF_SECTOR + SECTOR * 3;
+    // 157.5 - 202.5
+    var isS = $scope.magneticHeading >= HALF_SECTOR + SECTOR * 3 && $scope.magneticHeading < HALF_SECTOR + SECTOR * 4;
+    // 202.5 - 247.5
+    var isSW = $scope.magneticHeading >= HALF_SECTOR + SECTOR * 4 && $scope.magneticHeading < HALF_SECTOR + SECTOR * 5;
+    // 247.5 - 292.5
+    var isW = $scope.magneticHeading >= HALF_SECTOR + SECTOR * 5 && $scope.magneticHeading < HALF_SECTOR + SECTOR * 6;
+    // 292.5 - 337.5
+    var isNW = $scope.magneticHeading >= HALF_SECTOR + SECTOR * 6 && $scope.magneticHeading < HALF_SECTOR + SECTOR * 7;
+
+    if(isN) {
+      $scope.cardinalDirection = 'N';
+    } else if(isNE) {
+      $scope.cardinalDirection = 'NE';
+    } else if(isE) {
+      $scope.cardinalDirection = 'E';
+    } else if(isSE) {
+      $scope.cardinalDirection = 'SE';
+    } else if(isS) {
+      $scope.cardinalDirection = 'S';
+    } else if(isSW) {
+      $scope.cardinalDirection = 'SW';
+    } else if(isW) {
+      $scope.cardinalDirection = 'W';
+    } else if(isNW) {
+      $scope.cardinalDirection = 'NW';
+    }
+  }
+
+  function $onDestroy() {
+    watch.clearWatch();
+  }
 })
 
 .controller('SlopeReaderController', function($scope) {

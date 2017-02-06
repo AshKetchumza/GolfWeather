@@ -301,8 +301,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
         controller: 'SearchController'
       }
     }
- })
- ;
+  });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/search-courses');
 })
@@ -694,40 +693,10 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
                 });
               });
           }
-      }, function(error) {
+        }, function(error) {
           console.log('getCurrentPosition error: ' + error);
           deferred.reject({title: 'Location Service', message: error});
-      });
-
-      // GeoService.getPosition()
-      //   .then(function(pos) {
-      //     service.currentPosition.latitude =  Math.round(1E4 * pos.coords.latitude) / 1E4;
-      //     service.currentPosition.longitude =  Math.round(1E4 * pos.coords.longitude) / 1E4;
-      //     console.log('current coordinates: ', pos);
-      //     $http({
-      //       url: AppService.GetUrl('get-close-by/latitude/{latitude}/longitude/{longitude}', service.currentPosition),
-      //       method: "GET"
-      //     }).success(function (data, status, headers, config) {
-      //       console.log('Nearby->success: ', data);
-      //       deferred.resolve(data);
-      //     }).error(function (data, status, headers, config) {
-      //       console.log('Nearby->error: ', data);
-      //       console.log('Nearby->error-status: ', status);
-      //       console.log('Nearby->error-headers: ', headers);
-      //       deferred.reject(data);
-      //     });
-      //   }, function(err) {
-          // cordova.plugins.diagnostic.isLocationEnabled(function(enabled) {
-          //     if (!enabled) {
-          //       deferred.reject({title: 'Location Service is disabled', 'Please make sure your Location Service is enabled'})
-          //     }
-          // }, function(error) {
-          //     console.log('getCurrentPosition error: ' + error);
-          //     deferred.reject({title: 'Location Service', message: error});
-          // });
-          // //console.log('getCurrentPosition error: ' + err);
-          // //deferred.reject(err);
-        //});
+        });
 
         promise.success = function (fn) {
           promise.then(fn);
@@ -921,77 +890,93 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
 
 })
 
-.service('DeviceService', function($ionicPlatform) {
-  var service = {headingWatchID: '', accelerometerWatchID: ''};
+.service('DeviceService', function($ionicPlatform, $cordovaDeviceMotion, $cordovaDeviceOrientation) {
+  var service = {headingWatch: null, accelerationWatch: null};
 
-  // service.getCurrentHeading = function() {
-  //   var deferred = $q.defer();
-  //   var promise = deferred.promise;
-  //   navigator.compass.getCurrentHeading(compassSuccess, compassError);
-  //   function onSuccess(heading) {
-  //     console.log('Heading: ' + heading.magneticHeading);
-  //     deferred.resolve(heading.magneticHeading);
-  //   };
-  //
-  //   function onError(error) {
-  //       console.log('CompassError: ' + error.code);
-  //       deferred.reject(error);
-  //   };
-  //   promise.success = function (fn) {
-  //     promise.then(fn);
-  //     return promise;
-  //   }
-  //   promise.error = function (fn) {
-  //     promise.then(null, fn);
-  //     return promise;
-  //   }
-  //   return promise;
-  // };
-  //
-  // service.watchHeading = function(onSuccess, onError) {
-  //   service.headingWatchID = navigator.compass.watchHeading(onSuccess, onError);
-  // };
-  //
-  // service.clearHeadingWatch = function() {
-  //   navigator.compass.clearWatch(service.headingWatchID);
-  // }
-  //
-  // service.getCurrentAcceleration = function() {
-  //   var deferred = $q.defer();
-  //   var promise = deferred.promise;
-  //   function onSuccess(acceleration) {
-  //       console.log('Acceleration X: ' + acceleration.x + '\n' +
-  //             'Acceleration Y: ' + acceleration.y + '\n' +
-  //             'Acceleration Z: ' + acceleration.z + '\n' +
-  //             'Timestamp: '      + acceleration.timestamp + '\n');
-  //         deferred.resolve(acceleration);
-  //   }
-  //
-  //   function onError() {
-  //       console.log('onError!');
-  //       deferred.reject('error reading accelerometer');
-  //   }
-  //
-  //   navigator.accelerometer.getCurrentAcceleration(onSuccess, onError);
-  //   promise.success = function (fn) {
-  //     promise.then(fn);
-  //     return promise;
-  //   }
-  //   promise.error = function (fn) {
-  //     promise.then(null, fn);
-  //     return promise;
-  //   }
-  //   return promise;
-  // };
-  //
-  // service.watchAcceleration = function(onSuccess, onError) {
-  //   service.accelerometerWatchID = navigator.accelerometer.watchAcceleration(onSuccess,
-  //                                                      onError);
-  // }
-  //
-  // service.clearAccelerometerWatch = function() {
-  //   //
-  // };
+  service.getCurrentHeading = function() {
+    var deferred = $q.defer();
+    var promise = deferred.promise;
+    $cordovaDeviceOrientation.getCurrentHeading().then(function(result) {
+      //  var magneticHeading = result.magneticHeading;
+      //  var trueHeading = result.trueHeading;
+      //  var accuracy = result.headingAccuracy;
+      //  var timeStamp = result.timestamp;
+      deferred.resolve(result);
+    }, function(err) {
+      deferred.reject(err);
+    });
+    promise.success = function (fn) {
+      promise.then(fn);
+      return promise;
+    }
+    promise.error = function (fn) {
+      promise.then(null, fn);
+      return promise;
+    }
+    return promise;
+  };
+
+  service.watchHeading = function(onSuccess, onError) {
+    service.headingWatch = $cordovaDeviceOrientation.watchHeading(options).then(
+     null,
+     function(error) {
+       onError(error);
+     },
+     function(result) {   // updates constantly (depending on frequency value)
+      //  var magneticHeading = result.magneticHeading;
+      //  var trueHeading = result.trueHeading;
+      //  var accuracy = result.headingAccuracy;
+      //  var timeStamp = result.timestamp;
+      onSuccess(result);
+     });
+  };
+
+  service.clearHeadingWatch = function() {
+    if (service.headingWatch != null) {
+      service.headingWatch.clearWatch();
+      service.headingWatch = null;
+    }
+  }
+
+  service.getCurrentAcceleration = function() {
+    var deferred = $q.defer();
+    var promise = deferred.promise;
+
+    $cordovaDeviceMotion.getCurrentAcceleration().then(function(acceleration) {
+      deferred.resolve(acceleration);
+    }, function(err) {
+      console.log('onError!', err);
+      deferred.reject(err);
+    });
+    promise.success = function (fn) {
+      promise.then(fn);
+      return promise;
+    }
+    promise.error = function (fn) {
+      promise.then(null, fn);
+      return promise;
+    }
+    return promise;
+  };
+
+  service.watchAcceleration = function(onSuccess, onError) {
+    service.accelerationWatch = $cordovaDeviceMotion.watchAcceleration(options);
+    service.accelerationWatch.then(
+      null,
+      function(error) {
+        onError(error);
+      },
+      function(result) {
+        onSuccess(result);
+    });
+  }
+
+  service.clearAccelerometerWatch = function() {
+    if (service.accelerationWatch != null){
+      service.accelerationWatch.clearWatch();
+      service.accelerationWatch = null;
+    }
+  };
 
   return service;
 });

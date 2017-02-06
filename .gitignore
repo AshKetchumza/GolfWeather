@@ -11,5 +11,7 @@ www/lib/angular*
 www/lib/jquery/
 www/lib/slick-carousel/
 www/lib/
+res/
+resources/
 
 config.xml

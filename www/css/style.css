@@ -74,3 +74,46 @@
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.compass-location {
+  font-weight: bold; }
+
+.compass-spinner svg {
+  width: 60px;
+  height: 60px; }
+
+.content-location {
+  position: relative;
+  z-index: 2; }
+  .content-location .card {
+    margin-top: 10px; }
+
+.compass-compass-figure {
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  width: 200px;
+  height: 200px; }
+
+.compass-compass-image {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1; }
+
+.compass-compass-arrow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200px;
+  height: 200px;
+  z-index: 2;
+  -webkit-transition: all 1000/60ms linear;
+  transition: all 1000/60ms linear; }
+
+.compass-compass-heading {
+  font-family: monospace;
+  margin: 30px 0 20px 0;
+  font-size: 54px; }
