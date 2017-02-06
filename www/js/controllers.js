@@ -592,6 +592,9 @@ angular.module('starter.controllers', [])
       $scope.compassSupported = false;
       console.log('Compass Supported: ', $scope.compassSupported);
       console.log('CompassController.startOrientation.error: ', err);
+      alert('The Compass is not supported by your device");
+      $state.go('app.search-courses');
+      //$state.go($state.previous.name); //not sure if this works, commented out for now.
     });
 
     var options = {
