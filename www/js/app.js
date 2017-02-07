@@ -890,7 +890,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
 
 })
 
-.service('DeviceService', function($ionicPlatform, $cordovaDeviceMotion, $cordovaDeviceOrientation) {
+.service('DeviceService', function($q, $ionicPlatform, $cordovaDeviceMotion, $cordovaDeviceOrientation) {
   var service = {headingWatch: null, accelerationWatch: null};
 
   service.getCurrentHeading = function() {
@@ -960,7 +960,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
   };
 
   service.watchAcceleration = function(onSuccess, onError) {
-    service.accelerationWatch = $cordovaDeviceMotion.watchAcceleration(options);
+    service.accelerationWatch = $cordovaDeviceMotion.watchAcceleration({frequency: 1000});
     service.accelerationWatch.then(
       null,
       function(error) {
@@ -971,7 +971,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
     });
   }
 
-  service.clearAccelerometerWatch = function() {
+  service.clearAccelerationWatch = function() {
     if (service.accelerationWatch != null){
       service.accelerationWatch.clearWatch();
       service.accelerationWatch = null;

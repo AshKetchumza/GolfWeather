@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $state, AppService) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $state, $rootScope, AppService, DeviceService) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -27,6 +27,15 @@ angular.module('starter.controllers', [])
     //var newSettings = { temp: $scope.units.temp, clock: $scope.units.clock, homeView: $scope.homeView };
     AppService.ApplyUserSettings($scope.settings);
   };
+
+  $rootScope.$on('$stateChangeSuccess', function() {
+    if ($state.current.name != 'app.compass') {
+      DeviceService.clearHeadingWatch();
+    }
+    if ($state.current.name != 'app.slope-reader') {
+      DeviceService.clearAccelerationWatch();
+    }
+  });
 
 })
 
@@ -592,8 +601,8 @@ angular.module('starter.controllers', [])
       $scope.compassSupported = false;
       console.log('Compass Supported: ', $scope.compassSupported);
       console.log('CompassController.startOrientation.error: ', err);
-      alert('The Compass is not supported by your device");
-      $state.go('app.search-courses');
+      alert('The Compass is not supported by your device');
+      //$state.go('app.search-courses');
       //$state.go($state.previous.name); //not sure if this works, commented out for now.
     });
 
@@ -673,9 +682,32 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('SlopeReaderController', function($scope) {
+.controller('SlopeReaderController', function($scope, DeviceService) {
   //use the following plugin for the information required for this controller
   //https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device-motion/index.html
+  //http://ngcordova.com/docs/plugins/deviceMotion/
+  $scope.device = {X: 0, Y:0, Z:0};
+  DeviceService.getCurrentAcceleration().success(function(data) {
+    $scope.device.X = data.x;
+    $scope.device.Y = data.y;
+    $scope.device.Z = data.z;
+    DeviceService.watchAcceleration($scope.watchSuccess, $scope.watchError)
+  }).error(function(data){
+    alert('The Slope Reader/Accelerometer is not supported by your device');
+    //$state.go('app.search-courses');
+    //$state.go($state.previous.name);
+  });
+
+  $scope.watchSuccess = function(data) {
+    $scope.device.X = data.x;
+    $scope.device.Y = data.y;
+    $scope.device.Z = data.z;
+  };
+
+  $scope.watchError = function(error) {
+    console.log('Slope Reader Error: ', error);
+    alert(error);
+  };
 })
 
 .controller('RadarController', function($scope) {
