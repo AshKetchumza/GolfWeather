@@ -566,7 +566,7 @@ angular.module('starter.controllers', [])
 
 //use the following plugin: cordova-plugin-device-orientation
 //cordova plugin add cordova-plugin-device-orientation
-.controller('CompassController', function($scope, $ionicPlatform, $cordovaDeviceOrientation) {
+.controller('CompassController', function($scope, $ionicPlatform, DeviceService) {//$cordovaDeviceOrientation) {
   //get the initial heading usign navigator.compass.getCurrentHeading(success, error);
   //sample usage documented on https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device-orientation/index.html
 
@@ -576,63 +576,100 @@ angular.module('starter.controllers', [])
   $scope.compassSupported = true;
   console.log(vm);
 
-  // Device Orientation plugin
+  $scope.orientation = false;
 
-  $ionicPlatform.ready(function() {
-    startOrientation();
+  $scope.magneticHeading = 0;
+  $scope.trueHeading = 0;
+  $scope.accuracy = 0;
+  $scope.timeStamp = 0;
+
+  DeviceService.getCurrentHeading().success(function(result) {
+    $scope.orientation = true;
+
+    $scope.magneticHeading = result.magneticHeading;
+    $scope.trueHeading = result.trueHeading;
+    $scope.accuracy = result.headingAccuracy;
+    $scope.timeStamp = result.timestamp;
+    console.log('Compass Success: ', result);
+    cardinalDirection();
+    DeviceService.watchHeading($scope.watchSuccess, $scope.watchError)
+  }).error(function(data){
+    alert('The Slope Reader/Accelerometer is not supported by your device');
+    //$state.go('app.search-courses');
+    //$state.go($state.previous.name);
   });
 
-  function startOrientation() {
+  $scope.watchSuccess = function(result) {
+    $scope.magneticHeading = result.magneticHeading;
+    $scope.trueHeading = result.trueHeading;
+    $scope.accuracy = result.headingAccuracy;
+    $scope.timeStamp = result.timestamp;
+    console.log('Compass Success: ', result);
+    cardinalDirection();
+  };
 
-    $cordovaDeviceOrientation.getCurrentHeading().then(function(result) {
-      console.log('Compass: ', result);
-      $scope.orientation = true;
+  $scope.watchError = function(error) {
+    console.log('Slope Reader Error: ', error);
+    alert(error);
+  };
 
-      $scope.magneticHeading = result.magneticHeading;
-      $scope.trueHeading = result.trueHeading;
-      $scope.accuracy = result.headingAccuracy;
-      $scope.timeStamp = result.timestamp;
+  // Device Orientation plugin
 
-      cardinalDirection();
-    }, function(err) {
-      // An error occurred
-      $scope.orientation = false;
-      $scope.error = err;
-      $scope.compassSupported = false;
-      console.log('Compass Supported: ', $scope.compassSupported);
-      console.log('CompassController.startOrientation.error: ', err);
-      alert('The Compass is not supported by your device');
-      //$state.go('app.search-courses');
-      //$state.go($state.previous.name); //not sure if this works, commented out for now.
-    });
-
-    var options = {
-      frequency: 3000,
-      filter: true     // if frequency is set, filter is ignored
-    };
-
-    var watch = $cordovaDeviceOrientation.watchHeading(options).then(
-      null,
-      function(err) {
-        // An error occurred
-        $scope.orientation = false;
-        $scope.error = err;
-        console.log('CompassController.watch.error: ', err);
-        $scope.compassSupported = false;
-        console.log('Compass Supported: ', $scope.compassSupported);
-      },
-      function(result) {   // updates constantly (depending on frequency value)
-
-        $scope.orientation = true;
-
-        $scope.magneticHeading = result.magneticHeading;
-        $scope.trueHeading = result.trueHeading;
-        $scope.accuracy = result.headingAccuracy;
-        $scope.timeStamp = result.timestamp;
-        cardinalDirection();
-      });
-
-  }
+  // $ionicPlatform.ready(function() {
+  //   startOrientation();
+  // });
+  //
+  // function startOrientation() {
+  //
+  //   $cordovaDeviceOrientation.getCurrentHeading().then(function(result) {
+  //     console.log('Compass: ', result);
+  //     $scope.orientation = true;
+  //
+  //     $scope.magneticHeading = result.magneticHeading;
+  //     $scope.trueHeading = result.trueHeading;
+  //     $scope.accuracy = result.headingAccuracy;
+  //     $scope.timeStamp = result.timestamp;
+  //
+  //     cardinalDirection();
+  //   }, function(err) {
+  //     // An error occurred
+  //     $scope.orientation = false;
+  //     $scope.error = err;
+  //     $scope.compassSupported = false;
+  //     console.log('Compass Supported: ', $scope.compassSupported);
+  //     console.log('CompassController.startOrientation.error: ', err);
+  //     alert('The Compass is not supported by your device');
+  //     //$state.go('app.search-courses');
+  //     //$state.go($state.previous.name); //not sure if this works, commented out for now.
+  //   });
+  //
+  //   var options = {
+  //     frequency: 100,
+  //     filter: true     // if frequency is set, filter is ignored
+  //   };
+  //
+  //   var watch = $cordovaDeviceOrientation.watchHeading(options).then(
+  //     null,
+  //     function(err) {
+  //       // An error occurred
+  //       $scope.orientation = false;
+  //       $scope.error = err;
+  //       console.log('CompassController.watch.error: ', err);
+  //       $scope.compassSupported = false;
+  //       console.log('Compass Supported: ', $scope.compassSupported);
+  //     },
+  //     function(watchResult) {   // updates constantly (depending on frequency value)
+  //       console.log('CompassController.watch.success: ', watchResult);
+  //       $scope.orientation = true;
+  //
+  //       $scope.magneticHeading = watchResult.magneticHeading;
+  //       $scope.trueHeading = watchResult.trueHeading;
+  //       $scope.accuracy = watchResult.headingAccuracy;
+  //       $scope.timeStamp = watchResult.timestamp;
+  //       cardinalDirection();
+  //     });
+  //
+  // }
 
   console.log('Compass Supported: ', $scope.compassSupported);
 
@@ -678,7 +715,7 @@ angular.module('starter.controllers', [])
   }
 
   function $onDestroy() {
-    watch.clearWatch();
+    //watch.clearWatch();
   }
 })
 

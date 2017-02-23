@@ -917,7 +917,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
   };
 
   service.watchHeading = function(onSuccess, onError) {
-    service.headingWatch = $cordovaDeviceOrientation.watchHeading(options).then(
+    service.headingWatch = $cordovaDeviceOrientation.watchHeading({frequency: 1000}).then(
      null,
      function(error) {
        onError(error);
