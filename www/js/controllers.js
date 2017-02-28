@@ -83,9 +83,28 @@ angular.module('starter.controllers', [])
           }
         });
 
+        //get weather summary for the week...
+        CourseService.GetWeatherSummary($scope.selectedCourse.id).success(function(data) {
+          console.log('Summary Weather: ', data.data)
+          $scope.selectedCourse.summaryWeather = [];
+          //console.log('Detailed Weather: ', $scope.selectedCourse.detailedWeather)
+          data.data.forEach(function(day) {
+            $scope.selectedCourse.summaryWeather.push(day);            
+          });
+
+          //$scope.selectedCourse.detailedWeather = data.data;
+          $ionicLoading.hide();
+          $scope.weatherLoaded = true;
+        }).error(function(data) {
+          console.log('Error: ',data)
+          $ionicLoading.hide();
+          //display error message
+          $scope.showAlert({title: data.title, message: data.message});
+        });
+
         //$scope.selectedCourse.detailedWeather = data.data;
-        $ionicLoading.hide();
-        $scope.weatherLoaded = true;
+        //$ionicLoading.hide();
+        //$scope.weatherLoaded = true;
       }).error(function(data) {
         console.log('Error: ',data)
         $ionicLoading.hide();
