@@ -75,6 +75,35 @@
             </div> -->
           </div>
         </slick>
+        <div class="item card">
+          <slick infinate="false" settings="slickSettings" data="selectedCourse.summaryWeather" ng-if="weatherLoaded">
+            <!--<div class="item card" ng-repeat="detail in selectedCourse.summaryWeather">-->
+              <div class="item item-divider">
+                <h3>SUMMARY FORECAST</h3>
+              </div>
+              <div class="item item-text-wrap">
+                <div class="row">
+                  <div class="col" ng-repeat="day in selectedCourse.summaryWeather">
+                    <div class="row" >{{day.weekday}}</div>
+                    <div class="row"><img ng-src="img/weathericons/{{day.icon}}_24.png" ></div>
+                    <div class="row" ng-show={{settings.temp=='metric'}}>{{day.hi_cel}}&deg;C</div>
+                    <div class="row" ng-show={{settings.temp=='imperial'}}>{{day.hi_fahr}}&deg;F</div>
+                    <div class="row" style="font-size: 12px;" ng-show={{settings.temp=='metric'}}>{{day.lo_cel}}&deg;C</div>
+                    <div class="row" style="font-size: 12px;" ng-show={{settings.temp=='imperial'}}>{{day.lo_fahr}}&deg;F</div>
+                    <div class="row">{{day.pop_perc}}%</div>
+                    <div class="row" ng-show={{settings.temp=='metric'}}>{{day.wind_speed_kmh}}km/h</div>                  
+                    <div class="row" ng-show={{settings.temp=='imperial'}}>{{day.wind_speed_mph}}mph</div>
+                    <div class="row" ng-show={{settings.temp=='metric'}}>{{day.wind_dir_desc}}</div>                  
+                    <div class="row" ng-show={{settings.temp=='imperial'}}>{{day.wind_dir_desc}}</div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="item item-divider">
+                I'm a Footer in a Card!
+              </div> -->
+            <!--</div>-->
+          </slick>
+        </div>
     </div>
   </ion-content>
 </ion-view>
