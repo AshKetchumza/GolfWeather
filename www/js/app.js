@@ -1,982 +1,979 @@
-// Ionic Starter App
+angular.module('starter.controllers', [])
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.controllers', 'starter.directives'])
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $state, $rootScope, AppService, DeviceService) {
 
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
+  // With the new view caching in Ionic, Controllers are only called
+  // when they are recreated or on app start, instead of every page change.
+  // To listen for when this page is active (for example, to refresh data),
+  // listen for the $ionicView.enter event:
+  //$scope.$on('$ionicView.enter', function(e) {
+  //});
 
+  $scope.settings = AppService.GetUserSettings();
+
+  // $scope.units = {
+  //   temp: data.temp,
+  //   clock: data.clock
+  // };
+
+  $scope.homeViewOptions = [
+    {value: 'MC', text: 'My Courses'},
+    {value: 'LVC', text: 'Last Visited Course'},
+    {value: 'FC', text: 'Favourite Course'}
+  ];
+
+  $scope.UserSettingsUpdate = function() {
+    console.log($scope.settings);
+    //var newSettings = { temp: $scope.units.temp, clock: $scope.units.clock, homeView: $scope.homeView };
+    AppService.ApplyUserSettings($scope.settings);
+  };
+
+  $rootScope.$on('$stateChangeSuccess', function() {
+    if ($state.current.name != 'app.compass') {
+      DeviceService.clearHeadingWatch();
     }
-    if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
+    if ($state.current.name != 'app.slope-reader') {
+      DeviceService.clearAccelerationWatch();
     }
   });
+
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
-  $stateProvider
+.controller('MyCoursesCtrl', function($scope, $state, $ionicLoading, CourseService, AppService) {
 
-    .state('app', {
-    url: '/app',
-    abstract: true,
-    templateUrl: 'templates/menu.html',
-    controller: 'AppCtrl'
-  })
+    $scope.selectedCourse = CourseService.viewCourse;
 
-  .state('app.my-courses', {
-    url: '/my-courses',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/my-courses.html',
-          controller: "MyCoursesCtrl"
-      }
-    }
-  })
+    $scope.settings = AppService.GetUserSettings();
 
-  .state('app.forecast', {
-    url: '/forecast',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/forecast.html',
-          controller: "MyCoursesCtrl"
-      }
-    }
-  })
+    $scope.weatherLoaded = true;
 
-  .state('app.settings', {
-    url: '/settings',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/settings.html',
-        controller: 'AppCtrl'
-      }
-    }
-  })
+    console.log($scope.settings);
 
-  .state('app.signin', {
-    url: '/signin',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/signin.html'
-      }
-    }
-  })
+    $scope.slickSettings = {
+      method:{},
+      dots:true,
+      infinate:false,
+      slidesToShow:1
+    };
 
-  .state('app.missing-courses', {
-      url: '/missing-courses',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/missing-courses.html'
-        }
-      }
-    })
-
-    .state('app.map', {
-        url: '/map',
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/map.html',
-            controller: 'MyCoursesCtrl'
+    if ($state.current.name === 'app.forecast') {
+      $scope.settings = AppService.GetUserSettings();
+      $scope.selectedCourse.current = JSON.parse(CourseService.viewCourse.current_json);
+      $ionicLoading.show();
+      $scope.weatherLoaded = false;
+      CourseService.GetDetailedConditions($scope.selectedCourse.id).success(function(data) {
+        console.log('Detailed Weather: ', data.data)
+        $scope.selectedCourse.detailedWeather = [];
+        //console.log('Detailed Weather: ', $scope.selectedCourse.detailedWeather)
+        data.data.forEach(function(detail) {
+          var added = false;
+          for (var i = 0; i < $scope.selectedCourse.detailedWeather.length; i++)
+          {
+            var day = $scope.selectedCourse.detailedWeather[i];
+            if (day.date == detail.local_time) {
+              day.timeslots.push(detail);
+              added = true;
+              break;
+            }
           }
-        }
-      })
-
-  .state('app.share', {
-    url: '/share',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/share.html'
-      }
-    }
-  })
-
-  .state('app.golf-stats', {
-    url: '/golf-stats',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/golf-stats.html'
-      }
-    }
-  })
-  .state('app.upgrade', {
-    url: '/upgrade',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/upgrade.html'
-      }
-    }
-  })
-
-  .state('app.rate', {
-    url: '/rate',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/rate.html'
-      }
-    }
-  })
-
-  .state('app.support', {
-    url: '/support',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/support.html'
-      }
-    }
-  })
-
-  .state('app.suggested-apps', {
-    url: '/suggested-apps',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/suggested-apps.html'
-      }
-    }
-  })
-
-  .state('app.news', {
-    url: '/news',
-    views : {
-      'menuContent' : {
-        templateUrl: 'templates/news.html',
-        controller: 'NewsController'
-      }
-    }
-  })
-
-  .state('app.news-article', {
-    url: '/news-article',
-    views : {
-      'menuContent' : {
-        templateUrl: 'templates/article.html',
-        controller: 'NewsController'
-      }
-    }
-  })
-
-  .state('app.tips', {
-    url: '/tips',
-    views : {
-      'menuContent' : {
-        templateUrl: 'templates/viewtips.html',
-        controller: 'TipsController'
-      }
-    }
-  })
-
-  .state('app.tip', {
-    url: '/tip',
-    views : {
-      'menuContent' : {
-        templateUrl: 'templates/tip.html',
-        controller: 'TipsController'
-      }
-    }
-  })
-
-  .state('app.compass', {
-    url: '/compass',
-    views : {
-      'menuContent' : {
-        templateUrl: 'templates/compass.html',
-        controller: 'CompassController'
-      }
-    }
-  })
-
-  .state('app.radar', {
-    url: '/radar',
-    views : {
-      'menuContent' : {
-        templateUrl: 'templates/radar.html',
-        controller: 'RadarController'
-      }
-    }
-  })
-
-  .state('app.slope-reader', {
-    url: '/slope-reader',
-    views : {
-      'menuContent' : {
-        templateUrl: 'templates/slope-reader.html',
-        controller: 'SlopeReaderController'
-      }
-    }
-  })
-
-  .state('app.prizedraw', {
-    url: '/prizedraw',
-    views : {
-      'menuContent' : {
-        templateUrl: 'templates/prizedraw.html',
-        controller: 'PrizeDrawController'
-      }
-    }
-  })
-
-  .state('app.search-courses', {
-    url: '/search-courses',
-    views : {
-      'menuContent' : {
-        templateUrl: 'templates/search-courses.html',
-        controller: 'SearchController'
-      }
-    }
-   })
-
-   .state('app.search-results', {
-     url: '/search-results/:countryID/:keyword',
-     views : {
-       'menuContent' : {
-         templateUrl: 'templates/search-results.html',
-         controller: 'SearchController'
-       }
-     }
-    })
-
-   .state('app.course-directory', {
-     url: '/course-directory',
-     views : {
-       'menuContent' : {
-        templateUrl: 'templates/course-directory.html',
-        controller: 'SearchController'
-      }
-    }
-  })
-
- .state('app.search-continent-regions', {
-   url: '/search-continent-regions',
-   views : {
-     'menuContent' : {
-        templateUrl: 'templates/course-directory-countries.html',
-        controller: 'SearchController'
-      }
-    }
-  })
-
- .state('app.search-country-regions', {
-   url: '/search-country-regions',
-   views : {
-     'menuContent' : {
-        templateUrl: 'templates/course-directory-regions.html',
-        controller: 'SearchController'
-      }
-    }
-  })
-
- .state('app.search-region-subregions', {
-   url: '/search-region-subregions',
-   views : {
-     'menuContent' : {
-        templateUrl: 'templates/course-directory-subregions.html',
-        controller: 'SearchController'
-      }
-    }
-  })
-
- .state('app.search-region-courses', {
-   url: '/search-region-courses',
-   views : {
-     'menuContent' : {
-        templateUrl: 'templates/course-directory-courses.html',
-        controller: 'SearchController'
-      }
-    }
-  })
-
-  .state('app.courses-nearby', {
-    url: '/courses-nearby',
-    views : {
-      'menuContent' : {
-        templateUrl: 'templates/nearby.html',
-        controller: 'SearchController'
-      }
-    }
-  });
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/search-courses');
-})
-
-.service('AppService', function() {
-  var service = {};
-
-  service.GetUrl = function(url, params) {
-    var res = 'http://www.golfweather.com/app/' + url;
-    for(var prop in params) {
-      res = res.replace('{' + prop + '}', params[prop]);
-    }
-    console.log('URL: ', res);
-    return res;
-  };
-
-  service.GetUserSettings = function() {
-    var data = { temp: 'metric', clock: '24', homeView: 'MC' };
-    //
-    //console.log(localStorage.getItem("GWUserSettings"));
-
-    if (!localStorage.getItem("GWUserSettings"))
-    {
-      service.ApplyUserSettings(data);
-    }else {
-      data = JSON.parse(localStorage.getItem("GWUserSettings"));
-    }
-
-    return data;
-  };
-
-  service.ApplyUserSettings = function(data) {
-    localStorage.setItem('GWUserSettings', JSON.stringify(data));
-  };
-
-  return service;
-})
-
-//Course Service
-.service('CourseService', function($q, $http, AppService, GeoService){
-    var service = {
-        viewCourse : {},
-        selectedContinent:{},
-        selectedCountry: {},
-        selectedRegion: {},
-        selectedSubregion: {},
-        currentPosition : { coords : {
-            latitude: 0,
-            longitude: 0
+          if (!added) {
+            var day = { date: detail.local_time, weekday: detail.weekday, timeslots: [] };
+            day.timeslots.push(detail);
+            $scope.selectedCourse.detailedWeather.push(day);
           }
-        },
-        continents: [
-          {name:'Africa', id:'AF'},
-          {name:'Asia', id:'AS'},
-          {name:'Europe', id:'EU'},
-          {name:'North America', id:'NA'},
-          {name:'Oceania', id:'OC'},
-          {name:'South America', id:'SA'}
-        ],
-        countries: [
-        	{ id: "AO",name: "Angola",continent: "AF" },
-        	{ id: "BF",name: "Burkina Faso",continent: "AF" },
-        	{ id: "BI",name: "Burundi",continent: "AF" },
-        	{ id: "BJ",name: "Benin",continent: "AF" },
-        	{ id: "BW",name: "Botswana",continent: "AF" },
-        	{ id: "CD",name: "Democratic Republic of the Congo",continent: "AF" },
-        	{ id: "CF",name: "Central African Republic",continent: "AF" },
-        	{ id: "CG",name: "Republic of the Congo",continent: "AF" },
-        	{ id: "CI",name: "Ivory Coast",continent: "AF" },
-        	{ id: "CM",name: "Cameroon",continent: "AF" },
-        	{ id: "CV",name: "Cape Verde",continent: "AF" },
-        	{ id: "DJ",name: "Djibouti",continent: "AF" },
-        	{ id: "DZ",name: "Algeria",continent: "AF" },
-        	{ id: "EG",name: "Egypt",continent: "AF" },
-        	{ id: "EH",name: "Western Sahara",continent: "AF" },
-        	{ id: "ER",name: "Eritrea",continent: "AF" },
-        	{ id: "ET",name: "Ethiopia",continent: "AF" },
-        	{ id: "GA",name: "Gabon",continent: "AF" },
-        	{ id: "GH",name: "Ghana",continent: "AF" },
-        	{ id: "GM",name: "Gambia",continent: "AF" },
-        	{ id: "GN",name: "Guinea",continent: "AF" },
-        	{ id: "GQ",name: "Equatorial Guinea",continent: "AF" },
-        	{ id: "GW",name: "Guinea-Bissau",continent: "AF" },
-        	{ id: "KE",name: "Kenya",continent: "AF" },
-        	{ id: "KM",name: "Comoros",continent: "AF" },
-        	{ id: "LR",name: "Liberia",continent: "AF" },
-        	{ id: "LS",name: "Lesotho",continent: "AF" },
-        	{ id: "MA",name: "Morocco",continent: "AF" },
-        	{ id: "MG",name: "Madagascar",continent: "AF" },
-        	{ id: "ML",name: "Mali",continent: "AF" },
-        	{ id: "MR",name: "Mauritania",continent: "AF" },
-        	{ id: "MU",name: "Mauritius",continent: "AF" },
-        	{ id: "MW",name: "Malawi",continent: "AF" },
-        	{ id: "MZ",name: "Mozambique",continent: "AF" },
-        	{ id: "NA",name: "Namibia",continent: "AF" },
-        	{ id: "NE",name: "Niger",continent: "AF" },
-        	{ id: "NG",name: "Nigeria",continent: "AF" },
-        	{ id: "RE",name: "Reunion",continent: "AF" },
-        	{ id: "RW",name: "Rwanda",continent: "AF" },
-        	{ id: "SC",name: "Seychelles",continent: "AF" },
-        	{ id: "SD",name: "Sudan",continent: "AF" },
-        	{ id: "SH",name: "Saint Helena",continent: "AF" },
-        	{ id: "SL",name: "Sierra Leone",continent: "AF" },
-        	{ id: "SN",name: "Senegal",continent: "AF" },
-        	{ id: "ST",name: "Sao Tome and Principe",continent: "AF" },
-        	{ id: "SZ",name: "Swaziland",continent: "AF" },
-        	{ id: "TD",name: "Chad",continent: "AF" },
-        	{ id: "TG",name: "Togo",continent: "AF" },
-        	{ id: "TN",name: "Tunisia",continent: "AF" },
-        	{ id: "TZ",name: "Tanzania",continent: "AF" },
-        	{ id: "UG",name: "Uganda",continent: "AF" },
-        	{ id: "YT",name: "Mayotte",continent: "AF" },
-        	{ id: "ZA",name: "South Africa",continent: "AF" },
-        	{ id: "ZM",name: "Zambia",continent: "AF" },
-        	{ id: "ZW",name: "Zimbabwe",continent: "AF" },
-        	{ id: "AQ",name: "Antarctica",continent: "AN" },
-        	{ id: "BV",name: "Bouvet Island",continent: "AN" },
-        	{ id: "GS",name: "South Georgia and the South Sandwich Islands",continent: "AN" },
-        	{ id: "HM",name: "Heard Island and McDonald Islands",continent: "AN" },
-        	{ id: "TF",name: "French Southern Territories",continent: "AN" },
-        	{ id: "AE",name: "United Arab Emirates",continent: "AS" },
-        	{ id: "AF",name: "Afghanistan",continent: "AS" },
-        	{ id: "AM",name: "Armenia",continent: "AS" },
-        	{ id: "AZ",name: "Azerbaijan",continent: "AS" },
-        	{ id: "BD",name: "Bangladesh",continent: "AS" },
-        	{ id: "BH",name: "Bahrain",continent: "AS" },
-        	{ id: "BN",name: "Brunei",continent: "AS" },
-        	{ id: "BT",name: "Bhutan",continent: "AS" },
-        	{ id: "CN",name: "China",continent: "AS" },
-        	{ id: "CX",name: "Christmas Island",continent: "AS" },
-        	{ id: "GE",name: "Georgia",continent: "AS" },
-        	{ id: "HK",name: "Hong Kong",continent: "AS" },
-        	{ id: "ID",name: "Indonesia",continent: "AS" },
-        	{ id: "IL",name: "Israel",continent: "AS" },
-        	{ id: "IN",name: "India",continent: "AS" },
-        	{ id: "IQ",name: "Iraq",continent: "AS" },
-        	{ id: "JO",name: "Jordan",continent: "AS" },
-        	{ id: "JP",name: "Japan",continent: "AS" },
-        	{ id: "KG",name: "Kyrgyzstan",continent: "AS" },
-        	{ id: "KH",name: "Cambodia",continent: "AS" },
-        	{ id: "KR",name: "South Korea",continent: "AS" },
-        	{ id: "KW",name: "Kuwait",continent: "AS" },
-        	{ id: "KZ",name: "Kazakhstan",continent: "AS" },
-        	{ id: "LA",name: "Laos",continent: "AS" },
-        	{ id: "LB",name: "Lebanon",continent: "AS" },
-        	{ id: "LK",name: "Sri Lanka",continent: "AS" },
-        	{ id: "MM",name: "Myanmar",continent: "AS" },
-        	{ id: "MN",name: "Mongolia",continent: "AS" },
-        	{ id: "MO",name: "Macao",continent: "AS" },
-        	{ id: "MV",name: "Maldives",continent: "AS" },
-        	{ id: "MY",name: "Malaysia",continent: "AS" },
-        	{ id: "NP",name: "Nepal",continent: "AS" },
-        	{ id: "OM",name: "Oman",continent: "AS" },
-        	{ id: "PH",name: "Philippines",continent: "AS" },
-        	{ id: "PK",name: "Pakistan",continent: "AS" },
-        	{ id: "QA",name: "Qatar",continent: "AS" },
-        	{ id: "SA",name: "Saudi Arabia",continent: "AS" },
-        	{ id: "SG",name: "Singapore",continent: "AS" },
-        	{ id: "TH",name: "Thailand",continent: "AS" },
-        	{ id: "TM",name: "Turkmenistan",continent: "AS" },
-        	{ id: "TR",name: "Turkey",continent: "AS" },
-        	{ id: "TW",name: "Taiwan",continent: "AS" },
-        	{ id: "UZ",name: "Uzbekistan",continent: "AS" },
-        	{ id: "VN",name: "Vietnam",continent: "AS" },
-        	{ id: "YE",name: "Yemen",continent: "AS" },
-        	{ id: "AD",name: "Andorra",continent: "EU" },
-        	{ id: "AL",name: "Albania",continent: "EU" },
-        	{ id: "AT",name: "Austria",continent: "EU" },
-        	{ id: "BE",name: "Belgium",continent: "EU" },
-        	{ id: "BG",name: "Bulgaria",continent: "EU" },
-        	{ id: "BY",name: "Belarus",continent: "EU" },
-        	{ id: "CH",name: "Switzerland",continent: "EU" },
-        	{ id: "CS",name: "Serbia and Montenegro",continent: "EU" },
-        	{ id: "CY",name: "Cyprus",continent: "EU" },
-        	{ id: "CZ",name: "Czech Republic",continent: "EU" },
-        	{ id: "DE",name: "Germany",continent: "EU" },
-        	{ id: "DK",name: "Denmark",continent: "EU" },
-        	{ id: "EE",name: "Estonia",continent: "EU" },
-        	{ id: "ES",name: "Spain",continent: "EU" },
-        	{ id: "FI",name: "Finland",continent: "EU" },
-        	{ id: "FO",name: "Faroe Islands",continent: "EU" },
-        	{ id: "FR",name: "France",continent: "EU" },
-        	{ id: "GB",name: "United Kingdom",continent: "EU" },
-        	{ id: "GI",name: "Gibraltar",continent: "EU" },
-        	{ id: "GR",name: "Greece",continent: "EU" },
-        	{ id: "HR",name: "Croatia",continent: "EU" },
-        	{ id: "HU",name: "Hungary",continent: "EU" },
-        	{ id: "IE",name: "Ireland",continent: "EU" },
-        	{ id: "IM",name: "Isle of Man",continent: "EU" },
-        	{ id: "IS",name: "Iceland",continent: "EU" },
-        	{ id: "IT",name: "Italy",continent: "EU" },
-        	{ id: "JE",name: "Jersey",continent: "EU" },
-        	{ id: "LI",name: "Liechtenstein",continent: "EU" },
-        	{ id: "LT",name: "Lithuania",continent: "EU" },
-        	{ id: "LU",name: "Luxembourg",continent: "EU" },
-        	{ id: "LV",name: "Latvia",continent: "EU" },
-        	{ id: "MC",name: "Monaco",continent: "EU" },
-        	{ id: "MD",name: "Moldova",continent: "EU" },
-        	{ id: "ME",name: "Montenegro",continent: "EU" },
-        	{ id: "MK",name: "Macedonia",continent: "EU" },
-        	{ id: "MT",name: "Malta",continent: "EU" },
-        	{ id: "NL",name: "Netherlands",continent: "EU" },
-        	{ id: "NO",name: "Norway",continent: "EU" },
-        	{ id: "PL",name: "Poland",continent: "EU" },
-        	{ id: "PT",name: "Portugal",continent: "EU" },
-        	{ id: "RO",name: "Romania",continent: "EU" },
-        	{ id: "RS",name: "Serbia",continent: "EU" },
-        	{ id: "RU",name: "Russia",continent: "EU" },
-        	{ id: "SE",name: "Sweden",continent: "EU" },
-        	{ id: "SI",name: "Slovenia",continent: "EU" },
-        	{ id: "SK",name: "Slovakia",continent: "EU" },
-        	{ id: "SM",name: "San Marino",continent: "EU" },
-        	{ id: "UA",name: "Ukraine",continent: "EU" },
-        	{ id: "AG",name: "Antigua and Barbuda",continent: "NA" },
-        	{ id: "AI",name: "Anguilla",continent: "NA" },
-        	{ id: "AN",name: "Netherlands Antilles",continent: "NA" },
-        	{ id: "AW",name: "Aruba",continent: "NA" },
-        	{ id: "BB",name: "Barbados",continent: "NA" },
-        	{ id: "BM",name: "Bermuda",continent: "NA" },
-        	{ id: "BS",name: "Bahamas",continent: "NA" },
-        	{ id: "BZ",name: "Belize",continent: "NA" },
-        	{ id: "CA",name: "Canada",continent: "NA" },
-        	{ id: "CR",name: "Costa Rica",continent: "NA" },
-        	{ id: "CU",name: "Cuba",continent: "NA" },
-        	{ id: "CW",name: "Curacao",continent: "NA" },
-        	{ id: "DO",name: "Dominican Republic",continent: "NA" },
-        	{ id: "GD",name: "Grenada",continent: "NA" },
-        	{ id: "GL",name: "Greenland",continent: "NA" },
-        	{ id: "GP",name: "Guadeloupe",continent: "NA" },
-        	{ id: "GT",name: "Guatemala",continent: "NA" },
-        	{ id: "HN",name: "Honduras",continent: "NA" },
-        	{ id: "HT",name: "Haiti",continent: "NA" },
-        	{ id: "JM",name: "Jamaica",continent: "NA" },
-        	{ id: "KN",name: "Saint Kitts and Nevis",continent: "NA" },
-        	{ id: "KY",name: "Cayman Islands",continent: "NA" },
-        	{ id: "LC",name: "Saint Lucia",continent: "NA" },
-        	{ id: "MQ",name: "Martinique",continent: "NA" },
-        	{ id: "MS",name: "Montserrat",continent: "NA" },
-        	{ id: "MX",name: "Mexico",continent: "NA" },
-        	{ id: "NI",name: "Nicaragua",continent: "NA" },
-        	{ id: "PA",name: "Panama",continent: "NA" },
-        	{ id: "PR",name: "Puerto Rico",continent: "NA" },
-        	{ id: "SV",name: "El Salvador",continent: "NA" },
-        	{ id: "TC",name: "Turks and Caicos Islands",continent: "NA" },
-        	{ id: "TT",name: "Trinidad and Tobago",continent: "NA" },
-        	{ id: "US",name: "United States",continent: "NA" },
-        	{ id: "VC",name: "Saint Vincent and the Grenadines",continent: "NA" },
-        	{ id: "VI",name: "U.S. Virgin Islands",continent: "NA" },
-        	{ id: "AS",name: "American Samoa",continent: "OC" },
-        	{ id: "AU",name: "Australia",continent: "OC" },
-        	{ id: "CK",name: "Cook Islands",continent: "OC" },
-        	{ id: "FJ",name: "Fiji",continent: "OC" },
-        	{ id: "GU",name: "Guam",continent: "OC" },
-        	{ id: "KI",name: "Kiribati",continent: "OC" },
-        	{ id: "MH",name: "Marshall Islands",continent: "OC" },
-        	{ id: "MP",name: "Northern Mariana Islands",continent: "OC" },
-        	{ id: "NC",name: "New Caledonia",continent: "OC" },
-        	{ id: "NF",name: "Norfolk Island",continent: "OC" },
-        	{ id: "NR",name: "Nauru",continent: "OC" },
-        	{ id: "NU",name: "Niue",continent: "OC" },
-        	{ id: "NZ",name: "New Zealand",continent: "OC" },
-        	{ id: "PF",name: "French Polynesia",continent: "OC" },
-        	{ id: "PG",name: "Papua New Guinea",continent: "OC" },
-        	{ id: "PW",name: "Palau",continent: "OC" },
-        	{ id: "SB",name: "Solomon Islands",continent: "OC" },
-        	{ id: "TL",name: "East Timor",continent: "OC" },
-        	{ id: "TO",name: "Tonga",continent: "OC" },
-        	{ id: "TV",name: "Tuvalu",continent: "OC" },
-        	{ id: "VU",name: "Vanuatu",continent: "OC" },
-        	{ id: "WF",name: "Wallis and Futuna",continent: "OC" },
-        	{ id: "WS",name: "Samoa",continent: "OC" },
-        	{ id: "AR",name: "Argentina",continent: "SA" },
-        	{ id: "BO",name: "Bolivia",continent: "SA" },
-        	{ id: "BR",name: "Brazil",continent: "SA" },
-        	{ id: "CL",name: "Chile",continent: "SA" },
-        	{ id: "CO",name: "Colombia",continent: "SA" },
-        	{ id: "EC",name: "Ecuador",continent: "SA" },
-        	{ id: "GF",name: "French Guiana",continent: "SA" },
-        	{ id: "GY",name: "Guyana",continent: "SA" },
-        	{ id: "PE",name: "Peru",continent: "SA" },
-        	{ id: "PY",name: "Paraguay",continent: "SA" },
-        	{ id: "SR",name: "Suriname",continent: "SA" },
-        	{ id: "UY",name: "Uruguay",continent: "SA" },
-        	{ id: "VE",name: "Venezuela",continent: "SA" }
-        ]
-    };
-
-    service.ApplyViewCourse = function(data){
-      service.viewCourse = data;
-      localStorage.setItem('viewCourse', JSON.stringify(data));
-    };
-
-    service.LocalCheck = function() {
-        if (localStorage.getItem("viewCourse"))
-        {
-          //storage exists
-          this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewCourse")));
-        }
-    };
-
-    service.CountriesForContinent = function(id) {
-        var result = [];
-        for (var i = 0; i < service.countries.length; i++) {
-          if (service.countries[i].continent === id) {
-            result.push(service.countries[i]);
-          }
-        }
-        return result.sortBy('name');
-    };
-
-    service.RegionsForCountry = function(countryID) {
-      var deferred = $q.defer();
-	    var promise = deferred.promise;
-      $http({
-        url: AppService.GetUrl('get-regions/country_id/{id}', {id: countryID}),
-        method: "GET"
-      }).success(function (data, status, headers, config) {
-        console.log('RegionsForCountry->success: ', data);
-        deferred.resolve(data.sortBy('name'));
-      }).error(function (data, status, headers, config) {
-        console.log('RegionsForCountry->error-data: ', data);
-        console.log('RegionsForCountry->error-status: ', status);
-        console.log('RegionsForCountry->error-headers: ', headers);
-        deferred.reject(data);
-      });
-
-      promise.success = function (fn) {
-        promise.then(fn);
-        return promise;
-      }
-      promise.error = function (fn) {
-        promise.then(null, fn);
-        return promise;
-      }
-      return promise;
-    };
-
-    service.Search = function(countryID, keyword) {
-      var deferred = $q.defer();
-	    var promise = deferred.promise;
-      $http({
-        url: AppService.GetUrl('search/country/{id}/keywords/{keywords}', {id: countryID, keywords: keyword}),
-        method: "GET"
-      }).success(function (data, status, headers, config) {
-        console.log('Search->success: ', data);
-        deferred.resolve(data.sortBy('name'));
-      }).error(function (data, status, headers, config) {
-        console.log('Search->error: ', data);
-        console.log('Search->error-status: ', status);
-        console.log('Search->error-headers: ', headers);
-        deferred.reject(data);
-      });
-
-      promise.success = function (fn) {
-        promise.then(fn);
-        return promise;
-      }
-      promise.error = function (fn) {
-        promise.then(null, fn);
-        return promise;
-      }
-      return promise;
-    }
-
-    service.Nearby = function() {
-      var deferred = $q.defer();
-      var promise = deferred.promise;
-
-      cordova.plugins.diagnostic.isLocationEnabled(function(enabled) {
-          if (!enabled) {
-            deferred.reject({title: 'Location Service is disabled', message:'Please make sure your Location Service is enabled'});
-          }else {
-            GeoService.getPosition()
-              .then(function(pos) {
-                service.currentPosition.latitude =  Math.round(1E4 * pos.coords.latitude) / 1E4;
-                service.currentPosition.longitude =  Math.round(1E4 * pos.coords.longitude) / 1E4;
-                console.log('current coordinates: ', pos);
-                $http({
-                  url: AppService.GetUrl('get-close-by/latitude/{latitude}/longitude/{longitude}', service.currentPosition),
-                  method: "GET"
-                }).success(function (data, status, headers, config) {
-                  console.log('Nearby->success: ', data);
-                  deferred.resolve(data);
-                }).error(function (data, status, headers, config) {
-                  console.log('Nearby->error: ', data);
-                  console.log('Nearby->error-status: ', status);
-                  console.log('Nearby->error-headers: ', headers);
-                  deferred.reject(data);
-                });
-              });
-          }
-        }, function(error) {
-          console.log('getCurrentPosition error: ' + error);
-          deferred.reject({title: 'Location Service', message: error});
         });
 
-        promise.success = function (fn) {
-          promise.then(fn);
-          return promise;
-        }
-        promise.error = function (fn) {
-          promise.then(null, fn);
-          return promise;
-        }
-        return promise;
+        //get weather summary for the week...
+        CourseService.GetWeatherSummary($scope.selectedCourse.id).success(function(data) {
+          console.log('Summary Weather: ', data.data)
+          $scope.selectedCourse.summaryWeather = [];
+          //console.log('Detailed Weather: ', $scope.selectedCourse.detailedWeather)
+          data.data.forEach(function(day) {
+            $scope.selectedCourse.summaryWeather.push(day);            
+          });
+
+          //$scope.selectedCourse.detailedWeather = data.data;
+          $ionicLoading.hide();
+          $scope.weatherLoaded = true;
+        }).error(function(data) {
+          console.log('Error: ',data)
+          $ionicLoading.hide();
+          //display error message
+          $scope.showAlert({title: data.title, message: data.message});
+        });
+
+        //$scope.selectedCourse.detailedWeather = data.data;
+        //$ionicLoading.hide();
+        //$scope.weatherLoaded = true;
+      }).error(function(data) {
+        console.log('Error: ',data)
+        $ionicLoading.hide();
+        //display error message
+        $scope.showAlert({title: data.title, message: data.message});
+      });
     }
 
-    service.GetCurrentConditions = function(courseID) {
-      var deferred = $q.defer();
-	    var promise = deferred.promise;
-      $http({
-        url: AppService.GetUrl('/get-current-json/id/{id}', {id: courseID}),
-        method: "GET"
-      }).success(function (data, status, headers, config) {
-        console.log('GetCurrentConditions->success: ', data);
-        deferred.resolve(data);
-      }).error(function (data, status, headers, config) {
-        console.log('GetCurrentConditions->error: ', data);
-        console.log('GetCurrentConditions->error-status: ', status);
-        console.log('GetCurrentConditions->error-headers: ', headers);
-        deferred.reject(data);
-      });
+    console.log($scope.selectedCourse);
+    //$scope.selectedCourseName = CourseService.viewCourse.name;
+    //console.log($state.current.name);
 
-      promise.success = function (fn) {
-        promise.then(fn);
-        return promise;
-      }
-      promise.error = function (fn) {
-        promise.then(null, fn);
-        return promise;
-      }
-      return promise;
-    };
+     if ($state.current.name === 'app.map') {
+       initialize();
+    //   var mapOptions = {
+    //     zoom: 16,
+    //     mapTypeId: google.maps.MapTypeId.ROADMAP
+    //   };
+    //   var map = new google.maps.Map(document.getElementById("map"),
+    //         mapOptions);
+     }
 
-    service.GetDetailedConditions = function(courseID) {
-      var deferred = $q.defer();
-	    var promise = deferred.promise;
-      $http({
-        url: AppService.GetUrl('view-detailed/id/{id}', {id: courseID}),
-        method: "GET"
-      }).success(function (data, status, headers, config) {
-        console.log('GetDetailedConditions->success: ', data);
-        deferred.resolve(data);
-      }).error(function (data, status, headers, config) {
-        console.log('GetDetailedConditions->error: ', data);
-        console.log('GetDetailedConditions->error-status: ', status);
-        console.log('GetDetailedConditions->error-headers: ', headers);
-        deferred.reject(data);
-      });
-
-      promise.success = function (fn) {
-        promise.then(fn);
-        return promise;
-      }
-      promise.error = function (fn) {
-        promise.then(null, fn);
-        return promise;
-      }
-      return promise;
-    };
-
-    service.SubRegionsForRegion = function(regionID) {
-      var deferred = $q.defer();
-	    var promise = deferred.promise;
-      $http({
-        url: AppService.GetUrl('get-sub-regions/region_id/{id}', {id: regionID}),
-        method: "GET"
-      }).success(function (data, status, headers, config) {
-        console.log('SubRegionsForRegion->success: ', data);
-        deferred.resolve(data.sortBy('name'));
-      }).error(function (data, status, headers, config) {
-        console.log('SubRegionsForRegion->error: ', data);
-        console.log('SubRegionsForRegion->error-status: ', status);
-        console.log('SubRegionsForRegion->error-headers: ', headers);
-        deferred.reject(data);
-      });
-
-      promise.success = function (fn) {
-        promise.then(fn);
-        return promise;
-      }
-      promise.error = function (fn) {
-        promise.then(null, fn);
-        return promise;
-      }
-      return promise;
-    }
-
-    service.CoursesForRegion = function(subregionID) {
-      var deferred = $q.defer();
-	    var promise = deferred.promise;
-      var url = AppService.GetUrl('get-courses-for-regions/country_id/{countryID}', {countryID: service.selectedCountry.id, id: subregionID});
-      if (subregionID != service.selectedCountry.id) {
-        url = AppService.GetUrl('get-courses-for-regions/country_id/{countryID}/region_id/{id}', {countryID: service.selectedCountry.id, id: subregionID});
-        if (subregionID != service.selectedRegion.id)
+    $scope.myCourses = [
         {
-          url = AppService.GetUrl('get-courses-for-regions/country_id/{countryID}/region_id/{regionID}/sub_region_id/{subregionID}', {countryID: service.selectedCountry.id, regionID: service.selectedRegion.id,  subregionID: subregionID});
-        }
-      }
-      $http({
-        url: url,
-        method: "GET"
-      }).success(function (data, status, headers, config) {
-        console.log('CoursesForRegion->success: ', data);
-        deferred.resolve(data.sortBy('name'));
-      }).error(function (data, status, headers, config) {
-        console.log('CoursesForRegion->error: ', data);
-        console.log('CoursesForRegion->error-status: ', status);
-        console.log('CoursesForRegion->error-headers: ', headers);
-        deferred.reject(data);
-      });
-
-      promise.success = function (fn) {
-        promise.then(fn);
-        return promise;
-      }
-      promise.error = function (fn) {
-        promise.then(null, fn);
-        return promise;
-      }
-      return promise;
-    }
-
-
-  	service.LocalCheck();
-
-      return service;
-})
-
-//News Service
-.service('NewsService', function(){
-    var service = {
-        viewArticle : {}
-    };
-    service.ApplyViewArticle = function(data){
-    service.viewArticle = data;
-    localStorage.setItem('viewArticle', JSON.stringify(data));
-    };
-    service.LocalCheck = function() {
-        if (localStorage.getItem("viewArticle"))
+            name: "Milnerton",
+            temp: "11",
+            currentCond: "Mostly Cloudy. Cool",
+            sunrise: "5:53am",
+            sunset: "6.27pm",
+            temp1: "11",
+            rain1: "90",
+            mm1: "3.43",
+            wind1: "37",
+            dir1: "NNW",
+            temp2: "18",
+            rain2: "0",
+            mm2: "0",
+            wind2: "12",
+            dir2: "NNW",
+            temp3: "14",
+            rain3: "90",
+            mm3: "0.3",
+            wind3: "37",
+            dir3: "NNW",
+            temp4: "17",
+            rain4: "0",
+            mm4: "0",
+            wind4: "12",
+            dir4: "NNW",
+            temp5: "20",
+            rain5: "0",
+            mm5: "0",
+            wind5: "12",
+            dir5: "NNW"
+        },
+         {
+            name: "Atlantic Beach",
+            temp: "16",
+            currentCond: "Mostly Cloudy. Cool",
+            sunrise: "5:53am",
+            sunset: "6.27pm",
+            temp1: "11",
+            rain1: "90",
+            mm1: "3.43",
+            wind1: "37",
+            dir1: "NNW",
+            temp2: "18",
+            rain2: "0",
+            mm2: "0",
+            wind2: "12",
+            dir2: "NNW",
+            temp3: "14",
+            rain3: "90",
+            mm3: "0.3",
+            wind3: "37",
+            dir3: "NNW",
+            temp4: "17",
+            rain4: "0",
+            mm4: "0",
+            wind4: "12",
+            dir4: "NNW",
+            temp5: "20",
+            rain5: "0",
+            mm5: "0",
+            wind5: "12",
+            dir5: "NNW"
+        },
+         {
+            name: "Clovelly",
+            temp: "17",
+            currentCond: "Mostly Cloudy. Cool",
+            sunrise: "5:53am",
+            sunset: "6.27pm",
+            temp1: "11",
+            rain1: "90",
+            mm1: "3.43",
+            wind1: "37",
+            dir1: "NNW",
+            temp2: "18",
+            rain2: "0",
+            mm2: "0",
+            wind2: "12",
+            dir2: "NNW",
+            temp3: "14",
+            rain3: "90",
+            mm3: "0.3",
+            wind3: "37",
+            dir3: "NNW",
+            temp4: "17",
+            rain4: "0",
+            mm4: "0",
+            wind4: "12",
+            dir4: "NNW",
+            temp5: "20",
+            rain5: "0",
+            mm5: "0",
+            wind5: "12",
+            dir5: "NNW"
+        },
+         {
+            name: "Metropiton",
+            temp: "21",
+            currentCond: "Mostly Cloudy. Cool",
+            sunrise: "5:53am",
+            sunset: "6.27pm",
+            temp1: "11",
+            rain1: "90",
+            mm1: "3.43",
+            wind1: "37",
+            dir1: "NNW",
+            temp2: "18",
+            rain2: "0",
+            mm2: "0",
+            wind2: "12",
+            dir2: "NNW",
+            temp3: "14",
+            rain3: "90",
+            mm3: "0.3",
+            wind3: "37",
+            dir3: "NNW",
+            temp4: "17",
+            rain4: "0",
+            mm4: "0",
+            wind4: "12",
+            dir4: "NNW",
+            temp5: "20",
+            rain5: "0",
+            mm5: "0",
+            wind5: "12",
+            dir5: "NNW"
+        },
+         {
+            name: "Pearl Valley",
+            temp: "13",
+            currentCond: "Mostly Cloudy. Cool",
+            sunrise: "5:53am",
+            sunset: "6.27pm",
+            temp1: "11",
+            rain1: "90",
+            mm1: "3.43",
+            wind1: "37",
+            dir1: "NNW",
+            temp2: "18",
+            rain2: "0",
+            mm2: "0",
+            wind2: "12",
+            dir2: "NNW",
+            temp3: "14",
+            rain3: "90",
+            mm3: "0.3",
+            wind3: "37",
+            dir3: "NNW",
+            temp4: "17",
+            rain4: "0",
+            mm4: "0",
+            wind4: "12",
+            dir4: "NNW",
+            temp5: "20",
+            rain5: "0",
+            mm5: "0",
+            wind5: "12",
+            dir5: "NNW"
+        },
+         {
+            name: "River Club",
+            temp: "14",
+            currentCond: "Mostly Cloudy. Cool",
+            sunrise: "5:53am",
+            sunset: "6.27pm",
+            temp1: "11",
+            rain1: "90",
+            mm1: "3.43",
+            wind1: "37",
+            dir1: "NNW",
+            temp2: "18",
+            rain2: "0",
+            mm2: "0",
+            wind2: "12",
+            dir2: "NNW",
+            temp3: "14",
+            rain3: "90",
+            mm3: "0.3",
+            wind3: "37",
+            dir3: "NNW",
+            temp4: "17",
+            rain4: "0",
+            mm4: "0",
+            wind4: "12",
+            dir4: "NNW",
+            temp5: "20",
+            rain5: "0",
+            mm5: "0",
+            wind5: "12",
+            dir5: "NNW"
+        },
+         {
+            name: "Steenberg",
+            temp: "22",
+            currentCond: "Mostly Cloudy. Cool",
+            sunrise: "5:53am",
+            sunset: "6.27pm",
+            temp1: "11",
+            rain1: "90",
+            mm1: "3.43",
+            wind1: "37",
+            dir1: "NNW",
+            temp2: "18",
+            rain2: "0",
+            mm2: "0",
+            wind2: "12",
+            dir2: "NNW",
+            temp3: "14",
+            rain3: "90",
+            mm3: "0.3",
+            wind3: "37",
+            dir3: "NNW",
+            temp4: "17",
+            rain4: "0",
+            mm4: "0",
+            wind4: "12",
+            dir4: "NNW",
+            temp5: "20",
+            rain5: "0",
+            mm5: "0",
+            wind5: "12",
+            dir5: "NNW"
+        },
+         {
+            name: "Sun City",
+            temp: "19",
+            currentCond: "Mostly Cloudy. Cool",
+            sunrise: "5:53am",
+            sunset: "6.27pm",
+            temp1: "11",
+            rain1: "90",
+            mm1: "3.43",
+            wind1: "37",
+            dir1: "NNW",
+            temp2: "18",
+            rain2: "0",
+            mm2: "0",
+            wind2: "12",
+            dir2: "NNW",
+            temp3: "14",
+            rain3: "90",
+            mm3: "0.3",
+            wind3: "37",
+            dir3: "NNW",
+            temp4: "17",
+            rain4: "0",
+            mm4: "0",
+            wind4: "12",
+            dir4: "NNW",
+            temp5: "20",
+            rain5: "0",
+            mm5: "0",
+            wind5: "12",
+            dir5: "NNW"
+        },
+         {
+            name: "Augusta National",
+            temp: "18",
+            currentCond: "Mostly Cloudy. Cool",
+            sunrise: "5:53am",
+            sunset: "6.27pm",
+            temp1: "11",
+            rain1: "90",
+            mm1: "3.43",
+            wind1: "37",
+            dir1: "NNW",
+            temp2: "18",
+            rain2: "0",
+            mm2: "0",
+            wind2: "12",
+            dir2: "NNW",
+            temp3: "14",
+            rain3: "90",
+            mm3: "0.3",
+            wind3: "37",
+            dir3: "NNW",
+            temp4: "17",
+            rain4: "0",
+            mm4: "0",
+            wind4: "12",
+            dir4: "NNW",
+            temp5: "20",
+            rain5: "0",
+            mm5: "0",
+            wind5: "12",
+            dir5: "NNW"
+        },
         {
-          //storage exists
-          this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewArticle")));
+            name: "Happy Land",
+            temp: "14",
+            currentCond: "Mostly Cloudy. Cool",
+            sunrise: "5:53am",
+            sunset: "6.27pm",
+            temp1: "11",
+            rain1: "90",
+            mm1: "3.43",
+            wind1: "37",
+            dir1: "NNW",
+            temp2: "18",
+            rain2: "0",
+            mm2: "0",
+            wind2: "12",
+            dir2: "NNW",
+            temp3: "14",
+            rain3: "90",
+            mm3: "0.3",
+            wind3: "37",
+            dir3: "NNW",
+            temp4: "17",
+            rain4: "0",
+            mm4: "0",
+            wind4: "12",
+            dir4: "NNW",
+            temp5: "20",
+            rain5: "0",
+            mm5: "0",
+            wind5: "12",
+            dir5: "NNW"
         }
+    ];
+
+    $scope.selectCourse = function(myCourse, index) {
+        CourseService.ApplyViewCourse(myCourse);
+        $state.go('app.forecast');
+    };
+
+    $scope.coursesNearMe = [];
+
+    function initialize() {
+      $ionicLoading.show();
+      CourseService.Nearby().success(function (data) {
+        // var myLatlng = new google.maps.LatLng(CourseService.currentPosition.latitude, CourseService.currentPosition.longitude);
+        //
+        // var mapOptions = {
+        //   center: myLatlng,
+        //   zoom: 12,
+        //   disableDefaultUI: true,
+        //   mapTypeId: google.maps.MapTypeId.ROADMAP
+        // };
+        // var map = new google.maps.Map(document.getElementById("map"),
+        //     mapOptions);
+
+        //Marker + infowindow + angularjs compiled ng-click
+        //var contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>";
+        //var compiled = $compile(contentString)($scope);
+
+        // var infowindow = new google.maps.InfoWindow({
+        //   content: compiled[0]
+        // });
+
+        // var marker = new google.maps.Marker({
+        //   position: myLatlng,
+        //   map: map,
+        //   title: 'Uluru (Ayers Rock)'
+        // });
+
+        $scope.coursesNearMe = [];
+        for (var i = 0; i < data.length; i++) {
+          $scope.coursesNearMe.push(data[i]);
+          // new google.maps.Marker({
+          //   position: new google.maps.LatLng(data[i].lat, data[i].long),
+          //   map: map,
+          //   title: data[i].name
+          // });
+        }
+        $ionicLoading.hide();
+        console.log('Courses near me: ', $scope.coursesNearMe);
+
+        // google.maps.event.addListener(marker, 'click', function() {
+        //   //infowindow.open(map,marker);
+        // });
+
+        // $scope.map = map;
+      });
+    }
+      //google.maps.event.addDomListener(window, 'load', initialize);
+
+      $scope.centerOnMe = function() {
+        if(!$scope.map) {
+          return;
+        }
+
+        // $scope.loading = $ionicLoading.show({
+        //   content: 'Getting current location...',
+        //   showBackdrop: false
+        // });
+
+        // navigator.geolocation.getCurrentPosition(function(pos) {
+        //   $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+        //   $scope.loading.hide();
+        // }, function(error) {
+        //   alert('Unable to get location: ' + error.message);
+        // });
       };
 
-  	service.LocalCheck();
-
-      return service;
-})
-
-//Tips Service
-.service('TipsService', function(){
-    var service = {
-        viewTip : {}
-    };
-    service.ApplyViewTip = function(data){
-      service.viewTip = data;
-      localStorage.setItem('viewTip', JSON.stringify(data));
-    };
-    service.LocalCheck = function() {
-        if (localStorage.getItem("viewTip"))
-        {
-          //storage exists
-          this.ApplyViewCourse(JSON.parse(localStorage.getItem("viewTip")));
-        }
+      $scope.clickTest = function() {
+        alert('Example of infowindow with ng-click')
       };
 
-  	service.LocalCheck();
-
-      return service;
-})
-
-.factory('GeoService', function($ionicPlatform, $cordovaGeolocation) {
-
-  var positionOptions = {timeout: 10000, enableHighAccuracy: true};
-
-  return {
-    getPosition: function() {
-      return $ionicPlatform.ready()
-        .then(function() {
-          return $cordovaGeolocation.getCurrentPosition(positionOptions);
-        })
-    }
-  };
 
 })
 
-.service('DeviceService', function($q, $ionicPlatform, $cordovaDeviceMotion, $cordovaDeviceOrientation) {
-  var service = {headingWatch: null, accelerationWatch: null};
+.controller('NewsController', function($scope, $state, NewsService) {
 
-  service.getCurrentHeading = function() {
-    var deferred = $q.defer();
-    var promise = deferred.promise;
-    $cordovaDeviceOrientation.getCurrentHeading().then(function(result) {
-      //  var magneticHeading = result.magneticHeading;
-      //  var trueHeading = result.trueHeading;
-      //  var accuracy = result.headingAccuracy;
-      //  var timeStamp = result.timestamp;
-      deferred.resolve(result);
-    }, function(err) {
-      deferred.reject(err);
-    });
-    promise.success = function (fn) {
-      promise.then(fn);
-      return promise;
+  $scope.selectedArticle = NewsService.viewArticle;
+  $scope.articles = [
+    {
+      'title' : 'Fowler through the years',
+      'details' : 'Images from throughout the career of PGA Tour fan favorite Rickie Fowler.'
+    },
+    {
+      'title' : 'Fowler celebrates b-day drinking from Ryder Cup ',
+      'details' : 'Rickie Fowler\'s 28th birthday is on Tuesday, and he started his celebration surrounded by good company ... cupcakes, Matt Kuchar and the Ryder Cup.'
+    },
+    {
+      'title' : 'Newsmaker of the Year: No. 5, DJ ',
+      'details' : 'A major title, three PGA Tour wins and a bevy of annual awards. It was a career year for Dustin Johnson, one many have been expecting.'
+    },
+    {
+      'title' : 'Social Snapshots: December 2016',
+      'details' : 'The best social snapshots from around the golf world from the month of December.'
+    },
+    {
+      'title' : 'Woods officially commits to \'17 Genesis Open',
+      'details' : 'Tiger Woods officially committed to the 2017 Genesis Open, held at Riviera where Woods made his first PGA Tour start at age'
+    },
+    {
+      'title' : 'First Senior LPGA Championship coming in \'17 ',
+      'details' : 'The Senior LPGA Championship for women 45 and over will be staged for the first time next year, the LPGA announced Tuesday.'
     }
-    promise.error = function (fn) {
-      promise.then(null, fn);
-      return promise;
+  ];
+
+  $scope.selectArticle = function(article, index) {
+    NewsService.ApplyViewArticle(article);
+    $state.go('app.news-article');
+  }
+
+})
+
+.controller('TipsController', function($scope, $state, TipsService) {
+  $scope.selectedTip = TipsService.viewTip;
+  $scope.tips = [
+    {
+      title: 'Sample Tip',
+      videoUrl: '',
+      description: 'This is a sample tip'
     }
-    return promise;
+    ];
+  $scope.selectTip = function(tip, index) {
+    TipsService.ApplyViewTip(tip);
+    $state.go('app.tip');
+  }
+})
+
+//use the following plugin: cordova-plugin-device-orientation
+//cordova plugin add cordova-plugin-device-orientation
+.controller('CompassController', function($scope, $ionicPlatform, DeviceService) {//$cordovaDeviceOrientation) {
+  //get the initial heading usign navigator.compass.getCurrentHeading(success, error);
+  //sample usage documented on https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device-orientation/index.html
+
+  //watch the heading and update the ui at the required interval
+  var vm = this;
+  vm.$onDestroy = $onDestroy;
+  $scope.compassSupported = true;
+  console.log(vm);
+
+  $scope.orientation = false;
+
+  $scope.magneticHeading = 0;
+  $scope.trueHeading = 0;
+  $scope.accuracy = 0;
+  $scope.timeStamp = 0;
+
+  DeviceService.getCurrentHeading().success(function(result) {
+    $scope.orientation = true;
+
+    $scope.magneticHeading = result.magneticHeading;
+    $scope.trueHeading = result.trueHeading;
+    $scope.accuracy = result.headingAccuracy;
+    $scope.timeStamp = result.timestamp;
+    console.log('Compass Success: ', result);
+    cardinalDirection();
+    DeviceService.watchHeading($scope.watchSuccess, $scope.watchError)
+  }).error(function(data){
+    alert('The Slope Reader/Accelerometer is not supported by your device');
+    //$state.go('app.search-courses');
+    //$state.go($state.previous.name);
+  });
+
+  $scope.watchSuccess = function(result) {
+    $scope.magneticHeading = result.magneticHeading;
+    $scope.trueHeading = result.trueHeading;
+    $scope.accuracy = result.headingAccuracy;
+    $scope.timeStamp = result.timestamp;
+    console.log('Compass Success: ', result);
+    cardinalDirection();
   };
 
-  service.watchHeading = function(onSuccess, onError) {
-    service.headingWatch = $cordovaDeviceOrientation.watchHeading({frequency: 1000}).then(
-     null,
-     function(error) {
-       onError(error);
-     },
-     function(result) {   // updates constantly (depending on frequency value)
-      //  var magneticHeading = result.magneticHeading;
-      //  var trueHeading = result.trueHeading;
-      //  var accuracy = result.headingAccuracy;
-      //  var timeStamp = result.timestamp;
-      onSuccess(result);
+  $scope.watchError = function(error) {
+    console.log('Slope Reader Error: ', error);
+    alert(error);
+  };
+
+  // Device Orientation plugin
+
+  // $ionicPlatform.ready(function() {
+  //   startOrientation();
+  // });
+  //
+  // function startOrientation() {
+  //
+  //   $cordovaDeviceOrientation.getCurrentHeading().then(function(result) {
+  //     console.log('Compass: ', result);
+  //     $scope.orientation = true;
+  //
+  //     $scope.magneticHeading = result.magneticHeading;
+  //     $scope.trueHeading = result.trueHeading;
+  //     $scope.accuracy = result.headingAccuracy;
+  //     $scope.timeStamp = result.timestamp;
+  //
+  //     cardinalDirection();
+  //   }, function(err) {
+  //     // An error occurred
+  //     $scope.orientation = false;
+  //     $scope.error = err;
+  //     $scope.compassSupported = false;
+  //     console.log('Compass Supported: ', $scope.compassSupported);
+  //     console.log('CompassController.startOrientation.error: ', err);
+  //     alert('The Compass is not supported by your device');
+  //     //$state.go('app.search-courses');
+  //     //$state.go($state.previous.name); //not sure if this works, commented out for now.
+  //   });
+  //
+  //   var options = {
+  //     frequency: 100,
+  //     filter: true     // if frequency is set, filter is ignored
+  //   };
+  //
+  //   var watch = $cordovaDeviceOrientation.watchHeading(options).then(
+  //     null,
+  //     function(err) {
+  //       // An error occurred
+  //       $scope.orientation = false;
+  //       $scope.error = err;
+  //       console.log('CompassController.watch.error: ', err);
+  //       $scope.compassSupported = false;
+  //       console.log('Compass Supported: ', $scope.compassSupported);
+  //     },
+  //     function(watchResult) {   // updates constantly (depending on frequency value)
+  //       console.log('CompassController.watch.success: ', watchResult);
+  //       $scope.orientation = true;
+  //
+  //       $scope.magneticHeading = watchResult.magneticHeading;
+  //       $scope.trueHeading = watchResult.trueHeading;
+  //       $scope.accuracy = watchResult.headingAccuracy;
+  //       $scope.timeStamp = watchResult.timestamp;
+  //       cardinalDirection();
+  //     });
+  //
+  // }
+
+  console.log('Compass Supported: ', $scope.compassSupported);
+
+  function cardinalDirection() {
+    var SECTOR = 360 / 8; // = 45
+    var HALF_SECTOR = SECTOR / 2; // = 22.5
+
+    // 337.5 - 360 && 0 - 22.5
+    var isN = ($scope.magneticHeading >= 360 - HALF_SECTOR && $scope.magneticHeading <= 360) ||
+        ($scope.magneticHeading >= 0 && $scope.magneticHeading < HALF_SECTOR);
+    // 22.5 - 67.5
+    var isNE = $scope.magneticHeading >= HALF_SECTOR && $scope.magneticHeading < HALF_SECTOR + SECTOR;
+    // 67.5 - 112.5
+    var isE = $scope.magneticHeading >= HALF_SECTOR + SECTOR && $scope.magneticHeading < HALF_SECTOR + SECTOR * 2;
+    // 112.5 - 157.5
+    var isSE = $scope.magneticHeading >= HALF_SECTOR + SECTOR * 2 && $scope.magneticHeading < HALF_SECTOR + SECTOR * 3;
+    // 157.5 - 202.5
+    var isS = $scope.magneticHeading >= HALF_SECTOR + SECTOR * 3 && $scope.magneticHeading < HALF_SECTOR + SECTOR * 4;
+    // 202.5 - 247.5
+    var isSW = $scope.magneticHeading >= HALF_SECTOR + SECTOR * 4 && $scope.magneticHeading < HALF_SECTOR + SECTOR * 5;
+    // 247.5 - 292.5
+    var isW = $scope.magneticHeading >= HALF_SECTOR + SECTOR * 5 && $scope.magneticHeading < HALF_SECTOR + SECTOR * 6;
+    // 292.5 - 337.5
+    var isNW = $scope.magneticHeading >= HALF_SECTOR + SECTOR * 6 && $scope.magneticHeading < HALF_SECTOR + SECTOR * 7;
+
+    if(isN) {
+      $scope.cardinalDirection = 'N';
+    } else if(isNE) {
+      $scope.cardinalDirection = 'NE';
+    } else if(isE) {
+      $scope.cardinalDirection = 'E';
+    } else if(isSE) {
+      $scope.cardinalDirection = 'SE';
+    } else if(isS) {
+      $scope.cardinalDirection = 'S';
+    } else if(isSW) {
+      $scope.cardinalDirection = 'SW';
+    } else if(isW) {
+      $scope.cardinalDirection = 'W';
+    } else if(isNW) {
+      $scope.cardinalDirection = 'NW';
+    }
+  }
+
+  function $onDestroy() {
+    //watch.clearWatch();
+  }
+})
+
+.controller('SlopeReaderController', function($scope, DeviceService) {
+  //use the following plugin for the information required for this controller
+  //https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device-motion/index.html
+  //http://ngcordova.com/docs/plugins/deviceMotion/
+  $scope.device = {X: 0, Y:0, Z:0};
+  DeviceService.getCurrentAcceleration().success(function(data) {
+    $scope.device.X = data.x;
+    $scope.device.Y = data.y;
+    $scope.device.Z = data.z;
+    DeviceService.watchAcceleration($scope.watchSuccess, $scope.watchError)
+  }).error(function(data){
+    alert('The Slope Reader/Accelerometer is not supported by your device');
+    //$state.go('app.search-courses');
+    //$state.go($state.previous.name);
+  });
+
+  $scope.watchSuccess = function(data) {
+    $scope.device.X = data.x;
+    $scope.device.Y = data.y;
+    $scope.device.Z = data.z;
+  };
+
+  $scope.watchError = function(error) {
+    console.log('Slope Reader Error: ', error);
+    alert(error);
+  };
+})
+
+.controller('RadarController', function($scope) {
+  //controll map overlays for the radar page
+})
+
+.controller('SearchController', function($scope, $state, $stateParams, $ionicLoading, $ionicPopup, CourseService, AppService) {
+   //control search
+   $scope.search = { country: '', keyword: ''};
+   $scope.countries = CourseService.countries;
+   $scope.continents = CourseService.continents;
+   $scope.searchResults = [];
+
+   $scope.continentCountries = [];
+   if (CourseService.selectContinent) {
+     $scope.continentCountries = CourseService.selectContinent.countries;
+   }
+   $scope.countryRegions = [];
+   if (CourseService.selectedCountry.hasOwnProperty('id')) {
+     $scope.countryRegions = CourseService.selectedCountry.regions;
+   }
+   $scope.regionSubregions = [];
+   if (CourseService.selectedRegion.hasOwnProperty('id')) {
+     $scope.regionSubregions = CourseService.selectedRegion.subregions;
+   }
+   $scope.regionCourses = [];
+   if (CourseService.selectedSubregion.hasOwnProperty('id')) {
+     $scope.regionCourses = CourseService.selectedSubregion.courses;
+    //  if ($scope.regionCourses.length > 0 && $scope.regionCourses[0].current == undefined)
+    //  {
+    //    convertCurrentWeather($scope.regionCourses);
+    //  }
+   }
+   $scope.nearbyCourses = [];
+   console.log('Courses: ', $scope.regionCourses);
+
+   function convertCurrentWeather(courses) {
+     console.log('convertCurrentWeather: ', courses);
+     courses.forEach(function(course) {
+       course.current = JSON.parse(course.current_json);
      });
+   }
+
+   $scope.settings = AppService.GetUserSettings();
+
+   $scope.showAlert = function(data) {
+     var alertPopup = $ionicPopup.alert({
+       title: data.title,
+       template: data.message
+     });
+
+     alertPopup.then(function(res) {
+       //
+     });
+   };
+
+   $scope.selectContinent = function(continent, index) {
+     CourseService.selectContinent = continent;
+     console.log('Selected Continent: ', CourseService.selectContinent);
+     CourseService.selectContinent.countries = CourseService.CountriesForContinent(continent.id);
+     $state.go('app.search-continent-regions');
+   }
+
+   $scope.selectCountry = function(country, index) {
+     CourseService.selectedCountry = country;
+     console.log('Selected Country: ', CourseService.selectedCountry);
+     $ionicLoading.show();
+     CourseService.RegionsForCountry(country.id).success(function(data) {
+       console.log('Regions: ', data)
+       if (data.length == 0) {
+         $scope.selectRegion(country, -1);
+       }else {
+         CourseService.selectedCountry.regions = data;
+         $ionicLoading.hide();
+         $state.go('app.search-country-regions');
+       }
+     }).error(function(data) {
+       console.log('Error: ',data)
+       $ionicLoading.hide();
+       //display error message
+       $scope.showAlert({title: data.title, message: data.message});
+     });
+   }
+
+   $scope.selectRegion = function(region, index) {
+     CourseService.selectedRegion = region;
+     console.log('Selected Region: ', region);
+     $ionicLoading.show();
+     CourseService.SubRegionsForRegion(region.id).success(function(data) {
+       console.log('Subregions: ', data)
+       $ionicLoading.hide();
+       if (data.length == 0) {
+         $scope.selectSubregion(region, -1);
+       }else {
+         CourseService.selectedRegion.subregions = data;
+         $state.go('app.search-region-subregions');
+       }
+     }).error(function(data) {
+       console.log('Error: ',data)
+       $ionicLoading.hide();
+       //display error message
+       $scope.showAlert({title: data.title, message: data.message});
+     });
+   }
+
+   $scope.selectSubregion = function(subregion, index) {
+     CourseService.selectedSubregion = subregion;
+     console.log('Selected SubRegion: ', CourseService.selectedSubregion);
+     $ionicLoading.show();
+     CourseService.CoursesForRegion(subregion.id).success(function(data) {
+       CourseService.selectedSubregion.courses = data;
+       convertCurrentWeather(CourseService.selectedSubregion.courses);
+       $ionicLoading.hide();
+       $state.go('app.search-region-courses');
+     }).error(function(data) {
+       console.log('Error: ',data)
+       $ionicLoading.hide();
+       //display error message
+       $scope.showAlert({title: data.title, message: data.message});
+     });
+   }
+
+   if ($stateParams) {
+     if ($state.current.name === 'app.search-results') {
+       $ionicLoading.show();
+       CourseService.Search($stateParams.countryID, $stateParams.keyword).success(function(data) {
+         $scope.searchResults = data;
+         convertCurrentWeather($scope.searchResults);
+         $ionicLoading.hide();
+         console.log(data);
+       }).error(function(data) {
+         console.log('Error: ',data)
+         $ionicLoading.hide();
+         //display error message
+         $scope.showAlert({title: data.title, message: data.message});
+       });
+     }else if ($state.current.name === 'app.courses-nearby') {
+       $ionicLoading.show();
+       CourseService.Nearby().success(function (data) {
+         $scope.nearbyCourses = data;
+         convertCurrentWeather($scope.nearbyCourses);
+         $ionicLoading.hide();
+       }).error(function(data) {
+         console.log('Error: ',data)
+         $ionicLoading.hide();
+         //display error message
+         $scope.showAlert({title: data.title, message: data.message});
+       });
+     }
+   }
+
+    $scope.selectCourse = function(course, index) {
+        CourseService.ApplyViewCourse(course);
+        $state.go('app.forecast');
+    };
+  //    else if ($state.current.name === 'app.search-continent-regions') {
+  //      console.log($stateParams.continentID);
+  //      $scope.continentCountries = CourseService.CountriesForContinent($stateParams.continentID);
+  //    }
+  //    else if ($state.current.name === 'app.search-country-regions') {
+  //      console.log($stateParams.countryID);
+  //      $scope.countryName = $stateParams.countryName;
+  //      $scope.countryID = $stateParams.countryID
+  //      CourseService.RegionsForCountry($stateParams.countryID).success(function(data) {
+  //        $scope.countryRegions = data;
+  //      })
+  //    }
+  //    else if ($state.current.name === 'app.search-region-subregions') {
+  //      console.log($stateParams.regionID);
+  //      $scope.regionID = $stateParams.regionID;
+  //      CourseService.SubRegionsForRegion($stateParams.regionID).success(function(data) {
+  //        $scope.regionSubregions = data;
+  //        if (data.length == 0) {
+  //          $state.go('app.search-region-courses',{countryID: $scope.countryID, subregionID: $scope.regionID});
+  //        }
+  //      })
+  //    }
+  //    else if ($state.current.name === 'app.search-region-courses') {
+  //      console.log($stateParams.subregionID);
+  //      $scope.subregionID = $stateParams.subregionID;
+  //      CourseService.CoursesForRegion($scope.countryID, $stateParams.subregionID).success(function(data) {
+  //        $scope.regionCourses = data;
+  //      })
+  //    }
+  //  }
+})
+
+.controller('PrizeDrawController', function($scope) {
+  $scope.draw = {
+    title: 'Enter and Win!',
+    description: '1 Lucky GolfWeather user will win 6 DOZEN Srixon Golf' +
+      'Balls, including a ball fitting!' +
+      'Visit Srixon.com for more info on their range of balls,' +
+      'there are many choices to fit your game.' +
+      'The lucky draw will take place on the 1st of September' +
+      '2016 and the winner will be notified via email.' +
+      'To increase your chance of winning you will receive an' +
+      'additional entry if you "like" the GolfWeather facebook' +
+      'page. http://www.facebook.com/GolfWeather'
   };
 
-  service.clearHeadingWatch = function() {
-    if (service.headingWatch != null) {
-      service.headingWatch.clearWatch();
-      service.headingWatch = null;
-    }
-  }
-
-  service.getCurrentAcceleration = function() {
-    var deferred = $q.defer();
-    var promise = deferred.promise;
-
-    $cordovaDeviceMotion.getCurrentAcceleration().then(function(acceleration) {
-      deferred.resolve(acceleration);
-    }, function(err) {
-      console.log('onError!', err);
-      deferred.reject(err);
-    });
-    promise.success = function (fn) {
-      promise.then(fn);
-      return promise;
-    }
-    promise.error = function (fn) {
-      promise.then(null, fn);
-      return promise;
-    }
-    return promise;
+  $scope.entry = {
+    title: '',
+    name: '',
+    surname: '',
+    email: '',
+    country: ''
   };
 
-  service.watchAcceleration = function(onSuccess, onError) {
-    service.accelerationWatch = $cordovaDeviceMotion.watchAcceleration({frequency: 1000});
-    service.accelerationWatch.then(
-      null,
-      function(error) {
-        onError(error);
-      },
-      function(result) {
-        onSuccess(result);
-    });
-  }
-
-  service.clearAccelerationWatch = function() {
-    if (service.accelerationWatch != null){
-      service.accelerationWatch.clearWatch();
-      service.accelerationWatch = null;
-    }
+  $scope.enter = function(form) {
+    //submit entry data
   };
-
-  return service;
-});
+})
