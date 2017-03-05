@@ -51,28 +51,30 @@
               <h2 ng-show={{settings.temp=='metric'}}>{{detail.temp_celsius}}&deg;</h2>
               <h2 ng-show={{settings.temp=='imperial'}}>{{detail.temp_fahrenheit}}&deg;</h2>
             </div> -->
-            <div class="item item-text-wrap">
-              <div class="row">
-                <div class="col">Time</div>
-                <div class="col"><!--icon--></div>
-                <div class="col">Temp</div>
-                <div class="col">Rain</div>
-                <div class="col">Wind</div>
-              </div>
-              <div class="row" ng-repeat="item in detail.timeslots">
-                <div class="col" ng-show={{settings.clock=='12'}}>{{item.timestamp_12hr}}</div>
-                <div class="col" ng-show={{settings.clock=='24'}}>{{item.timestamp_24hr}}</div>
-                <div class="col"><img ng-src="img/weathericons/{{item.icon}}_24.png" ></div>
-                <div class="col" ng-show={{settings.temp=='metric'}}>{{item.temp_celsius}}&deg;C</div>
-                <div class="col" ng-show={{settings.temp=='imperial'}}>{{item.temp_fahrenheit}}&deg;F</div>
-                <div class="col">{{item.crain}}%/{{item.precip_mm_3hr}}mm</div>
-                <div class="col" ng-show={{settings.temp=='metric'}}>{{item.wind_speed_kmh}}kmh/{{item.wind_dir_desc}}</div>
-                <div class="col" ng-show={{settings.temp=='imperial'}}>{{item.wind_speed_mph}}mph/{{item.wind_dir_desc}}</div>
-              </div>
-            </div>
-            <!-- <div class="item item-divider">
-              I'm a Footer in a Card!
-            </div> -->
+            <table style="width:100%;" >
+              <tr>
+                <td>Time</td>
+                <td><!--icon--></td>
+                <td>Temp</td>
+                <td>Rain</td>
+                <td>Wind</td>
+              </tr>
+              <tr ng-repeat="item in detail.timeslots">
+                <!-- time -->
+                <td ng-show="{{settings.clock=='12'}}">{{item.timestamp_12hr}}</td>
+                <td ng-show="{{settings.clock=='24'}}">{{item.timestamp_24hr}}</td>
+                <!-- icon -->
+                <td><img ng-src="img/weathericons/{{item.icon}}_24.png" ></td>
+                <!-- temp -->
+                <td ng-show={{settings.temp=='metric'}}>{{item.temp_celsius}}&deg;C</td>
+                <td ng-show={{settings.temp=='imperial'}}>{{item.temp_fahrenheit}}&deg;F</td>
+                <!-- rain -->
+                <td>{{item.crain}}%/{{item.precip_mm_3hr}}mm</td>
+                <!-- wind -->
+                <td ng-show={{settings.temp=='metric'}}>{{item.wind_speed_kmh}}kmh/{{item.wind_dir_desc}}</td>
+                <td ng-show={{settings.temp=='imperial'}}>{{item.wind_speed_mph}}mph/{{item.wind_dir_desc}}</td>
+              </tr>
+            </table>
           </div>
         </slick>
         <div class="item card">

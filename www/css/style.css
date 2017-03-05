@@ -117,3 +117,7 @@
   font-family: monospace;
   margin: 30px 0 20px 0;
   font-size: 54px; }
+
+  td {
+    font-size: 12px;
+  }
