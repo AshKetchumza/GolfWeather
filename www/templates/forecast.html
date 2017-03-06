@@ -15,10 +15,15 @@
         Humidity - {{selectedCourse.current.relative_humity}}%
       </h3> -->
       <div class="list">
+          <label style="text-align:center;">
+          <h3>Current</h3>
+          </label>
         <div class="item card">
+<!--
           <div class="item item-divider">
             Current
           </div>
+-->
           <div class="item item-avatar">
             <img ng-src="img/weathericons/{{selectedCourse.current.icon}}_64.png" >
             <p>{{selectedCourse.current.conditions}}</p>
@@ -40,10 +45,13 @@
             I'm a Footer in a Card!
           </div> -->
         </div>
+        <label style="text-align:center;">
+            <h3>DETAILED FORECAST</h3>
+        </label>
         <slick infinate="false" settings="slickSettings" data="selectedCourse.detailedWeather" ng-if="weatherLoaded">
           <div class="item card" ng-repeat="detail in selectedCourse.detailedWeather">
             <div class="item item-divider">
-              <h3>DETAILED FORECAST</h3>{{detail.weekday}} {{detail.date}}
+              {{detail.weekday}} {{detail.date}}
             </div>
             <!-- <div class="item item-avatar">
               <img ng-src="img/weathericons/{{detail.icon}}_64.png" >
@@ -77,12 +85,17 @@
             </table>
           </div>
         </slick>
+        <label style="text-align:center;">
+            <h3>SUMMARY FORECAST</h3>
+        </label>
         <div class="item card">
           <slick infinate="false" settings="slickSettings" data="selectedCourse.summaryWeather" ng-if="weatherLoaded">
             <!--<div class="item card" ng-repeat="detail in selectedCourse.summaryWeather">-->
+<!--
               <div class="item item-divider">
-                <h3>SUMMARY FORECAST</h3>
+                <h3></h3>
               </div>
+-->
               <div class="item item-text-wrap">
                 <div class="row">
                   <div class="col" ng-repeat="day in selectedCourse.summaryWeather">
