@@ -88,16 +88,52 @@
         <label style="text-align:center;">
             <h3>SUMMARY FORECAST</h3>
         </label>
+        <!-- <ion-slide-box >
+          <ion-slide ng-repeat="day in selectedCourse.summaryWeather">
+            <div class="item card">
+              <table style="width:100%;" >
+
+              </table>
+            </div>
+          </ion-slide>
+        </ion-slide-box> -->
         <div class="item card">
           <slick infinate="false" settings="slickSettings" data="selectedCourse.summaryWeather" ng-if="weatherLoaded">
-            <!--<div class="item card" ng-repeat="detail in selectedCourse.summaryWeather">-->
-<!--
-              <div class="item item-divider">
-                <h3></h3>
-              </div>
--->
               <div class="item item-text-wrap">
-                <div class="row">
+                <table style="width:100%;" >
+                  <!-- day of week -->
+                  <tr>
+                    <td ng-repeat="day in selectedCourse.summaryWeather">{{day.weekday}}</td>
+                  </tr>
+                  <!-- icon -->
+                  <tr>
+                    <td ng-repeat="day in selectedCourse.summaryWeather"><img ng-src="img/weathericons/{{day.icon}}_24.png" ></td>
+                  </tr>
+                  <!-- temp hi -->
+                  <tr>
+                    <td ng-repeat="day in selectedCourse.summaryWeather"><div ng-show={{settings.temp=='metric'}}>{{day.hi_cel}}&deg;C</div></td>
+                    <td ng-repeat="day in selectedCourse.summaryWeather"><div ng-show={{settings.temp=='imperial'}}>{{day.hi_fahr}}&deg;F</div></td>
+                  </tr>
+                  <!-- temp lo -->
+                  <tr>
+                    <td ng-repeat="day in selectedCourse.summaryWeather"><div ng-show={{settings.temp=='metric'}}>{{day.lo_cel}}&deg;C</div></td>
+                    <td ng-repeat="day in selectedCourse.summaryWeather"><div ng-show={{settings.temp=='imperial'}}>{{day.lo_fahr}}&deg;F</div></td>
+                  </tr>
+                  <!-- rain perc -->
+                  <tr>
+                    <td ng-repeat="day in selectedCourse.summaryWeather">{{day.pop_perc}}%</td>
+                  </tr>
+                  <!-- wind speed -->
+                  <tr>
+                    <td ng-repeat="day in selectedCourse.summaryWeather"><div ng-show={{settings.temp=='metric'}}>{{day.wind_speed_kmh}}kmh</div></td>
+                    <td ng-repeat="day in selectedCourse.summaryWeather"><div ng-show={{settings.temp=='imperial'}}>{{day.wind_speed_mph}}mph</div></td>
+                  </tr>
+                  <!-- wind desc -->
+                  <tr>
+                    <td ng-repeat="day in selectedCourse.summaryWeather"{{day.wind_dir_desc}}></td>
+                  </tr>
+                </table>
+                <!-- <div class="row">
                   <div class="col" ng-repeat="day in selectedCourse.summaryWeather">
                     <div class="row" >{{day.weekday}}</div>
                     <div class="row"><img ng-src="img/weathericons/{{day.icon}}_24.png" ></div>
@@ -106,17 +142,13 @@
                     <div class="row" style="font-size: 12px;" ng-show={{settings.temp=='metric'}}>{{day.lo_cel}}&deg;C</div>
                     <div class="row" style="font-size: 12px;" ng-show={{settings.temp=='imperial'}}>{{day.lo_fahr}}&deg;F</div>
                     <div class="row">{{day.pop_perc}}%</div>
-                    <div class="row" ng-show={{settings.temp=='metric'}}>{{day.wind_speed_kmh}}km/h</div>                  
+                    <div class="row" ng-show={{settings.temp=='metric'}}>{{day.wind_speed_kmh}}km/h</div>
                     <div class="row" ng-show={{settings.temp=='imperial'}}>{{day.wind_speed_mph}}mph</div>
-                    <div class="row" ng-show={{settings.temp=='metric'}}>{{day.wind_dir_desc}}</div>                  
+                    <div class="row" ng-show={{settings.temp=='metric'}}>{{day.wind_dir_desc}}</div>
                     <div class="row" ng-show={{settings.temp=='imperial'}}>{{day.wind_dir_desc}}</div>
                   </div>
-                </div>
+                </div> -->
               </div>
-              <!-- <div class="item item-divider">
-                I'm a Footer in a Card!
-              </div> -->
-            <!--</div>-->
           </slick>
         </div>
     </div>
