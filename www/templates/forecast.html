@@ -15,8 +15,8 @@
         Humidity - {{selectedCourse.current.relative_humity}}%
       </h3> -->
       <div class="list">
-          <label style="text-align:center;">
-          <h3>Current</h3>
+          <label style="text-align:center; color:#393939!important;">
+          <h4>CURRENT</h4>
           </label>
         <div class="item card">
 <!--
@@ -46,7 +46,7 @@
           </div> -->
         </div>
         <label style="text-align:center;">
-            <h3>DETAILED FORECAST</h3>
+            <h4>DETAILED FORECAST</h4>
         </label>
         <slick infinate="false" settings="slickSettings" data="selectedCourse.detailedWeather" ng-if="weatherLoaded">
           <div class="item card" ng-repeat="detail in selectedCourse.detailedWeather">
@@ -86,7 +86,7 @@
           </div>
         </slick>
         <label style="text-align:center;">
-            <h3>SUMMARY FORECAST</h3>
+            <h4>SUMMARY FORECAST</h4>
         </label>
         <!-- <ion-slide-box >
           <ion-slide ng-repeat="day in selectedCourse.summaryWeather">
