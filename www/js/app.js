@@ -923,7 +923,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
   		var index = -1;
       for(var i = 0; i < service.history.length; i++) {
         var _course = service.history[i];
-  			if (course.id == _course.id) {
+  			if (course.id === _course.id) {
   				exists = true;
           index = i;
   				break;
@@ -947,7 +947,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
     service.IsInHistory = function(course) {
   		service.history.forEach(function(_course) {
   			index++;
-  			if (course.id == _course.id) {
+  			if (course.id === _course.id) {
   				return true;
   			}
   		});
@@ -955,8 +955,11 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
   	};
 
     service.GetMostRecent = function(course) {
+      console.log('course:', course);
+      console.log('service.history:', service.history);
   		service.history.forEach(function(_course) {
-  			if (course.id == _course.id) {
+        console.log('_course:', _course);
+  			if (course.id === _course.id) {
   				var _new = new Date(course.current.updated).getHours();
   				var _hist = new Date(_course.current.updated).getHours();
   				if (_new - _hist <= 1){
