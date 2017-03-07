@@ -887,7 +887,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
 
   	service.LocalCheck();
 	
-	service.ToggleFavourite = funtion(course) {
+	service.ToggleFavourite = function(course) {
 		var exists = false;
 		var index = -1;
 		service.favourites.forEach(function(_course) {
