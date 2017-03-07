@@ -307,37 +307,68 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
 })
 
 .service('AppService', function() {
-  var service = {};
+	var service = {};
 
-  service.GetUrl = function(url, params) {
-    var res = 'http://www.golfweather.com/app/' + url;
-    for(var prop in params) {
-      res = res.replace('{' + prop + '}', params[prop]);
-    }
-    console.log('URL: ', res);
-    return res;
-  };
+	service.GetUrl = function(url, params) {
+		var res = 'http://www.golfweather.com/app/' + url;
+		for(var prop in params) {
+			res = res.replace('{' + prop + '}', params[prop]);
+		}
+		console.log('URL: ', res);
+		return res;
+	};
+	/* USER SETTINGS */
+	service.GetUserSettings = function() {
+		var data = { temp: 'metric', clock: '24', homeView: 'MC' };
+		//
+		//console.log(localStorage.getItem("GWUserSettings"));
 
-  service.GetUserSettings = function() {
-    var data = { temp: 'metric', clock: '24', homeView: 'MC' };
-    //
-    //console.log(localStorage.getItem("GWUserSettings"));
+		if (!localStorage.getItem("GWUserSettings"))
+		{
+		  service.ApplyUserSettings(data);
+		}else {
+		  data = JSON.parse(localStorage.getItem("GWUserSettings"));
+		}
 
-    if (!localStorage.getItem("GWUserSettings"))
-    {
-      service.ApplyUserSettings(data);
-    }else {
-      data = JSON.parse(localStorage.getItem("GWUserSettings"));
-    }
+		return data;
+	};
 
-    return data;
-  };
+	service.ApplyUserSettings = function(data) {
+		localStorage.setItem('GWUserSettings', JSON.stringify(data));
+	};
+	
+	/* USER FAVOURITES */
+	service.GetUserFavourites = function() {
+		var data = [];
+		if (!localStorage.getItem("GWUserFavourites"))
+		{
+			service.ApplyUserFavourites(data);
+		}else {
+			data = JSON.parse(localStorage.getItem("GWUserFavourites"));
+		}
+		return data;
+	};
 
-  service.ApplyUserSettings = function(data) {
-    localStorage.setItem('GWUserSettings', JSON.stringify(data));
-  };
+	service.ApplyUserFavourites = function(data) {
+		localStorage.setItem('GWUserFavourites', JSON.stringify(data));
+	};
+	
+	/* USER HISTORY */
+	service.GetUserHistory = function() {
+		var data = [];
+		if (!localStorage.getItem("GWUserHistory"))
+		{
+			service.ApplyUserHistory(data);
+		}else {
+			data = JSON.parse(localStorage.getItem("GWUserHistory"));
+		}
+		return data;
+	};
 
-  return service;
+	service.ApplyUserHistory = function(data) {
+		localStorage.setItem('GWUserHistory', JSON.stringify(data));
+	};
+	return service;
 })
 
 //Course Service
@@ -353,6 +384,8 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
             longitude: 0
           }
         },
+		history: AppService.GetUserHistory(),
+		favourites: AppService.GetUserFavourites(),
         continents: [
           {name:'Africa', id:'AF'},
           {name:'Asia', id:'AS'},
@@ -852,10 +885,92 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
       return promise;
     }
 
-
   	service.LocalCheck();
+	
+	service.ToggleFavourite = function(course) {
+		var exists = false;
+		var index = -1;
+		service.favourites.forEach(function(_course) {
+			index++;
+			if (course.id == _course.id) {
+				exists = true;
+				break;
+			}
+		});
+		
+		if (!exists) {
+			service.favourites.push(course);
+		} else {
+			service.splice(index, 1);
+		}
+		
+		AppService.ApplyUserFavourites(service.favourites);
+	};
+	
+	service.IsFavourited = function(courseID) {
+		service.favourites.forEach(function(course) {
+			if (course.id == courseID) {
+				return true;
+			}
+		});
+		return false;
+	};
+	
+	service.AddToHistory = function(course) {
+		var exists = false;
+		var index = -1;
+		service.history.forEach(function(_course) {
+			index++;
+			if (course.id == _course.id) {
+				exists = true;
+				break;
+			}
+		});
+		if (exists) {
+			var _course = service.history[index];
+			//check if the history needs to be updated
+			var _new = new Date(course.current.updated).getHours();
+			var _hist = new Date(_course.current.updated).getHours();
+			if (_new - _hist > 1){
+				service.history.splice(index, 1);
+				service.history.push(course);
+			}
+		}else {
+			service.history.push(course);
+		}
+		AppService.ApplyUserHistory(service.history);
+	};
+	
+	service.IsInHistory = function(course) {
+		var exists = false;
+		var index = -1;
+		service.history.forEach(function(_course) {
+			index++;
+			if (course.id == _course.id) {
+				exists = true;
+				break;
+			}
+		});
+		return exists;
+	};
 
-      return service;
+	service.GetMostRecent = function(course) {
+		service.history.forEach(function(_course) {
+			if (course.id == _course.id) {
+				var _new = new Date(course.current.updated).getHours();
+				var _hist = new Date(_course.current.updated).getHours();
+				if (_new - _hist <= 1){
+					return _hist;
+				}
+				if (course.detailedWeather != undefined && course.summaryWeather != undefined)
+					service.AddToHistory(course);
+				return course;
+			}
+		});
+		return course;
+	}
+	
+	return service;
 })
 
 //News Service

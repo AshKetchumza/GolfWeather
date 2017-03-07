@@ -57,60 +57,67 @@ angular.module('starter.controllers', [])
     };
 
     if ($state.current.name === 'app.forecast') {
-      $scope.settings = AppService.GetUserSettings();
-      $scope.selectedCourse.current = JSON.parse(CourseService.viewCourse.current_json);
-      $ionicLoading.show();
-      $scope.weatherLoaded = false;
-      CourseService.GetDetailedConditions($scope.selectedCourse.id).success(function(data) {
-        console.log('Detailed Weather: ', data.data)
-        $scope.selectedCourse.detailedWeather = [];
-        //console.log('Detailed Weather: ', $scope.selectedCourse.detailedWeather)
-        data.data.forEach(function(detail) {
-          var added = false;
-          for (var i = 0; i < $scope.selectedCourse.detailedWeather.length; i++)
-          {
-            var day = $scope.selectedCourse.detailedWeather[i];
-            if (day.date == detail.local_time) {
-              day.timeslots.push(detail);
-              added = true;
-              break;
-            }
-          }
-          if (!added) {
-            var day = { date: detail.local_time, weekday: detail.weekday, timeslots: [] };
-            day.timeslots.push(detail);
-            $scope.selectedCourse.detailedWeather.push(day);
-          }
-        });
+		$scope.selectedCourse.current = JSON.parse(CourseService.viewCourse.current_json);
+		$scope.selectedCourse = Course.GetMostRecent(CourseService.viewCourse);
+		
+		$scope.settings = AppService.GetUserSettings();
+		
+		$ionicLoading.show();
+		$scope.weatherLoaded = false;
+		
+		if (($scope.selectedCourse.detailedWeather == undefined) && ($scope.selectedCourse.summaryWeather == undefined)) {
+			CourseService.GetDetailedConditions($scope.selectedCourse.id).success(function(data) {
+				console.log('Detailed Weather: ', data.data)
+				$scope.selectedCourse.detailedWeather = [];
+				//console.log('Detailed Weather: ', $scope.selectedCourse.detailedWeather)
+				data.data.forEach(function(detail) {
+				  var added = false;
+				  for (var i = 0; i < $scope.selectedCourse.detailedWeather.length; i++)
+				  {
+					var day = $scope.selectedCourse.detailedWeather[i];
+					if (day.date == detail.local_time) {
+					  day.timeslots.push(detail);
+					  added = true;
+					  break;
+					}
+				  }
+				  if (!added) {
+					var day = { date: detail.local_time, weekday: detail.weekday, timeslots: [] };
+					day.timeslots.push(detail);
+					$scope.selectedCourse.detailedWeather.push(day);
+				  }
+				});
 
-        //get weather summary for the week...
-        CourseService.GetWeatherSummary($scope.selectedCourse.id).success(function(data) {
-          console.log('Summary Weather: ', data.data)
-          $scope.selectedCourse.summaryWeather = [];
-          //console.log('Detailed Weather: ', $scope.selectedCourse.detailedWeather)
-          data.data.forEach(function(day) {
-            $scope.selectedCourse.summaryWeather.push(day);            
-          });
+				//get weather summary for the week...
+				CourseService.GetWeatherSummary($scope.selectedCourse.id).success(function(data) {
+				  console.log('Summary Weather: ', data.data)
+				  $scope.selectedCourse.summaryWeather = [];
+				  //console.log('Detailed Weather: ', $scope.selectedCourse.detailedWeather)
+				  data.data.forEach(function(day) {
+					$scope.selectedCourse.summaryWeather.push(day);            
+				  });
 
-          //$scope.selectedCourse.detailedWeather = data.data;
-          $ionicLoading.hide();
-          $scope.weatherLoaded = true;
-        }).error(function(data) {
-          console.log('Error: ',data)
-          $ionicLoading.hide();
-          //display error message
-          $scope.showAlert({title: data.title, message: data.message});
-        });
+				  //$scope.selectedCourse.detailedWeather = data.data;
+				  $ionicLoading.hide();
+				  $scope.weatherLoaded = true;
+				  CourseService.AddToHistory($scope.selectCourse);
+				}).error(function(data) {
+				  console.log('Error: ',data)
+				  $ionicLoading.hide();
+				  //display error message
+				  $scope.showAlert({title: data.title, message: data.message});
+				});
 
-        //$scope.selectedCourse.detailedWeather = data.data;
-        //$ionicLoading.hide();
-        //$scope.weatherLoaded = true;
-      }).error(function(data) {
-        console.log('Error: ',data)
-        $ionicLoading.hide();
-        //display error message
-        $scope.showAlert({title: data.title, message: data.message});
-      });
+				//$scope.selectedCourse.detailedWeather = data.data;
+				//$ionicLoading.hide();
+				//$scope.weatherLoaded = true;
+			}).error(function(data) {
+				console.log('Error: ',data)
+				$ionicLoading.hide();
+				//display error message
+				$scope.showAlert({title: data.title, message: data.message});
+			});
+		}
     }
 
     console.log($scope.selectedCourse);
