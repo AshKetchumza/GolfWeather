@@ -11,6 +11,9 @@ angular.module('starter.controllers', [])
 
   $scope.settings = AppService.GetUserSettings();
 
+  //$scope.isOnForecastPage = false;
+  $rootScope.isOnForecastPage = ($state.current.name == 'app.forecast');
+
   // $scope.units = {
   //   temp: data.temp,
   //   clock: data.clock
@@ -35,19 +38,35 @@ angular.module('starter.controllers', [])
     if ($state.current.name != 'app.slope-reader') {
       DeviceService.clearAccelerationWatch();
     }
+    // $scope.isOnForecastPage = ($state.current.name == 'app.forecast');
+    $rootScope.isOnForecastPage = ($state.current.name == 'app.forecast');
+    console.log('$rootScope.isOnForecastPage: ', $rootScope.isOnForecastPage);
   });
+
+  $rootScope.gotoMap = function() {
+    $state.go('app.map');
+  }
 
 })
 
-.controller('MyCoursesCtrl', function($scope, $state, $ionicLoading, CourseService, AppService) {
+.controller('MyCoursesCtrl', function($scope, $state, $ionicLoading, $rootScope, CourseService, AppService) {
 
     $scope.selectedCourse = CourseService.viewCourse;
 
     $scope.settings = AppService.GetUserSettings();
 
-    $scope.weatherLoaded = true;
+    $scope.weatherLoaded = false;
 
     console.log($scope.settings);
+
+    // $scope.$on('$ionicView.enter', function() {
+    //   $rootScope.isOnForecastPage = true;
+    // });
+    //
+    // // Hide Bookmark and Show FAQ icon
+    // $scope.$on('$ionicView.leave', function() {
+    //   $rootScope.isOnForecastPage = false;
+    // });
 
     $scope.slickSettings = {
       method:{},
@@ -92,12 +111,11 @@ angular.module('starter.controllers', [])
   				CourseService.GetWeatherSummary($scope.selectedCourse.id).success(function(data) {
   				  console.log('Summary Weather: ', data.data)
   				  $scope.selectedCourse.summaryWeather = [];
-  				  //console.log('Detailed Weather: ', $scope.selectedCourse.detailedWeather)
+
   				  data.data.forEach(function(day) {
   					$scope.selectedCourse.summaryWeather.push(day);
   				  });
 
-  				  //$scope.selectedCourse.detailedWeather = data.data;
   				  $ionicLoading.hide();
   				  $scope.weatherLoaded = true;
   				  CourseService.AddToHistory($scope.selectedCourse);
@@ -107,10 +125,6 @@ angular.module('starter.controllers', [])
   				  //display error message
   				  $scope.showAlert({title: data.title, message: data.message});
   				});
-
-  				//$scope.selectedCourse.detailedWeather = data.data;
-  				//$ionicLoading.hide();
-  				//$scope.weatherLoaded = true;
   			}).error(function(data) {
   				console.log('Error: ',data)
   				$ionicLoading.hide();
@@ -125,422 +139,14 @@ angular.module('starter.controllers', [])
     }
 
     console.log($scope.selectedCourse);
-    //$scope.selectedCourseName = CourseService.viewCourse.name;
-    //console.log($state.current.name);
-
-     if ($state.current.name === 'app.map') {
-       initialize();
-    //   var mapOptions = {
-    //     zoom: 16,
-    //     mapTypeId: google.maps.MapTypeId.ROADMAP
-    //   };
-    //   var map = new google.maps.Map(document.getElementById("map"),
-    //         mapOptions);
-     }
-
-     $scope.myCourses = AppService.GetUserFavourites();
-
-    // $scope.myCourses = [
-    //     {
-    //         name: "Milnerton",
-    //         temp: "11",
-    //         currentCond: "Mostly Cloudy. Cool",
-    //         sunrise: "5:53am",
-    //         sunset: "6.27pm",
-    //         temp1: "11",
-    //         rain1: "90",
-    //         mm1: "3.43",
-    //         wind1: "37",
-    //         dir1: "NNW",
-    //         temp2: "18",
-    //         rain2: "0",
-    //         mm2: "0",
-    //         wind2: "12",
-    //         dir2: "NNW",
-    //         temp3: "14",
-    //         rain3: "90",
-    //         mm3: "0.3",
-    //         wind3: "37",
-    //         dir3: "NNW",
-    //         temp4: "17",
-    //         rain4: "0",
-    //         mm4: "0",
-    //         wind4: "12",
-    //         dir4: "NNW",
-    //         temp5: "20",
-    //         rain5: "0",
-    //         mm5: "0",
-    //         wind5: "12",
-    //         dir5: "NNW"
-    //     },
-    //      {
-    //         name: "Atlantic Beach",
-    //         temp: "16",
-    //         currentCond: "Mostly Cloudy. Cool",
-    //         sunrise: "5:53am",
-    //         sunset: "6.27pm",
-    //         temp1: "11",
-    //         rain1: "90",
-    //         mm1: "3.43",
-    //         wind1: "37",
-    //         dir1: "NNW",
-    //         temp2: "18",
-    //         rain2: "0",
-    //         mm2: "0",
-    //         wind2: "12",
-    //         dir2: "NNW",
-    //         temp3: "14",
-    //         rain3: "90",
-    //         mm3: "0.3",
-    //         wind3: "37",
-    //         dir3: "NNW",
-    //         temp4: "17",
-    //         rain4: "0",
-    //         mm4: "0",
-    //         wind4: "12",
-    //         dir4: "NNW",
-    //         temp5: "20",
-    //         rain5: "0",
-    //         mm5: "0",
-    //         wind5: "12",
-    //         dir5: "NNW"
-    //     },
-    //      {
-    //         name: "Clovelly",
-    //         temp: "17",
-    //         currentCond: "Mostly Cloudy. Cool",
-    //         sunrise: "5:53am",
-    //         sunset: "6.27pm",
-    //         temp1: "11",
-    //         rain1: "90",
-    //         mm1: "3.43",
-    //         wind1: "37",
-    //         dir1: "NNW",
-    //         temp2: "18",
-    //         rain2: "0",
-    //         mm2: "0",
-    //         wind2: "12",
-    //         dir2: "NNW",
-    //         temp3: "14",
-    //         rain3: "90",
-    //         mm3: "0.3",
-    //         wind3: "37",
-    //         dir3: "NNW",
-    //         temp4: "17",
-    //         rain4: "0",
-    //         mm4: "0",
-    //         wind4: "12",
-    //         dir4: "NNW",
-    //         temp5: "20",
-    //         rain5: "0",
-    //         mm5: "0",
-    //         wind5: "12",
-    //         dir5: "NNW"
-    //     },
-    //      {
-    //         name: "Metropiton",
-    //         temp: "21",
-    //         currentCond: "Mostly Cloudy. Cool",
-    //         sunrise: "5:53am",
-    //         sunset: "6.27pm",
-    //         temp1: "11",
-    //         rain1: "90",
-    //         mm1: "3.43",
-    //         wind1: "37",
-    //         dir1: "NNW",
-    //         temp2: "18",
-    //         rain2: "0",
-    //         mm2: "0",
-    //         wind2: "12",
-    //         dir2: "NNW",
-    //         temp3: "14",
-    //         rain3: "90",
-    //         mm3: "0.3",
-    //         wind3: "37",
-    //         dir3: "NNW",
-    //         temp4: "17",
-    //         rain4: "0",
-    //         mm4: "0",
-    //         wind4: "12",
-    //         dir4: "NNW",
-    //         temp5: "20",
-    //         rain5: "0",
-    //         mm5: "0",
-    //         wind5: "12",
-    //         dir5: "NNW"
-    //     },
-    //      {
-    //         name: "Pearl Valley",
-    //         temp: "13",
-    //         currentCond: "Mostly Cloudy. Cool",
-    //         sunrise: "5:53am",
-    //         sunset: "6.27pm",
-    //         temp1: "11",
-    //         rain1: "90",
-    //         mm1: "3.43",
-    //         wind1: "37",
-    //         dir1: "NNW",
-    //         temp2: "18",
-    //         rain2: "0",
-    //         mm2: "0",
-    //         wind2: "12",
-    //         dir2: "NNW",
-    //         temp3: "14",
-    //         rain3: "90",
-    //         mm3: "0.3",
-    //         wind3: "37",
-    //         dir3: "NNW",
-    //         temp4: "17",
-    //         rain4: "0",
-    //         mm4: "0",
-    //         wind4: "12",
-    //         dir4: "NNW",
-    //         temp5: "20",
-    //         rain5: "0",
-    //         mm5: "0",
-    //         wind5: "12",
-    //         dir5: "NNW"
-    //     },
-    //      {
-    //         name: "River Club",
-    //         temp: "14",
-    //         currentCond: "Mostly Cloudy. Cool",
-    //         sunrise: "5:53am",
-    //         sunset: "6.27pm",
-    //         temp1: "11",
-    //         rain1: "90",
-    //         mm1: "3.43",
-    //         wind1: "37",
-    //         dir1: "NNW",
-    //         temp2: "18",
-    //         rain2: "0",
-    //         mm2: "0",
-    //         wind2: "12",
-    //         dir2: "NNW",
-    //         temp3: "14",
-    //         rain3: "90",
-    //         mm3: "0.3",
-    //         wind3: "37",
-    //         dir3: "NNW",
-    //         temp4: "17",
-    //         rain4: "0",
-    //         mm4: "0",
-    //         wind4: "12",
-    //         dir4: "NNW",
-    //         temp5: "20",
-    //         rain5: "0",
-    //         mm5: "0",
-    //         wind5: "12",
-    //         dir5: "NNW"
-    //     },
-    //      {
-    //         name: "Steenberg",
-    //         temp: "22",
-    //         currentCond: "Mostly Cloudy. Cool",
-    //         sunrise: "5:53am",
-    //         sunset: "6.27pm",
-    //         temp1: "11",
-    //         rain1: "90",
-    //         mm1: "3.43",
-    //         wind1: "37",
-    //         dir1: "NNW",
-    //         temp2: "18",
-    //         rain2: "0",
-    //         mm2: "0",
-    //         wind2: "12",
-    //         dir2: "NNW",
-    //         temp3: "14",
-    //         rain3: "90",
-    //         mm3: "0.3",
-    //         wind3: "37",
-    //         dir3: "NNW",
-    //         temp4: "17",
-    //         rain4: "0",
-    //         mm4: "0",
-    //         wind4: "12",
-    //         dir4: "NNW",
-    //         temp5: "20",
-    //         rain5: "0",
-    //         mm5: "0",
-    //         wind5: "12",
-    //         dir5: "NNW"
-    //     },
-    //      {
-    //         name: "Sun City",
-    //         temp: "19",
-    //         currentCond: "Mostly Cloudy. Cool",
-    //         sunrise: "5:53am",
-    //         sunset: "6.27pm",
-    //         temp1: "11",
-    //         rain1: "90",
-    //         mm1: "3.43",
-    //         wind1: "37",
-    //         dir1: "NNW",
-    //         temp2: "18",
-    //         rain2: "0",
-    //         mm2: "0",
-    //         wind2: "12",
-    //         dir2: "NNW",
-    //         temp3: "14",
-    //         rain3: "90",
-    //         mm3: "0.3",
-    //         wind3: "37",
-    //         dir3: "NNW",
-    //         temp4: "17",
-    //         rain4: "0",
-    //         mm4: "0",
-    //         wind4: "12",
-    //         dir4: "NNW",
-    //         temp5: "20",
-    //         rain5: "0",
-    //         mm5: "0",
-    //         wind5: "12",
-    //         dir5: "NNW"
-    //     },
-    //      {
-    //         name: "Augusta National",
-    //         temp: "18",
-    //         currentCond: "Mostly Cloudy. Cool",
-    //         sunrise: "5:53am",
-    //         sunset: "6.27pm",
-    //         temp1: "11",
-    //         rain1: "90",
-    //         mm1: "3.43",
-    //         wind1: "37",
-    //         dir1: "NNW",
-    //         temp2: "18",
-    //         rain2: "0",
-    //         mm2: "0",
-    //         wind2: "12",
-    //         dir2: "NNW",
-    //         temp3: "14",
-    //         rain3: "90",
-    //         mm3: "0.3",
-    //         wind3: "37",
-    //         dir3: "NNW",
-    //         temp4: "17",
-    //         rain4: "0",
-    //         mm4: "0",
-    //         wind4: "12",
-    //         dir4: "NNW",
-    //         temp5: "20",
-    //         rain5: "0",
-    //         mm5: "0",
-    //         wind5: "12",
-    //         dir5: "NNW"
-    //     },
-    //     {
-    //         name: "Happy Land",
-    //         temp: "14",
-    //         currentCond: "Mostly Cloudy. Cool",
-    //         sunrise: "5:53am",
-    //         sunset: "6.27pm",
-    //         temp1: "11",
-    //         rain1: "90",
-    //         mm1: "3.43",
-    //         wind1: "37",
-    //         dir1: "NNW",
-    //         temp2: "18",
-    //         rain2: "0",
-    //         mm2: "0",
-    //         wind2: "12",
-    //         dir2: "NNW",
-    //         temp3: "14",
-    //         rain3: "90",
-    //         mm3: "0.3",
-    //         wind3: "37",
-    //         dir3: "NNW",
-    //         temp4: "17",
-    //         rain4: "0",
-    //         mm4: "0",
-    //         wind4: "12",
-    //         dir4: "NNW",
-    //         temp5: "20",
-    //         rain5: "0",
-    //         mm5: "0",
-    //         wind5: "12",
-    //         dir5: "NNW"
-    //     }
-    // ];
+    $scope.myCourses = AppService.GetUserFavourites();
 
     $scope.selectCourse = function(myCourse, index) {
-        CourseService.ApplyViewCourse(myCourse);
-        $state.go('app.forecast');
+      CourseService.ApplyViewCourse(myCourse);
+      $state.go('app.forecast');
     };
 
     $scope.coursesNearMe = [];
-
-    function initialize() {
-      $ionicLoading.show();
-      CourseService.Nearby().success(function (data) {
-        // var myLatlng = new google.maps.LatLng(CourseService.currentPosition.latitude, CourseService.currentPosition.longitude);
-        //
-        // var mapOptions = {
-        //   center: myLatlng,
-        //   zoom: 12,
-        //   disableDefaultUI: true,
-        //   mapTypeId: google.maps.MapTypeId.ROADMAP
-        // };
-        // var map = new google.maps.Map(document.getElementById("map"),
-        //     mapOptions);
-
-        //Marker + infowindow + angularjs compiled ng-click
-        //var contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>";
-        //var compiled = $compile(contentString)($scope);
-
-        // var infowindow = new google.maps.InfoWindow({
-        //   content: compiled[0]
-        // });
-
-        // var marker = new google.maps.Marker({
-        //   position: myLatlng,
-        //   map: map,
-        //   title: 'Uluru (Ayers Rock)'
-        // });
-
-        $scope.coursesNearMe = [];
-        for (var i = 0; i < data.length; i++) {
-          $scope.coursesNearMe.push(data[i]);
-          // new google.maps.Marker({
-          //   position: new google.maps.LatLng(data[i].lat, data[i].long),
-          //   map: map,
-          //   title: data[i].name
-          // });
-        }
-        $ionicLoading.hide();
-        console.log('Courses near me: ', $scope.coursesNearMe);
-
-        // google.maps.event.addListener(marker, 'click', function() {
-        //   //infowindow.open(map,marker);
-        // });
-
-        // $scope.map = map;
-      });
-    }
-      //google.maps.event.addDomListener(window, 'load', initialize);
-
-      $scope.centerOnMe = function() {
-        if(!$scope.map) {
-          return;
-        }
-
-        // $scope.loading = $ionicLoading.show({
-        //   content: 'Getting current location...',
-        //   showBackdrop: false
-        // });
-
-        // navigator.geolocation.getCurrentPosition(function(pos) {
-        //   $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-        //   $scope.loading.hide();
-        // }, function(error) {
-        //   alert('Unable to get location: ' + error.message);
-        // });
-      };
-
-      $scope.clickTest = function() {
-        alert('Example of infowindow with ng-click')
-      };
-
 
 })
 
@@ -644,64 +250,6 @@ angular.module('starter.controllers', [])
     console.log('Slope Reader Error: ', error);
     alert(error);
   };
-
-  // Device Orientation plugin
-
-  // $ionicPlatform.ready(function() {
-  //   startOrientation();
-  // });
-  //
-  // function startOrientation() {
-  //
-  //   $cordovaDeviceOrientation.getCurrentHeading().then(function(result) {
-  //     console.log('Compass: ', result);
-  //     $scope.orientation = true;
-  //
-  //     $scope.magneticHeading = result.magneticHeading;
-  //     $scope.trueHeading = result.trueHeading;
-  //     $scope.accuracy = result.headingAccuracy;
-  //     $scope.timeStamp = result.timestamp;
-  //
-  //     cardinalDirection();
-  //   }, function(err) {
-  //     // An error occurred
-  //     $scope.orientation = false;
-  //     $scope.error = err;
-  //     $scope.compassSupported = false;
-  //     console.log('Compass Supported: ', $scope.compassSupported);
-  //     console.log('CompassController.startOrientation.error: ', err);
-  //     alert('The Compass is not supported by your device');
-  //     //$state.go('app.search-courses');
-  //     //$state.go($state.previous.name); //not sure if this works, commented out for now.
-  //   });
-  //
-  //   var options = {
-  //     frequency: 100,
-  //     filter: true     // if frequency is set, filter is ignored
-  //   };
-  //
-  //   var watch = $cordovaDeviceOrientation.watchHeading(options).then(
-  //     null,
-  //     function(err) {
-  //       // An error occurred
-  //       $scope.orientation = false;
-  //       $scope.error = err;
-  //       console.log('CompassController.watch.error: ', err);
-  //       $scope.compassSupported = false;
-  //       console.log('Compass Supported: ', $scope.compassSupported);
-  //     },
-  //     function(watchResult) {   // updates constantly (depending on frequency value)
-  //       console.log('CompassController.watch.success: ', watchResult);
-  //       $scope.orientation = true;
-  //
-  //       $scope.magneticHeading = watchResult.magneticHeading;
-  //       $scope.trueHeading = watchResult.trueHeading;
-  //       $scope.accuracy = watchResult.headingAccuracy;
-  //       $scope.timeStamp = watchResult.timestamp;
-  //       cardinalDirection();
-  //     });
-  //
-  // }
 
   console.log('Compass Supported: ', $scope.compassSupported);
 
@@ -989,4 +537,177 @@ angular.module('starter.controllers', [])
   $scope.enter = function(form) {
     //submit entry data
   };
+})
+
+.controller('MapController', function($scope, CourseService, GeoService, GooglePlacesService) {
+  $scope.latitude = CourseService.viewCourse.lat;
+  $scope.longitude = CourseService.viewCourse.long;
+  //var latLng = { lat : $scope.latitude, lng: $scope.longitude };
+
+  $scope.course = CourseService.viewCourse;
+
+  $scope.customMarkers = [];
+
+  $scope.search = { input: '' };
+  $scope.predictions = [];
+
+  $scope.markers_collection = [];
+  $scope.markers_cluster = null;
+  console.log("scope: ", $scope);
+
+  // To properly init the google map with angular js
+  $scope.init = function(map) {
+    $scope.mymap = map;
+    $scope.$apply();
+    //$scope.mymap.panTo($scope.mymap.getCenter());
+    console.log("mymap: ", $scope.mymap);
+    cleanMap();
+    var latLng = new google.maps.LatLng($scope.latitude, $scope.longitude)
+    createMarker(latLng);
+  };
+
+  var cleanMap = function() {
+    // Remove the markers from the map and from the array
+    while($scope.markers_collection.length){
+      $scope.markers_collection.pop().setMap(null);
+    }
+
+    // Remove clusters from the map
+    if($scope.markers_cluster !== null){
+      $scope.markers_cluster.clearMarkers();
+    }
+  },
+  createMarker = function(place){
+      var  marker_options = {
+          map: $scope.mymap,
+          animation: google.maps.Animation.DROP
+        };
+
+    // Handle both types of markers, places markers and location (lat, lng) markers
+    if(place.geometry){
+      marker_options.position = place.geometry.location;
+    }
+    else {
+      marker_options.position = place;
+    }
+
+    var marker = new google.maps.Marker(marker_options);
+
+    // For the places markers we are going to add a click event to display place details
+    marker.addListener('click', function() {
+      $scope.mymap.showInfoWindow('info', this);
+    });
+
+    $scope.markers_collection.push(marker);
+
+    return marker;
+  },
+  createCluster = function(markers){
+    $scope.markers_cluster = new MarkerClusterer($scope.mymap, markers, {
+      styles: [
+        {
+          url: '../img/i1.png',
+          height: 53,
+          width: 52,
+          textColor: '#FFF',
+          textSize: 12
+        },
+        {
+          url: '../img/i2.png',
+          height: 56,
+          width: 55,
+          textColor: '#FFF',
+          textSize: 12
+        },
+        {
+          url: '../img/i3.png',
+          height: 66,
+          width: 65,
+          textColor: '#FFF',
+          textSize: 12
+        },
+        {
+          url: '../img/i4.png',
+          height: 78,
+          width: 77,
+          textColor: '#FFF',
+          textSize: 12
+        },
+        {
+          url: '../img/i5.png',
+          height: 90,
+          width: 89,
+          textColor: '#FFF',
+          textSize: 12
+        }
+      ],
+      imagePath: '../img/i'
+    });
+  }
+  ;
+
+  $scope.getPlacePredictions = function(query){
+    if(query !== "")
+    {
+      GooglePlacesService.getPlacePredictions(query)
+      .then(function(predictions){
+        $scope.predictions = predictions;
+      });
+    }else{
+      $scope.predictions = [];
+    }
+  };
+
+  $scope.selectSearchResult = function(result){
+    $scope.search.input = result.description;
+    $scope.predictions = [];
+
+    $ionicLoading.show({
+      template: 'Searching restaurants near '+result.description+' ...'
+    });
+
+    // With this result we should find restaurants arround this place and then show them in the map
+    // First we need to get LatLng from the place ID
+    GooglePlacesService.getLatLng(result.place_id)
+    .then(function(result_location){
+      // Now we are able to search restaurants near this location
+      GooglePlacesService.getPlacesNearby(result_location)
+      .then(function(nearby_places){
+        // Clean map
+        cleanMap();
+
+        $ionicLoading.hide().then(function(){
+          // Create a location bound to center the map based on the results
+          var bound = new google.maps.LatLngBounds(),
+              places_markers = [];
+
+          for (var i = 0; i < nearby_places.length; i++) {
+  		      bound.extend(nearby_places[i].geometry.location);
+  		      var place_marker = createMarker(nearby_places[i]);
+            places_markers.push(place_marker);
+  		    }
+
+          // Create cluster with places
+          createCluster(places_markers);
+
+          var neraby_places_bound_center = bound.getCenter();
+
+          // Center map based on the bound arround nearby places
+          $scope.latitude = neraby_places_bound_center.lat();
+          $scope.longitude = neraby_places_bound_center.lng();
+
+          // To fit map with places
+          $scope.mymap.fitBounds(bound);
+        });
+      });
+    });
+  };
+
+  // GeoService.getPosition().then(function(latLng) {
+  //   console.log('latLng: ', latLng);
+  //   $scope.latitude = latLng.latitude;
+  //   $scope.longitude = latLng.longitude;
+  //   createMarker({lat: latLng.latitude, lng: latLng.longitude});
+  // });
+
 })

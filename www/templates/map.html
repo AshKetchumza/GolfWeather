@@ -1,10 +1,59 @@
-<ion-view view-title="Courses Near Me">
-  <ion-content>
-    <ul class="list">
-        <li class="item item-icon-right" ng-repeat="course in coursesNearMe" >
-          {{course.name}} <i class="icon ion-cloud"></i>
-        </li>
-    </ul>
-    <!-- <div id="map"/> -->
+<ion-view view-title="Course Location">
+  <ion-content class="map-content">
+    <div class="row row-no-padding map-row">
+      <div class="col map-col">
+        <!-- <div class="search-container">
+          <div class="list list-inset search-input-outer">
+            <label class="item item-input search-box">
+              <i class="icon ion-ios-search placeholder-icon"></i>
+              <input ng-model="search.input" type="text" placeholder="Search restaurants near place" ng-change="getPlacePredictions(search.input)"/>
+            </label>
+          </div>
+          <div ng-show="predictions.length > 0" class="row row-no-padding search-results">
+            <div class="col">
+              <div class="list location-results-list">
+                <a ng-repeat="prediction in predictions" class="item item-icon-left location-item" ng-click="selectSearchResult(prediction)">
+                  <i class="icon ion-location"></i>
+                  <h3 class="location-name">{{prediction.terms[0].value}}</h3>
+                  <span class="location-desc">{{prediction.description}}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div class="map-container" data-tap-disabled="true">
+          <ng-map class="map" zoom="14" center="[{{latitude}}, {{longitude}}]" zoom-control="true" scale-control="false" map-type-control="false" street-view-control="false" map-initialized="init(map)">
+            <info-window id="info">
+              <div ng-non-bindable="">
+                <table>
+                  <tr>
+                    <h4>{{course.name}}</h4>
+                  </tr>
+                  <tr>
+                    <td><i class="icon ion-location"></i></td>
+                    <td>{{course.address1}}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>{{course.address2}}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>{{course.city}}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>{{course.region}}</td>
+                  </tr>
+                </table>
+              </div>
+            </info-window>
+            <!-- <custom-marker ng-repeat="cm in customMarkers" position="[{{cm.lat}}, {{cm.lng}}]" class="{{cm.class}}">
+              <h3 class="marker-title">{{cm.text}}</h3>
+            </custom-marker> -->
+          </ng-map>
+        </div>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

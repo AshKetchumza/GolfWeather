@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.controllers', 'starter.directives'])
+angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'ngMap',  'starter.controllers', 'starter.directives'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -85,7 +85,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
         views: {
           'menuContent': {
             templateUrl: 'templates/map.html',
-            controller: 'MyCoursesCtrl'
+            controller: 'MapController'
           }
         }
       })
@@ -1028,7 +1028,10 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
     getPosition: function() {
       return $ionicPlatform.ready()
         .then(function() {
-          return $cordovaGeolocation.getCurrentPosition(positionOptions);
+          if (ionic.Platform.platforms[0] == "browser")
+            return { latitude : -33.9234473, longitude: 18.5201539 };
+          else
+            return $cordovaGeolocation.getCurrentPosition(positionOptions);
         })
     }
   };
@@ -1124,4 +1127,87 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'starter.contr
   };
 
   return service;
-});
+})
+
+.service('GooglePlacesService', function($q){
+  this.getPlacePredictions = function(query){
+    var dfd = $q.defer(),
+    		service = new google.maps.places.AutocompleteService();
+
+    service.getPlacePredictions({ input: query }, function(predictions, status){
+      if (status != google.maps.places.PlacesServiceStatus.OK) {
+        dfd.resolve([]);
+      }
+      else
+      {
+        dfd.resolve(predictions);
+      }
+    });
+
+    return dfd.promise;
+  };
+
+	this.getLatLng = function(placeId){
+    var dfd = $q.defer(),
+				geocoder = new google.maps.Geocoder;
+
+		geocoder.geocode({'placeId': placeId}, function(results, status) {
+      if(status === 'OK'){
+        if(results[0]){
+					dfd.resolve(results[0].geometry.location);
+				}
+				else {
+					dfd.reject("no results");
+				}
+			}
+			else {
+				dfd.reject("error");
+			}
+		});
+
+    return dfd.promise;
+  };
+
+	this.getPlacesNearby = function(location){
+		// As we are already using a map, we don't need to pass the map element to the PlacesServices (https://groups.google.com/forum/#!topic/google-maps-js-api-v3/QJ67k-ATuFg)
+		var dfd = $q.defer(),
+				elem = document.createElement("div"),
+    		service = new google.maps.places.PlacesService(elem);
+
+		service.nearbySearch({
+	    location: location,
+	    radius: '1000',
+	    types: ['restaurant']
+	  }, function(results, status){
+			if (status != google.maps.places.PlacesServiceStatus.OK) {
+		    dfd.resolve([]);
+		  }
+			else {
+				dfd.resolve(results);
+			}
+		});
+
+    return dfd.promise;
+  };
+
+	this.getPlaceDetails = function(placeId){
+		// As we are already using a map, we don't need to pass the map element to the PlacesServices (https://groups.google.com/forum/#!topic/google-maps-js-api-v3/QJ67k-ATuFg)
+		var dfd = $q.defer(),
+				elem = document.createElement("div"),
+    		service = new google.maps.places.PlacesService(elem);
+
+		service.getDetails({
+	    placeId: placeId
+	  }, function(place, status){
+			if (status == google.maps.places.PlacesServiceStatus.OK) {
+		    dfd.resolve(place);
+		  }
+			else {
+				dfd.resolve(null);
+			}
+		});
+
+    return dfd.promise;
+  };
+})
+;

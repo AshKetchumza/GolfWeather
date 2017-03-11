@@ -8,6 +8,10 @@
         <button class="button button-icon button-clear ion-navicon" style="color:#393939!important;" menu-toggle="left">
         </button>
       </ion-nav-buttons>
+      <ion-nav-buttons side="right">
+        <button class="button button-icon button-clear ion-map" style="color:#393939!important;" ng-click="gotoMap()" ng-show="isOnForecastPage">
+        </button>
+      </ion-na-buttons>
     </ion-nav-bar>
     <ion-nav-view name="menuContent"></ion-nav-view>
   </ion-side-menu-content>
