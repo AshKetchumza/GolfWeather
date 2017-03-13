@@ -545,6 +545,7 @@ angular.module('starter.controllers', [])
   $scope.courseLatLng = new google.maps.LatLng($scope.latitude, $scope.longitude);
   //var latLng = { lat : $scope.latitude, lng: $scope.longitude };
   $scope.currentLocation = {};
+  $scope.currentRouteRequest = {};
   var directionsDisplay;
   var directionsService = new google.maps.DirectionsService();
 
@@ -649,6 +650,25 @@ angular.module('starter.controllers', [])
       imagePath: '../img/i'
     });
   }
+  displayRoute = function(location) {
+    cleanMap();
+    var start = location;
+    var end = $scope.courseLatLng;
+    var request = {
+      origin: start,
+      destination: end,
+      travelMode: 'DRIVING'
+    };
+    $scope.currentRouteRequest = request;
+    directionsService.route(request, function(result, status) {
+      console.log('RoutesStatus: ', status);
+      console.log('RoutesResult: ', result);
+      if (status == 'OK') {
+        directionsDisplay.setDirections(result);
+        $ionicLoading.hide();
+      }
+    });
+  }
   ;
 
   $scope.getPlacePredictions = function(query){
@@ -676,22 +696,9 @@ angular.module('starter.controllers', [])
     // First we need to get LatLng from the place ID
     GooglePlacesService.getLatLng(result.place_id)
     .then(function(result_location){
-      cleanMap();
-      var start = result_location;
-      var end = $scope.courseLatLng;
-      var request = {
-        origin: start,
-        destination: end,
-        travelMode: 'DRIVING'
-      };
-      directionsService.route(request, function(result, status) {
-        console.log('RoutesStatus: ', status);
-        console.log('RoutesResult: ', result);
-        if (status == 'OK') {
-          directionsDisplay.setDirections(result);
-          $ionicLoading.hide();
-        }
-      });
+      displayRoute(result_location);
+    });
+  };
 
         // var bound = new google.maps.LatLngBounds();
         //  $scope.mymap.fitBounds(bound);
@@ -730,13 +737,18 @@ angular.module('starter.controllers', [])
       //     $scope.mymap.fitBounds(bound);
       //   });
       // });
-    });
-  };
 
   GeoService.getPosition().then(function(latLng) {
     console.log('latLng: ', latLng);
     $scope.currentLocation = latLng;
     //createMarker({lat: latLng.latitude, lng: latLng.longitude});
   });
+
+  $scope.useCurrentlocation = function() {
+    $ionicLoading.show({
+      template: 'Calculating routes...'
+    });
+    displayRoute($scope.currentLocation);
+  }
 
 })
