@@ -539,10 +539,14 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('MapController', function($scope, CourseService, GeoService, GooglePlacesService) {
+.controller('MapController', function($scope, $ionicLoading, CourseService, GeoService, GooglePlacesService) {
   $scope.latitude = CourseService.viewCourse.lat;
   $scope.longitude = CourseService.viewCourse.long;
+  $scope.courseLatLng = new google.maps.LatLng($scope.latitude, $scope.longitude);
   //var latLng = { lat : $scope.latitude, lng: $scope.longitude };
+  $scope.currentLocation = {};
+  var directionsDisplay;
+  var directionsService = new google.maps.DirectionsService();
 
   $scope.course = CourseService.viewCourse;
 
@@ -558,12 +562,13 @@ angular.module('starter.controllers', [])
   // To properly init the google map with angular js
   $scope.init = function(map) {
     $scope.mymap = map;
+    directionsDisplay = new google.maps.DirectionsRenderer();
+    directionsDisplay.setMap($scope.mymap);
     $scope.$apply();
     //$scope.mymap.panTo($scope.mymap.getCenter());
     console.log("mymap: ", $scope.mymap);
     cleanMap();
-    var latLng = new google.maps.LatLng($scope.latitude, $scope.longitude)
-    createMarker(latLng);
+    createMarker($scope.courseLatLng);
   };
 
   var cleanMap = function() {
@@ -659,55 +664,79 @@ angular.module('starter.controllers', [])
   };
 
   $scope.selectSearchResult = function(result){
+    console.log('SearchResult: ', result);
     $scope.search.input = result.description;
     $scope.predictions = [];
 
     $ionicLoading.show({
-      template: 'Searching restaurants near '+result.description+' ...'
+      template: 'Calculating routes...'
     });
 
     // With this result we should find restaurants arround this place and then show them in the map
     // First we need to get LatLng from the place ID
     GooglePlacesService.getLatLng(result.place_id)
     .then(function(result_location){
-      // Now we are able to search restaurants near this location
-      GooglePlacesService.getPlacesNearby(result_location)
-      .then(function(nearby_places){
-        // Clean map
-        cleanMap();
-
-        $ionicLoading.hide().then(function(){
-          // Create a location bound to center the map based on the results
-          var bound = new google.maps.LatLngBounds(),
-              places_markers = [];
-
-          for (var i = 0; i < nearby_places.length; i++) {
-  		      bound.extend(nearby_places[i].geometry.location);
-  		      var place_marker = createMarker(nearby_places[i]);
-            places_markers.push(place_marker);
-  		    }
-
-          // Create cluster with places
-          createCluster(places_markers);
-
-          var neraby_places_bound_center = bound.getCenter();
-
-          // Center map based on the bound arround nearby places
-          $scope.latitude = neraby_places_bound_center.lat();
-          $scope.longitude = neraby_places_bound_center.lng();
-
-          // To fit map with places
-          $scope.mymap.fitBounds(bound);
-        });
+      cleanMap();
+      var start = result_location;
+      var end = $scope.courseLatLng;
+      var request = {
+        origin: start,
+        destination: end,
+        travelMode: 'DRIVING'
+      };
+      directionsService.route(request, function(result, status) {
+        console.log('RoutesStatus: ', status);
+        console.log('RoutesResult: ', result);
+        if (status == 'OK') {
+          directionsDisplay.setDirections(result);
+          $ionicLoading.hide();
+        }
       });
+
+        // var bound = new google.maps.LatLngBounds();
+        //  $scope.mymap.fitBounds(bound);
+        //  var neraby_places_bound_center = bound.getCenter();
+        //  // Center map based on the bound arround nearby places
+        // $scope.latitude = neraby_places_bound_center.lat();
+        // $scope.longitude = neraby_places_bound_center.lng();
+
+      // Now we are able to search restaurants near this location
+      // GooglePlacesService.getPlacesNearby(result_location)
+      // .then(function(nearby_places){
+      //   // Clean map
+      //   cleanMap();
+      //
+      //   $ionicLoading.hide().then(function(){
+      //     // Create a location bound to center the map based on the results
+      //     var bound = new google.maps.LatLngBounds(),
+      //         places_markers = [];
+      //
+      //     for (var i = 0; i < nearby_places.length; i++) {
+  		//       bound.extend(nearby_places[i].geometry.location);
+  		//       var place_marker = createMarker(nearby_places[i]);
+      //       places_markers.push(place_marker);
+  		//     }
+      //
+      //     // Create cluster with places
+      //     createCluster(places_markers);
+      //
+      //     var neraby_places_bound_center = bound.getCenter();
+      //
+      //     // Center map based on the bound arround nearby places
+      //     $scope.latitude = neraby_places_bound_center.lat();
+      //     $scope.longitude = neraby_places_bound_center.lng();
+      //
+      //     // To fit map with places
+      //     $scope.mymap.fitBounds(bound);
+      //   });
+      // });
     });
   };
 
-  // GeoService.getPosition().then(function(latLng) {
-  //   console.log('latLng: ', latLng);
-  //   $scope.latitude = latLng.latitude;
-  //   $scope.longitude = latLng.longitude;
-  //   createMarker({lat: latLng.latitude, lng: latLng.longitude});
-  // });
+  GeoService.getPosition().then(function(latLng) {
+    console.log('latLng: ', latLng);
+    $scope.currentLocation = latLng;
+    //createMarker({lat: latLng.latitude, lng: latLng.longitude});
+  });
 
 })

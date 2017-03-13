@@ -2,11 +2,11 @@
   <ion-content class="map-content">
     <div class="row row-no-padding map-row">
       <div class="col map-col">
-        <!-- <div class="search-container">
+        <div class="search-container">
           <div class="list list-inset search-input-outer">
             <label class="item item-input search-box">
               <i class="icon ion-ios-search placeholder-icon"></i>
-              <input ng-model="search.input" type="text" placeholder="Search restaurants near place" ng-change="getPlacePredictions(search.input)"/>
+              <input ng-model="search.input" type="text" placeholder="Enter Starting Location" ng-change="getPlacePredictions(search.input)"/>
             </label>
           </div>
           <div ng-show="predictions.length > 0" class="row row-no-padding search-results">
@@ -20,7 +20,7 @@
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
         <div class="map-container" data-tap-disabled="true">
           <ng-map class="map" zoom="14" center="[{{latitude}}, {{longitude}}]" zoom-control="true" scale-control="false" map-type-control="false" street-view-control="false" map-initialized="init(map)">
             <info-window id="info">
