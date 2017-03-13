@@ -539,7 +539,7 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('MapController', function($scope, $ionicLoading, CourseService, GeoService, GooglePlacesService) {
+.controller('MapController', function($scope, $ionicLoading, $ionicPopup, CourseService, GeoService, GooglePlacesService) {
   $scope.latitude = CourseService.viewCourse.lat;
   $scope.longitude = CourseService.viewCourse.long;
   $scope.courseLatLng = new google.maps.LatLng($scope.latitude, $scope.longitude);
@@ -663,9 +663,14 @@ angular.module('starter.controllers', [])
     directionsService.route(request, function(result, status) {
       console.log('RoutesStatus: ', status);
       console.log('RoutesResult: ', result);
+      $ionicLoading.hide();
       if (status == 'OK') {
         directionsDisplay.setDirections(result);
-        $ionicLoading.hide();
+      }else  if (status == 'ZERO_RESULTS') {
+        $ionicPopup.alert({
+         title: 'No Routes Found',
+         template: 'No drivable routes have been found'
+       });
       }
     });
   }
