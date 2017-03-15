@@ -540,10 +540,11 @@ angular.module('starter.controllers', [])
 })
 
 .controller('MapController', function($scope, $ionicLoading, $ionicPopup, CourseService, GeoService, GooglePlacesService) {
-  $scope.latitude = CourseService.viewCourse.lat;
-  $scope.longitude = CourseService.viewCourse.long;
+  $scope.selectedCourse = CourseService.viewCourse;
+  $scope.latitude = $scope.selectedCourse.lat;
+  $scope.longitude = $scope.selectedCourse.long;
   $scope.courseLatLng = new google.maps.LatLng($scope.latitude, $scope.longitude);
-  //var latLng = { lat : $scope.latitude, lng: $scope.longitude };
+  $scope.selectedCourse.current = JSON.parse($scope.selectedCourse.current_json);
   $scope.currentLocation = {};
   $scope.currentRouteRequest = {};
   var directionsDisplay;
@@ -558,7 +559,6 @@ angular.module('starter.controllers', [])
 
   $scope.markers_collection = [];
   $scope.markers_cluster = null;
-  console.log("scope: ", $scope);
 
   // To properly init the google map with angular js
   $scope.init = function(map) {
@@ -566,8 +566,6 @@ angular.module('starter.controllers', [])
     directionsDisplay = new google.maps.DirectionsRenderer();
     directionsDisplay.setMap($scope.mymap);
     $scope.$apply();
-    //$scope.mymap.panTo($scope.mymap.getCenter());
-    console.log("mymap: ", $scope.mymap);
     cleanMap();
     createMarker($scope.courseLatLng);
   };
@@ -679,7 +677,7 @@ angular.module('starter.controllers', [])
   $scope.getPlacePredictions = function(query){
     if(query !== "")
     {
-      GooglePlacesService.getPlacePredictions(query)
+      GooglePlacesService.getPlacePredictions(query, $scope.selectedCourse.current.country_id)
       .then(function(predictions){
         $scope.predictions = predictions;
       });

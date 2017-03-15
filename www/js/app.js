@@ -1130,11 +1130,11 @@ angular.module('starter', ['ionic', 'ngCordova', 'slickCarousel', 'ngMap',  'sta
 })
 
 .service('GooglePlacesService', function($q){
-  this.getPlacePredictions = function(query){
+  this.getPlacePredictions = function(query, country_id){
     var dfd = $q.defer(),
     		service = new google.maps.places.AutocompleteService();
-
-    service.getPlacePredictions({ input: query }, function(predictions, status){
+    //var input = query;
+    service.getPlacePredictions({ input: query, componentRestrictions : { country: country_id } }, function(predictions, status){
       if (status != google.maps.places.PlacesServiceStatus.OK) {
         dfd.resolve([]);
       }
